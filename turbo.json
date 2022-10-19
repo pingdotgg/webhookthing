@@ -1,6 +1,9 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
+    "db-generate": {
+      "outputs": ["generated/**"]
+    },
     "build": {
       "dependsOn": ["^build", "^db-generate"],
       "outputs": [".next/**"],
@@ -12,9 +15,6 @@
     "dev": {
       "dependsOn": ["^db-generate"],
       "cache": false
-    },
-    "db-generate": {
-      "outputs": ["generated/**"]
     },
     "db-push": {
       "cache": false
