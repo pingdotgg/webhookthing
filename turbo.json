@@ -2,7 +2,7 @@
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^db-generate"],
       "outputs": [".next/**"],
       "env": ["DATABASE_HOST", "DATABASE_USERNAME", "DATABASE_PASSWORD"]
     },
@@ -10,9 +10,20 @@
       "outputs": []
     },
     "dev": {
+      "dependsOn": ["^db-generate"],
       "cache": false
     },
-    "clean": {},
-    "postinstall": {}
+    "db-generate": {
+      "cache": false
+    },
+    "db-push": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    },
+    "//#clean": {
+      "cache": false
+    }
   }
 }
