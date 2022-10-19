@@ -1,5 +1,5 @@
 {
-  "name": "@acme/nextjs",
+  "name": "@captain/nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@acme/api": "*",
-    "@acme/db": "*",
+    "@captain/trpc": "*",
+    "@captain/db": "*",
     "@tanstack/react-query": "^4.7.2",
     "@trpc/client": "10.0.0-proxy-beta.13",
     "@trpc/next": "10.0.0-proxy-beta.13",
@@ -23,6 +23,7 @@
     "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@planetscale/database": "^1.4.0",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.5",
