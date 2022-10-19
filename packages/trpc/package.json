@@ -5,7 +5,8 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf .turbo node_modules"
+    "clean": "rm -rf .turbo node_modules",
+    "build": "prisma generate && tsc"
   },
   "dependencies": {
     "@captain/db": "*",
