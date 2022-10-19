@@ -3,7 +3,8 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**"]
+      "outputs": [".next/**"],
+      "env": ["DATABASE_HOST", "DATABASE_USERNAME", "DATABASE_PASSWORD"]
     },
     "lint": {
       "outputs": []
