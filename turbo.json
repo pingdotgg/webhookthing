@@ -1,0 +1,17 @@
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", ".expo/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false
+    },
+    "clean": {},
+    "//#clean": {},
+    "postinstall": {}
+  }
+}
