@@ -27,7 +27,10 @@ const Home: NextPage = () => {
       </Head>
       <main className="container flex flex-col items-center min-h-screen py-16 mx-auto">
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
-          Captain by <a href="https://ping.gg">Ping.gg</a>
+          Captain by{" "}
+          <a className="text-blue-400" href="https://ping.gg">
+            Ping.gg
+          </a>
         </h1>
         <div className="flex items-center justify-center w-full pt-6 text-2xl text-blue-500">
           {postQuery.data ? (
