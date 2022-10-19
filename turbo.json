@@ -13,7 +13,9 @@
       "dependsOn": ["^db-generate"],
       "cache": false
     },
-    "db-generate": {},
+    "db-generate": {
+      "outputs": ["generated/**"]
+    },
     "db-push": {
       "cache": false
     },
