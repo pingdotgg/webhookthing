@@ -27,7 +27,7 @@ const Home: NextPage = () => {
       </Head>
       <main className="container flex flex-col items-center min-h-screen py-16 mx-auto">
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
-          Captain by{" "}
+          Captain - a service by{" "}
           <a className="text-blue-400 hover:underline" href="https://ping.gg">
             Ping.gg
           </a>
