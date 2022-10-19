@@ -18,10 +18,10 @@ importers:
       '@captain/trpc': '*'
       '@planetscale/database': ^1.4.0
       '@tanstack/react-query': ^4.7.2
-      '@trpc/client': 10.0.0-proxy-beta.13
-      '@trpc/next': 10.0.0-proxy-beta.13
-      '@trpc/react': 10.0.0-proxy-beta.13
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21
+      '@trpc/next': 10.0.0-proxy-beta.21
+      '@trpc/react-query': 10.0.0-proxy-beta.21
+      '@trpc/server': 10.0.0-proxy-beta.21
       '@types/node': ^18.0.0
       '@types/react': ^18.0.21
       '@types/react-dom': ^18.0.5
@@ -38,15 +38,15 @@ importers:
       react-dom: 18.1.0
       tailwindcss: ^3.1.8
       typescript: ^4.8.3
-      zod: ^3.18.0
+      zod: ^3.19.1
     dependencies:
       '@captain/db': link:../../packages/db
       '@captain/trpc': link:../../packages/trpc
       '@tanstack/react-query': 4.9.0_ef5jwxihqo6n7gxfmzogljlgcm
-      '@trpc/client': 10.0.0-proxy-beta.13_itipy43llokwyezwccgik4t2sm
-      '@trpc/next': 10.0.0-proxy-beta.13_2dx6cp5lnkwywcy3ul6bkbpivy
-      '@trpc/react': 10.0.0-proxy-beta.13_ticwmu4ugzx4ag4o3th2zkic4u
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
+      '@trpc/next': 10.0.0-proxy-beta.21_gd4o5abca6jbbkbxdintq5y5be
+      '@trpc/react-query': 10.0.0-proxy-beta.21_ptyx77w5b2d5rqcypt4t2esae4
+      '@trpc/server': 10.0.0-proxy-beta.21
       next: 12.3.1_ef5jwxihqo6n7gxfmzogljlgcm
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -81,16 +81,16 @@ importers:
   packages/trpc:
     specifiers:
       '@captain/db': '*'
-      '@trpc/client': 10.0.0-proxy-beta.13
-      '@trpc/server': 10.0.0-proxy-beta.13
-      superjson: ^1.9.1
-      typescript: ^4.8.3
-      zod: ^3.18.0
+      '@trpc/client': 10.0.0-proxy-beta.21
+      '@trpc/server': 10.0.0-proxy-beta.21
+      superjson: ^1.10.1
+      typescript: ^4.8.4
+      zod: ^3.19.1
     dependencies:
       '@captain/db': link:../db
-      '@trpc/client': 10.0.0-proxy-beta.13_itipy43llokwyezwccgik4t2sm
-      '@trpc/server': 10.0.0-proxy-beta.13
-      superjson: 1.10.0
+      '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
+      '@trpc/server': 10.0.0-proxy-beta.21
+      superjson: 1.10.1
       zod: 3.19.1
     devDependencies:
       typescript: 4.8.4
@@ -407,54 +407,53 @@ packages:
       use-sync-external-store: 1.2.0_react@18.1.0
     dev: false
 
-  /@trpc/client/10.0.0-proxy-beta.13_itipy43llokwyezwccgik4t2sm:
-    resolution: {integrity: sha512-GM0X7OPftU3AQ+ZncuVcUPjmOM7wh76bENgkEfY5phhvnY0FCPhpHVtBhVff75lnENRf2RdIU04G0G3wwKRLmQ==}
+  /@trpc/client/10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a:
+    resolution: {integrity: sha512-vjNetqOEhr/aLLEFr4c/QLOTPQH8xFQ3SPG7p7s9PKuv4QFzyHL7C49XNzEh2rp+A5f5D01pM0LXGl6Lf0whZA==}
     peerDependencies:
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/server': 10.0.0-proxy-beta.21
     dependencies:
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/server': 10.0.0-proxy-beta.21
     dev: false
 
-  /@trpc/next/10.0.0-proxy-beta.13_2dx6cp5lnkwywcy3ul6bkbpivy:
-    resolution: {integrity: sha512-Zf3neIVwUx0LxOr/NvFd8Y/7HLvqhcrbwK0ZG++n9iQGt3G/O66xnRq6bSp3ZEe4F+PvZ3RCUhK9oDpSLB96iA==}
+  /@trpc/next/10.0.0-proxy-beta.21_gd4o5abca6jbbkbxdintq5y5be:
+    resolution: {integrity: sha512-H00lTKJ5VqgtnMWcM7sN/K2jiTONjzpvDk8KQgaPq/OgAEi+xI7TcKPX1jRW/rfxdXAGY4RQ/w5k9joWxD2QfA==}
     peerDependencies:
       '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.0.0-proxy-beta.13
-      '@trpc/react': 10.0.0-proxy-beta.13
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21
+      '@trpc/react-query': ^10.0.0-proxy-beta.21
+      '@trpc/server': 10.0.0-proxy-beta.21
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@swc/helpers': 0.4.11
       '@tanstack/react-query': 4.9.0_ef5jwxihqo6n7gxfmzogljlgcm
-      '@trpc/client': 10.0.0-proxy-beta.13_itipy43llokwyezwccgik4t2sm
-      '@trpc/react': 10.0.0-proxy-beta.13_ticwmu4ugzx4ag4o3th2zkic4u
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
+      '@trpc/react-query': 10.0.0-proxy-beta.21_ptyx77w5b2d5rqcypt4t2esae4
+      '@trpc/server': 10.0.0-proxy-beta.21
       next: 12.3.1_ef5jwxihqo6n7gxfmzogljlgcm
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-ssr-prepass: 1.5.0_react@18.1.0
     dev: false
 
-  /@trpc/react/10.0.0-proxy-beta.13_ticwmu4ugzx4ag4o3th2zkic4u:
-    resolution: {integrity: sha512-7W+hJoD50Tt23QuI5IlCGjRuDo5pF2vHC4qEcM/vG5+1r4nUFBVUDBtQ+p1b7KVlqgUbJFBR+7zmVEQIpO1umg==}
+  /@trpc/react-query/10.0.0-proxy-beta.21_ptyx77w5b2d5rqcypt4t2esae4:
+    resolution: {integrity: sha512-olcnfm8VECSuX9w89lYtzSJNf9WsnCQzQDOfC7m5hGCZdh1j0lWr70VwMmbIfO7cgqlKIqtPORb8rnOa9pFFZg==}
     peerDependencies:
       '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.0.0-proxy-beta.13
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21
+      '@trpc/server': 10.0.0-proxy-beta.21
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.9.0_ef5jwxihqo6n7gxfmzogljlgcm
-      '@trpc/client': 10.0.0-proxy-beta.13_itipy43llokwyezwccgik4t2sm
-      '@trpc/server': 10.0.0-proxy-beta.13
+      '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
+      '@trpc/server': 10.0.0-proxy-beta.21
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
     dev: false
 
-  /@trpc/server/10.0.0-proxy-beta.13:
-    resolution: {integrity: sha512-m3VCl3Boiwb7mqnbx6tLdYMyemccr5AgYY3NORnuXHnJpGOykmh5Fe6nq6x6efinuSXsUEipSD63oJmV4v1guw==}
+  /@trpc/server/10.0.0-proxy-beta.21:
+    resolution: {integrity: sha512-FLkBn8K4tFeuhjcljehzak5b4ZGRCTUn1SJq3tecCBVUsDXiQ8ex/PG/a2W1V9Ji/st6uIK7U2D/EUgsE7ZzcQ==}
     dev: false
 
   /@types/json-schema/7.0.11:
@@ -2729,8 +2728,8 @@ packages:
       react: 18.1.0
     dev: false
 
-  /superjson/1.10.0:
-    resolution: {integrity: sha512-ks6I5fm5KXUbDqt4Epe1VwkKDaC9+kIj5HF7yhiHjChFne0EkFqsnTv1mdHE2IT6fq2CzLC3zeA/fw0BRIoNwA==}
+  /superjson/1.10.1:
+    resolution: {integrity: sha512-7fvPVDHmkTKg6641B9c6vr6Zz5CwPtF9j0XFExeLxJxrMaeLU2sqebY3/yrI3l0K5zJ+H9QA3H+lIYj5ooCOkg==}
     engines: {node: '>=10'}
     dependencies:
       copy-anything: 3.0.2
