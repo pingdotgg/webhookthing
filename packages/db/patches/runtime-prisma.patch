@@ -1,0 +1,14 @@
+diff --git a/packages/db/.generated/client/runtime/index.js b/packages/db/.generated/client/runtime/index.js
+index ad98783..70dc910 100644
+--- a/packages/db/.generated/client/runtime/index.js
++++ b/packages/db/.generated/client/runtime/index.js
+@@ -26949,7 +26949,8 @@ var LibraryEngine = class extends Engine {
+   constructor(config2, loader = new DefaultLibraryLoader(config2)) {
+     var _a3, _b2;
+     super();
+-    this.datamodel = import_fs6.default.readFileSync(config2.datamodelPath, "utf-8");
++    const path = config2.generator.output.value + "/schema.prisma";
++    this.datamodel = import_fs6.default.readFileSync(path, "utf-8");
+     this.config = config2;
+     this.libraryStarted = false;
+     this.logQueries = (_a3 = config2.logQueries) != null ? _a3 : false;

@@ -32,6 +32,7 @@ const Home: NextPage = () => {
             Ping.gg
           </a>
         </h1>
+        <h2 className="text-4xl">🤫</h2>
         <div className="flex items-center justify-center w-full pt-6 text-2xl text-blue-500">
           {postQuery.data ? (
             <div className="flex flex-col gap-4">
