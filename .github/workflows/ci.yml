@@ -52,5 +52,8 @@ jobs:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-${{ runner.node }}-${{ hashFiles('**/pnpm-lock.yaml') }}-nextjs
 
-      - name: Build and lint
-        run: pnpm turbo build lint
+      - name: Build
+        run: pnpm turbo build
+
+      - name: Lint & Typecheck
+        run: pnpm turbo typecheck lint

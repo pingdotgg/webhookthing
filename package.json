@@ -9,7 +9,8 @@
     "cleen": "turbo clean",
     "clean": "rm -rf node_modules",
     "lint": "turbo lint && manypkg check",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "typecheck": "turbo typecheck"
   },
   "dependencies": {
     "@manypkg/cli": "^0.19.2",
