@@ -1,4 +1,5 @@
 packages:
   - packages/www
+  - packages/mark
   - packages/trpc
   - packages/db
