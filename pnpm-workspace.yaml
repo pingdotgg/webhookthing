@@ -1,6 +1,5 @@
 packages:
   - packages/www
-  - packages/mark
   - packages/auth
   - packages/trpc
   - packages/db

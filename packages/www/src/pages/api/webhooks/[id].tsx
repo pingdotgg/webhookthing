@@ -1,8 +1,10 @@
 // src/pages/api/examples.ts
 import type { REQUEST_TYPE } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { env } from "../../../env/server.mjs";
-import { prisma } from "../../../server/db/client";
+import { prisma } from "@captain/db";
+
+// TODO: Get this from DB
+const FORWARDING_URL = "https://example.com";
 
 const webhooks = async (req: NextApiRequest, res: NextApiResponse) => {
   const forwarded = req.headers["x-forwarded-for"] as string;
@@ -21,15 +23,18 @@ const webhooks = async (req: NextApiRequest, res: NextApiResponse) => {
     headers: req.headers ?? null,
     body: req.body ?? null,
     size: size ?? req.socket.bytesRead,
+
+    // TODO: Include project ID in input,
+    projectId: "1",
   };
 
   await prisma.requestObject.create({ data });
 
-  const fwdHost = env.MAIN_FORWARDING_URL.match(
+  const fwdHost = FORWARDING_URL.match(
     /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im
   )?.[1] as string;
 
-  const fwdRes = await fetch(env.MAIN_FORWARDING_URL, {
+  const fwdRes = await fetch(FORWARDING_URL, {
     method: req.method,
     headers: {
       ...(req.headers as HeadersInit),
