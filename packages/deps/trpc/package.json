@@ -5,13 +5,14 @@
   "types": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf .turbo node_modules"
+    "clean": "rm -rf .turbo node_modules",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@captain/auth": "*",
     "@captain/db": "*",
-    "@trpc/client": "10.0.0-proxy-beta.21",
-    "@trpc/server": "10.0.0-proxy-beta.21",
+    "@trpc/client": "10.0.0-proxy-beta.25",
+    "@trpc/server": "10.0.0-proxy-beta.25",
     "superjson": "^1.10.1",
     "zod": "^3.19.1"
   },
