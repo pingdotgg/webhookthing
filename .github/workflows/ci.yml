@@ -13,7 +13,7 @@ on:
 #   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
 jobs:
-  build-lint:
+  build-lint-and-typecheck:
     env:
       DATABASE_URL: file:./db.sqlite
     runs-on: ubuntu-latest
