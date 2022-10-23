@@ -18,5 +18,6 @@ export default withTM(["@captain/trpc", "@captain/db"])(
   defineNextConfig({
     reactStrictMode: true,
     swcMinify: true,
+    typescript: { ignoreBuildErrors: true },
   })
 );
