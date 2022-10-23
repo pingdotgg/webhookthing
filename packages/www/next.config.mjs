@@ -1,5 +1,10 @@
 // @ts-check
+
+// Have to import env variables here for checks to work
+// Since they're unused we disable the eslint rule below
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { env } from "./src/env/server.mjs";
+
 import withTM from "next-transpile-modules";
 
 /**
