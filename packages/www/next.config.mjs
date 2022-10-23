@@ -19,5 +19,8 @@ export default withTM(["@captain/trpc", "@captain/db"])(
     reactStrictMode: true,
     swcMinify: true,
     typescript: { ignoreBuildErrors: true },
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
   })
 );
