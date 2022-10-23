@@ -14,7 +14,7 @@ function defineNextConfig(config) {
   return config;
 }
 
-export default withTM(["@captain/trpc", "@captain/db"])(
+export default withTM(["@captain/trpc", "@captain/db", "@captain/auth"])(
   defineNextConfig({
     reactStrictMode: true,
     swcMinify: true,
