@@ -1,5 +1,4 @@
 packages:
-  - apps/expo
-  - apps/nextjs
+  - packages/www
   - packages/trpc
   - packages/db

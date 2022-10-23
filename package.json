@@ -15,9 +15,10 @@
   "dependencies": {
     "@manypkg/cli": "^0.19.2",
     "prettier": "^2.7.1",
-    "turbo": "^1.5.5"
+    "turbo": "^1.6.1"
   },
   "devDependencies": {
-    "eslint-config-turbo": "^0.0.4"
+    "eslint-config-turbo": "^0.0.4",
+    "eslint": "^8.26.0"
   }
 }
