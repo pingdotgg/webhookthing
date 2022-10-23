@@ -8,6 +8,7 @@
     "clean": "rm -rf .turbo node_modules"
   },
   "dependencies": {
+    "@captain/auth": "*",
     "@captain/db": "*",
     "@trpc/client": "10.0.0-proxy-beta.21",
     "@trpc/server": "10.0.0-proxy-beta.21",

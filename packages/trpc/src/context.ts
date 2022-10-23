@@ -1,19 +1,21 @@
 // src/server/router/context.ts
-import * as trpc from "@trpc/server";
-import * as trpcNext from "@trpc/server/adapters/next";
+import type { inferAsyncReturnType } from "@trpc/server";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { Session } from "next-auth";
+import { getServerAuthSession } from "@captain/auth";
 import { prisma } from "@captain/db";
 
-/**
- * Replace this with an object if you want to pass things to createContextInner
- */
-type CreateContextOptions = Record<string, never>;
+type CreateContextOptions = {
+  session: Session | null;
+};
 
 /** Use this helper for:
- *  - testing, where we dont have to Mock Next.js' req/res
- *  - trpc's `createSSGHelpers` where we don't have req/res
- */
+ * - testing, so we dont have to mock Next.js' req/res
+ * - trpc's `createSSGHelpers` where we don't have req/res
+ **/
 export const createContextInner = async (opts: CreateContextOptions) => {
   return {
+    session: opts.session,
     prisma,
   };
 };
@@ -22,10 +24,15 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
  **/
-export const createContext = async (
-  opts: trpcNext.CreateNextContextOptions
-) => {
-  return await createContextInner({});
+export const createContext = async (opts: CreateNextContextOptions) => {
+  const { req, res } = opts;
+
+  // Get the session from the server using the unstable_getServerSession wrapper function
+  const session = await getServerAuthSession(req, res);
+
+  return await createContextInner({
+    session,
+  });
 };
 
-export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+export type Context = inferAsyncReturnType<typeof createContext>;

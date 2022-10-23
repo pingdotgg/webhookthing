@@ -1,4 +1,7 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, {
+  unstable_getServerSession,
+  type NextAuthOptions,
+} from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 // Prisma adapter for NextAuth, optional and can be removed
@@ -34,6 +37,14 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/signin",
   },
+};
+
+// Next API route example - /pages/api/restricted.ts
+export const getServerAuthSession = async (
+  req: Parameters<typeof unstable_getServerSession>[0],
+  res: Parameters<typeof unstable_getServerSession>[1]
+) => {
+  return await unstable_getServerSession(req, res, authOptions);
 };
 
 export default NextAuth(authOptions);

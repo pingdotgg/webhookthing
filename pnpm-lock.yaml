@@ -100,6 +100,7 @@ importers:
 
   packages/trpc:
     specifiers:
+      '@captain/auth': '*'
       '@captain/db': '*'
       '@trpc/client': 10.0.0-proxy-beta.21
       '@trpc/server': 10.0.0-proxy-beta.21
@@ -107,6 +108,7 @@ importers:
       typescript: ^4.8.4
       zod: ^3.19.1
     dependencies:
+      '@captain/auth': link:../auth
       '@captain/db': link:../db
       '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
       '@trpc/server': 10.0.0-proxy-beta.21
