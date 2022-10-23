@@ -65,6 +65,7 @@ importers:
       '@captain/auth': '*'
       '@captain/db': '*'
       '@captain/trpc': '*'
+      '@heroicons/react': ^2.0.12
       '@planetscale/database': ^1.4.0
       '@tanstack/react-query': ^4.7.2
       '@trpc/client': 10.0.0-proxy-beta.21
@@ -77,6 +78,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.33.0
       '@typescript-eslint/parser': ^5.33.0
       autoprefixer: ^10.4.7
+      classnames: ^2.3.2
       eslint: 8.22.0
       eslint-config-next: 12.3.1
       nanoid: ^4.0.0
@@ -93,11 +95,13 @@ importers:
       '@captain/auth': link:../auth
       '@captain/db': link:../db
       '@captain/trpc': link:../trpc
+      '@heroicons/react': 2.0.12_react@18.1.0
       '@tanstack/react-query': 4.9.0_ef5jwxihqo6n7gxfmzogljlgcm
       '@trpc/client': 10.0.0-proxy-beta.21_rd7vj7t4d65pc73uf3ugp2du5a
       '@trpc/next': 10.0.0-proxy-beta.21_gd4o5abca6jbbkbxdintq5y5be
       '@trpc/react-query': 10.0.0-proxy-beta.21_ptyx77w5b2d5rqcypt4t2esae4
       '@trpc/server': 10.0.0-proxy-beta.21
+      classnames: 2.3.2
       next: 12.3.1_ef5jwxihqo6n7gxfmzogljlgcm
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -155,6 +159,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@heroicons/react/2.0.12_react@18.1.0:
+    resolution: {integrity: sha512-FZxKh3i9aKIDxyALTgIpSF2t6V6/eZfF5mRu41QlwkX3Oxzecdm1u6dpft6PQGxIBwO7TKYWaMAYYL8mp/EaOg==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.1.0
+    dev: false
 
   /@humanwhocodes/config-array/0.10.7:
     resolution: {integrity: sha512-MDl6D6sBsaV452/QSdX+4CXIjZhIcI0PELsxUjk4U828yd58vk3bTIvk/6w5FY+4hIy9sLW0sfrV7K7Kc++j/w==}
@@ -928,6 +940,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
 
   /clone-response/1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
