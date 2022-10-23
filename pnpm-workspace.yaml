@@ -1,5 +1,5 @@
 packages:
   - packages/www
-  - packages/auth
-  - packages/trpc
-  - packages/db
+  - packages/deps/auth
+  - packages/deps/trpc
+  - packages/deps/db

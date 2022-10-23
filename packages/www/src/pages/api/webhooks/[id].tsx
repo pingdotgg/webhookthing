@@ -1,7 +1,7 @@
 // src/pages/api/examples.ts
 import type { REQUEST_TYPE } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@captain/db";
+import { prisma } from "../../../../../deps/db";
 
 // TODO: Get this from DB
 const FORWARDING_URL = "https://example.com";
