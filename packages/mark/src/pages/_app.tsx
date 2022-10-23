@@ -1,8 +1,6 @@
 // src/pages/_app.tsx
-import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
-import { loggerLink } from "@trpc/client/links/loggerLink";
-import { withTRPC } from "@trpc/next";
 import { SessionProvider } from "next-auth/react";
+import { withTRPC } from "@trpc/next";
 import type { AppType } from "next/dist/shared/lib/utils";
 import Head from "next/head";
 import superjson from "superjson";
@@ -59,12 +57,12 @@ export default withTRPC<AppRouter>({
 
     return {
       links: [
-        loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === "development" ||
-            (opts.direction === "down" && opts.result instanceof Error),
-        }),
-        httpBatchLink({ url }),
+        // loggerLink({
+        //   enabled: (opts) =>
+        //     process.env.NODE_ENV === "development" ||
+        //     (opts.direction === "down" && opts.result instanceof Error),
+        // }),
+        // httpBatchLink({ url }),
       ],
       url,
       transformer: superjson,
