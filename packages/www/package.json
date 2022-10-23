@@ -34,6 +34,7 @@
     "eslint": "8.22.0",
     "eslint-config-next": "12.3.1",
     "nanoid": "^4.0.0",
+    "next-auth": "^4.14.0",
     "next-transpile-modules": "^9.0.0",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.8",
