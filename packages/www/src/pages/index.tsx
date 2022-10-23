@@ -6,8 +6,6 @@ import classNames from "classnames";
 import { trpc } from "../utils/trpc";
 import type { RequestObject } from "@prisma/client";
 
-export const DEFAULT_PROFILE_IMAGE = "https://imgur.com/hepj9ZS";
-
 const METHOD_COLORS = {
   GET: "bg-blue-500",
   POST: "bg-green-500",
