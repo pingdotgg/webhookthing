@@ -10,6 +10,7 @@ const getBaseUrl = () => {
   // eslint-disable-next-line
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
 
+  // eslint-disable-next-line
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
