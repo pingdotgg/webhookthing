@@ -40,7 +40,7 @@ const Home: NextPage = () => {
               })}
             </div>
           ) : (
-            <p>Loading..</p>
+            <p>Loading...</p>
           )}
         </div>
       </main>
