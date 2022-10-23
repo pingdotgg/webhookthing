@@ -20,7 +20,7 @@ const METHOD_COLORS = {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const { data: requests } = trpc.customer.allWebRequests.useQuery();
+  const { data: requests } = trpc.post.all.useQuery();
 
   const [selectedRequest, setSelectedRequest] = useState("");
 
@@ -29,23 +29,23 @@ const Home: NextPage = () => {
   return (
     <>
       {/* Main 3 column grid */}
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 h-[80vh] grid grid-cols-1 grid-rows-1 gap-4 items-start lg:grid-cols-3 lg:gap-8">
+      <div className="mx-auto grid h-[80vh] max-w-7xl grid-cols-1 grid-rows-1 items-start gap-4 py-6 sm:px-6 lg:grid-cols-3 lg:gap-8 lg:px-8">
         {/* Left column */}
-        <div className="grid grid-cols-1 gap-4 row-span-1 h-full">
+        <div className="row-span-1 grid h-full grid-cols-1 gap-4">
           <section aria-labelledby="section-1-title">
             <h2 className="sr-only" id="section-1-title">
               Requests
             </h2>
-            <div className="rounded-lg bg-white overflow-hidden shadow h-full">
+            <div className="h-full overflow-hidden rounded-lg bg-white shadow">
               <div className="h-full">
-                <div className="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">
                     Requests
                   </h3>
                 </div>
                 <ul
                   role="list"
-                  className="divide-y divide-gray-200 h-full overflow-y-auto"
+                  className="h-full divide-y divide-gray-200 overflow-y-auto"
                 >
                   {requests ? (
                     requests.map((r) => {
@@ -53,7 +53,7 @@ const Home: NextPage = () => {
                         <li
                           key={r.id}
                           className={classNames(
-                            "px-6 py-3 flex items-right flex-col text-sm odd:bg-gray-100 hover:bg-gray-300",
+                            "items-right flex flex-col px-6 py-3 text-sm odd:bg-gray-100 hover:bg-gray-300",
                             {
                               "!bg-gray-300": r.id === selectedRequest,
                             }
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
                           <div className="flex gap-2">
                             <span
                               className={classNames(
-                                `inline-flex shrink-0 items-center py-0.5 px-1.5 text-xs font-normal  capitalize  rounded-sm text-white`,
+                                `inline-flex shrink-0 items-center rounded-sm py-0.5 px-1.5 text-xs  font-normal  capitalize text-white`,
                                 METHOD_COLORS[r.method]
                               )}
                             >
@@ -80,7 +80,7 @@ const Home: NextPage = () => {
                   ) : (
                     <li
                       className={classNames(
-                        "px-6 py-3 flex items-center justify-between text-sm odd:bg-gray-100"
+                        "flex items-center justify-between px-6 py-3 text-sm odd:bg-gray-100"
                       )}
                     >
                       No requests yet!
@@ -93,7 +93,7 @@ const Home: NextPage = () => {
         </div>
 
         {/* Right column */}
-        <div className="grid grid-cols-1 gap-4 lg:col-span-2 row-span-1">
+        <div className="row-span-1 grid grid-cols-1 gap-4 lg:col-span-2">
           <section aria-labelledby="section-2-title">
             <h2 className="sr-only" id="section-2-title">
               Request Details
@@ -117,10 +117,10 @@ const RequestInfo: React.FC<{
 }> = ({ request }) => {
   if (!request) {
     return (
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div className="py-3 sm:px-6 -ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">
+      <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+        <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between py-3 sm:flex-nowrap sm:px-6">
           <div className="ml-4 mt-2">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
               Request Details
             </h3>
           </div>
@@ -133,25 +133,25 @@ const RequestInfo: React.FC<{
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div className="py-3 sm:px-6 -ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-nowrap">
+    <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+      <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between py-3 sm:flex-nowrap sm:px-6">
         <div className="ml-4 mt-2">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
             Request Details
           </h3>
         </div>
-        <div className="flex ml-4 mt-2 flex-shrink-0 gap-1">
+        <div className="ml-4 mt-2 flex flex-shrink-0 gap-1">
           <button
             type="button"
-            className="relative gap-2 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            <ArrowPathIcon className="test-white w-4 h-4" /> Replay
+            <ArrowPathIcon className="test-white h-4 w-4" /> Replay
           </button>
           <button
             type="button"
-            className="relative gap-2 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            <ClipboardIcon className="test-white w-4 h-4" />
+            <ClipboardIcon className="test-white h-4 w-4" />
             Copy cURL
           </button>
         </div>
@@ -188,19 +188,19 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Headers</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className="max-h-[15vh] overflow-y-auto border border-gray-200 rounded-md ">
+              <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 ">
                 <ul role="list" className="divide-y divide-gray-200">
                   {Object.entries(request.headers ?? {}).map(([key, value]) => (
                     <li
                       key={key}
-                      className="pl-3 pr-4 py-1.5 flex items-center justify-between text-sm odd:bg-gray-100 font-mono"
+                      className="flex items-center justify-between py-1.5 pl-3 pr-4 font-mono text-sm odd:bg-gray-100"
                     >
-                      <div className="w-0 flex-1 flex items-center">
-                        <span className="ml-2 flex-1 w-0 text-ellipsis">
+                      <div className="flex w-0 flex-1 items-center">
+                        <span className="ml-2 w-0 flex-1 text-ellipsis">
                           {key}
                         </span>
                       </div>
-                      <div className="w-2/3 ml-4 flex-shrink-0 text-ellipsis">
+                      <div className="ml-4 w-2/3 flex-shrink-0 text-ellipsis">
                         {value}
                       </div>
                     </li>
@@ -212,7 +212,7 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Body</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className=" max-h-[35vh] overflow-y-auto bg-gray-100 rounded-md p-2 whitespace-pre font-mono">
+              <div className=" max-h-[35vh] overflow-y-auto whitespace-pre rounded-md bg-gray-100 p-2 font-mono">
                 {request.body
                   ? JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
                   : "Request has no body"}

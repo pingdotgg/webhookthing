@@ -9,10 +9,10 @@ const SignIn = ({ providers }: { providers: Provider[] }) => {
 
   return (
     <>
-      <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
+      <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
           <div>
-            <h2 className="mt-6 text-center text-3xl tracking-tight font-bold text-gray-900">
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign in to access this page
             </h2>
           </div>
@@ -20,7 +20,7 @@ const SignIn = ({ providers }: { providers: Provider[] }) => {
             <div key={provider.name}>
               <button
                 onClick={() => signIn(provider.id, { callbackUrl })}
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
               >
                 <span className="sr-only">Sign in with {provider.name}</span>
                 <span className="capitalize">{provider.name}</span>
