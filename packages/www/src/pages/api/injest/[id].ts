@@ -25,13 +25,16 @@ const injest = async (req: NextRequest) => {
     Object.fromEntries(req.headers.entries())
   );
 
+  // TODO: this should probably do different things based on the content-type
+  const parsedBody = await req.text();
+
   const data = {
     id: nanoid(),
     host: host ?? "",
     endpoint: endpoint ?? "",
     method: req.method ?? "UNKNOWN",
     headers: responseHeaders ?? null,
-    body: req.body ?? null,
+    body: parsedBody ?? null,
     size: size ?? 0,
   };
 
