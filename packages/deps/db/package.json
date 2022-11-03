@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "db-push": "prisma db push",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db-studio": "prisma studio --port 5555"
   },
   "dependencies": {
     "@prisma/client": "^4.5.0"
