@@ -14,6 +14,7 @@
     "@captain/auth": "*",
     "@captain/db": "*",
     "@captain/trpc": "*",
+    "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.12",
     "@tanstack/react-query": "^4.7.2",
     "@trpc/client": "10.0.0-proxy-beta.25",

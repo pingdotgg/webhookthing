@@ -43,4 +43,25 @@ export const customerRouter = t.router({
         },
       });
     }),
+  createProject: t.procedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const project = await ctx.prisma.project.create({
+        data: {
+          name: input.name,
+          Members: {
+            create: {
+              role: "OWNER",
+              user: {
+                connect: {
+                  id: ctx.session?.user?.id,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return project;
+    }),
 });

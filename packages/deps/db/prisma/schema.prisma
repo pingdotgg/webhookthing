@@ -57,7 +57,7 @@ model VerificationToken {
 
 // permissions stuff
 model Project {
-    id   String @id
+    id   String @id @default(cuid())
     name String
 
     Members ProjectMember[]
