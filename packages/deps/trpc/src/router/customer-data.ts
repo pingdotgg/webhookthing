@@ -6,4 +6,14 @@ export const customerRouter = t.router({
       orderBy: { timestamp: "desc" },
     });
   }),
+  allProjects: t.procedure.query(({ ctx }) => {
+    return ctx.prisma.project.findMany({
+      where: {
+        ownerId: ctx.session?.user?.id,
+      },
+      include: {
+        owner: true,
+      },
+    });
+  }),
 });
