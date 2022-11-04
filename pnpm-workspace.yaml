@@ -3,3 +3,4 @@ packages:
   - packages/deps/auth
   - packages/deps/trpc
   - packages/deps/db
+  - packages/cli
