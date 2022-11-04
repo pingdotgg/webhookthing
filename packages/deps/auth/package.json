@@ -10,7 +10,7 @@
   "dependencies": {
     "@captain/db": "*",
     "@next-auth/prisma-adapter": "1.0.5",
-    "next-auth": "4.14.0"
+    "next-auth": "^4.14.0"
   },
   "devDependencies": {
     "typescript": "^4.8.3"
