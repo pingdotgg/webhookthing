@@ -1,4 +1,5 @@
 import { t } from "../trpc";
+import { z } from "zod";
 
 export const customerRouter = t.router({
   allWebRequests: t.procedure.query(({ ctx }) => {
@@ -16,4 +17,16 @@ export const customerRouter = t.router({
       },
     });
   }),
+  projectById: t.procedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.project.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          owner: true,
+        },
+      });
+    }),
 });

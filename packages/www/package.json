@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@planetscale/database": "^1.4.0",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
