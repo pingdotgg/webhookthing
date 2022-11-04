@@ -9,58 +9,8 @@ export default function ProjectSettings() {
   const { data: session, status } = useSession();
 
   const { data: project } = trpc.customer.projectById.useQuery({ id });
-  const team = [
-    {
-      name: "Calvin Hawkins",
-      email: "calvin.hawkins@example.com",
-      imageUrl:
-        "https://images.unsplash.com/photo-1513910367299-bce8d8a0ebf6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Bessie Richards",
-      email: "bessie.richards@example.com",
-      imageUrl:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    {
-      name: "Floyd Black",
-      email: "floyd.black@example.com",
-      imageUrl:
-        "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-  ];
 
-  const sources = [
-    {
-      id: 1,
-      name: "GitHub",
-      endpoint: "/ingest/github",
-    },
-    {
-      id: 2,
-      name: "Stripe",
-      endpoint: "/ingest/stripe",
-    },
-  ];
-  const destinations = [
-    {
-      id: 1,
-      name: "My App",
-      url: "https://myapp.com",
-    },
-  ];
-  const listeners = [
-    {
-      id: "akjy23a72dk",
-      name: "Developer A",
-      url: "12.24.23.25",
-    },
-    {
-      id: "akj23sd32d5",
-      name: "Developer B",
-      url: "19.4.23.15",
-    },
-  ];
+  console.log(project?.LocalListeners);
 
   if (status === "loading" || !session || !project) return null;
 
@@ -146,18 +96,24 @@ export default function ProjectSettings() {
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
                   <ul role="list" className="divide-y divide-gray-200">
-                    {team.map((person) => (
-                      <li key={person.email} className="flex py-4">
+                    {project.Members.map((person) => (
+                      <li key={person.id} className="flex py-4">
                         <div className="flex w-full flex-row items-center justify-between">
                           <div className="ml-3 flex flex-col">
                             <span className="text-sm font-medium text-gray-900">
-                              {person.name}
+                              {person.user.name}
                             </span>
                             <span className="text-sm text-gray-500">
-                              {person.email}
+                              {person.user.email}
                             </span>
                           </div>
-                          <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                          {person.role !== "OWNER" ? (
+                            <button>
+                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                            </button>
+                          ) : (
+                            <span className="text-sm text-gray-500">Owner</span>
+                          )}
                         </div>
                       </li>
                     ))}
@@ -190,24 +146,39 @@ export default function ProjectSettings() {
           <div className="mt-6 rounded-md bg-gray-100 px-4">
             <div className="border-b border-gray-200">
               <ul role="list" className="divide-y divide-gray-200">
-                {sources.map((source) => (
-                  <li key={source.id} className="flex py-4">
-                    <div className="flex w-full flex-row items-center justify-between">
-                      <div className="ml-3 flex flex-col">
+                {project.Sources.length > 0 ? (
+                  project.Sources.map((source) => (
+                    <li key={source.id} className="flex py-4">
+                      <div className="flex w-full flex-row items-center justify-between">
+                        <div className="ml-3 flex flex-col">
+                          <span className="text-sm font-medium text-gray-900">
+                            {source.name}
+                          </span>
+                          <span className="text-sm text-gray-500">
+                            {source.domain}
+                          </span>
+                        </div>
+                        <div className="flex flex-row gap-2">
+                          <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                          <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <div className="flex py-4">
+                    <div className="flex w-full flex-row items-center justify-center">
+                      <div className="ml-3 flex flex-col items-center justify-center">
                         <span className="text-sm font-medium text-gray-900">
-                          {source.name}
+                          No sources yet!
                         </span>
                         <span className="text-sm text-gray-500">
-                          {source.endpoint}
+                          Add a source to get started.
                         </span>
                       </div>
-                      <div className="flex flex-row gap-2">
-                        <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
-                        <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
-                      </div>
                     </div>
-                  </li>
-                ))}
+                  </div>
+                )}
               </ul>
             </div>
           </div>
@@ -247,24 +218,39 @@ export default function ProjectSettings() {
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
                   <ul role="list" className="divide-y divide-gray-200">
-                    {destinations.map((destination) => (
-                      <li key={destination.id} className="flex py-4">
-                        <div className="flex w-full flex-row items-center justify-between">
-                          <div className="ml-3 flex flex-col">
+                    {project.Destinations.length > 0 ? (
+                      project.Destinations.map((destination) => (
+                        <li key={destination.id} className="flex py-4">
+                          <div className="flex w-full flex-row items-center justify-between">
+                            <div className="ml-3 flex flex-col">
+                              <span className="text-sm font-medium text-gray-900">
+                                {destination.name}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {destination.url}
+                              </span>
+                            </div>
+                            <div className="flex flex-row gap-2">
+                              <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                            </div>
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <div className="flex py-4">
+                        <div className="flex w-full flex-row items-center justify-center">
+                          <div className="ml-3 flex flex-col items-center justify-center">
                             <span className="text-sm font-medium text-gray-900">
-                              {destination.name}
+                              No destinations yet!
                             </span>
                             <span className="text-sm text-gray-500">
-                              {destination.url}
+                              Add a destination to get started.
                             </span>
                           </div>
-                          <div className="flex flex-row gap-2">
-                            <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
-                            <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
-                          </div>
                         </div>
-                      </li>
-                    ))}
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -280,21 +266,36 @@ export default function ProjectSettings() {
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
                   <ul role="list" className="divide-y divide-gray-200">
-                    {listeners.map((listener) => (
-                      <li key={listener.id} className="flex py-4">
-                        <div className="flex w-full flex-row items-center justify-between">
-                          <div className="ml-3 flex flex-col">
+                    {project.LocalListeners.length > 0 ? (
+                      project.LocalListeners.map((listener) => (
+                        <li key={listener.id} className="flex py-4">
+                          <div className="flex w-full flex-row items-center justify-between">
+                            <div className="ml-3 flex flex-col">
+                              <span className="text-sm font-medium text-gray-900">
+                                {listener.name}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {`Last Seen: ${listener.lastSeen?.toLocaleString()}`}
+                              </span>
+                            </div>
+                            <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <div className="flex py-4">
+                        <div className="flex w-full flex-row items-center justify-center">
+                          <div className="ml-3 flex flex-col items-center justify-center">
                             <span className="text-sm font-medium text-gray-900">
-                              {listener.name}
+                              No local listeners yet!
                             </span>
                             <span className="text-sm text-gray-500">
-                              {listener.url}
+                              Connect via Captain CLI to get started.
                             </span>
                           </div>
-                          <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
                         </div>
-                      </li>
-                    ))}
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>

@@ -132,9 +132,10 @@ model Destination {
 }
 
 model LocalListener {
-    id   String @id @default(cuid())
-    name String
-    key  String
+    id       String   @id @default(cuid())
+    name     String
+    key      String
+    lastSeen DateTime
 
     projectId String
     project   Project @relation(fields: [projectId], references: [id])

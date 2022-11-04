@@ -39,7 +39,14 @@ export const customerRouter = t.router({
           id: input.id,
         },
         include: {
-          Members: true,
+          Members: {
+            include: {
+              user: true,
+            },
+          },
+          Sources: true,
+          Destinations: true,
+          LocalListeners: true,
         },
       });
     }),
@@ -63,5 +70,80 @@ export const customerRouter = t.router({
       });
 
       return project;
+    }),
+  deleteProjects: t.procedure
+    .input(z.object({ idsToDelete: z.array(z.string()) }))
+    .mutation(async ({ ctx, input }) => {
+      const project = await ctx.prisma.project.deleteMany({
+        where: {
+          id: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+    }),
+  createSource: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        name: z.string(),
+        domain: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const source = await ctx.prisma.source.create({
+        data: {
+          name: input.name,
+          domain: input.domain,
+          project: {
+            connect: {
+              id: input.projectId,
+            },
+          },
+        },
+      });
+
+      return source;
+    }),
+  deleteSource: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const source = await ctx.prisma.source.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  createDestination: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        name: z.string(),
+        url: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const destination = await ctx.prisma.destination.create({
+        data: {
+          name: input.name,
+          url: input.url,
+          project: {
+            connect: {
+              id: input.projectId,
+            },
+          },
+        },
+      });
+
+      return destination;
+    }),
+  deleteDestination: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const destination = await ctx.prisma.destination.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 });

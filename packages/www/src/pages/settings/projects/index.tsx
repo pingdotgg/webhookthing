@@ -1,4 +1,4 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -13,6 +13,12 @@ const ProjectsSettings: NextPage = () => {
   const { data: projects } = trpc.customer.allProjects.useQuery();
 
   const { mutate: createProject } = trpc.customer.createProject.useMutation({
+    onSuccess: () => {
+      utils.customer.allProjects.invalidate();
+    },
+  });
+
+  const { mutate: deleteProjects } = trpc.customer.deleteProjects.useMutation({
     onSuccess: () => {
       utils.customer.allProjects.invalidate();
     },
@@ -197,6 +203,17 @@ const ProjectsSettings: NextPage = () => {
                   </tbody>
                 </table>
               </div>
+              {selectedProjects.length > 0 && (
+                <button
+                  className="m-2 inline-flex items-center rounded-full border border-transparent bg-red-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  onClick={() => {
+                    deleteProjects({ idsToDelete: selectedProjects });
+                    setSelectedProjects([]);
+                  }}
+                >
+                  Delete Selected
+                </button>
+              )}
             </div>
           </div>
         </div>
