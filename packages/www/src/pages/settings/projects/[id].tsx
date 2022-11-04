@@ -5,12 +5,29 @@ import { trpc } from "../../../utils/trpc";
 
 export default function ProjectSettings() {
   const id = useRouter().asPath.split("/").pop() as string;
+  const utils = trpc.useContext();
 
   const { data: session, status } = useSession();
 
   const { data: project } = trpc.customer.projectById.useQuery({ id });
 
-  console.log(project?.LocalListeners);
+  // mutations
+  const { mutate: deleteSource } = trpc.customer.deleteSource.useMutation({
+    onSuccess: () => {
+      utils.customer.projectById.invalidate({ id });
+    },
+  });
+  const { mutate: deleteDestination } =
+    trpc.customer.deleteDestination.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id });
+      },
+    });
+  const { mutate: deleteListener } = trpc.customer.deleteListener.useMutation({
+    onSuccess: () => {
+      utils.customer.projectById.invalidate({ id });
+    },
+  });
 
   if (status === "loading" || !session || !project) return null;
 
@@ -19,7 +36,7 @@ export default function ProjectSettings() {
       <h1 className="text-xl font-semibold text-gray-900">
         {`Projects > ${project.name}`}
       </h1>
-      <form className="space-y-8 divide-y divide-gray-200">
+      <div className="space-y-8 divide-y divide-gray-200">
         <div className="space-y-8 divide-y divide-gray-200">
           <div className="pt-8">
             <div>
@@ -160,7 +177,11 @@ export default function ProjectSettings() {
                         </div>
                         <div className="flex flex-row gap-2">
                           <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
-                          <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                          <button
+                            onClick={() => deleteSource({ id: source.id })}
+                          >
+                            <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                          </button>
                         </div>
                       </div>
                     </li>
@@ -232,7 +253,13 @@ export default function ProjectSettings() {
                             </div>
                             <div className="flex flex-row gap-2">
                               <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
-                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                              <button
+                                onClick={() =>
+                                  deleteDestination({ id: destination.id })
+                                }
+                              >
+                                <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                              </button>
                             </div>
                           </div>
                         </li>
@@ -278,7 +305,13 @@ export default function ProjectSettings() {
                                 {`Last Seen: ${listener.lastSeen?.toLocaleString()}`}
                               </span>
                             </div>
-                            <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                            <button
+                              onClick={() =>
+                                deleteListener({ id: listener.id })
+                              }
+                            >
+                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                            </button>
                           </div>
                         </li>
                       ))
@@ -319,7 +352,7 @@ export default function ProjectSettings() {
             </button>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

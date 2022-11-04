@@ -146,4 +146,13 @@ export const customerRouter = t.router({
         },
       });
     }),
+  deleteListener: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const listener = await ctx.prisma.localListener.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });
