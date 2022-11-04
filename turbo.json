@@ -16,6 +16,9 @@
       "dependsOn": ["^db-generate"],
       "cache": false
     },
+    "dev-cli": {
+      "cache": false
+    },
     "db-push": {
       "cache": false
     },
