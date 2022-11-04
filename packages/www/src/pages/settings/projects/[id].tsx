@@ -66,19 +66,14 @@ export default function ProjectSettings() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div>
-        <h3 className="text-xl font-semibold text-gray-900">
-          {`Projects > ${project.name}`}
-        </h3>
-        <p className="mt-2 text-sm text-gray-700">
-          Change your project settings here.
-        </p>
-      </div>
+      <h1 className="text-xl font-semibold text-gray-900">
+        {`Projects > ${project.name}`}
+      </h1>
       <form className="space-y-8 divide-y divide-gray-200">
         <div className="space-y-8 divide-y divide-gray-200">
           <div className="pt-8">
             <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
+              <h3 className="text-lg font-semibold leading-6 text-gray-900">
                 Basic Information
               </h3>
             </div>
@@ -105,7 +100,7 @@ export default function ProjectSettings() {
 
           <div className="pt-8">
             <div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
+              <h3 className="text-lg font-semibold leading-6 text-gray-900">
                 Members
               </h3>
               <p className="mt-1 text-sm text-gray-500">
@@ -174,13 +169,23 @@ export default function ProjectSettings() {
         </div>
 
         <div className="pt-8">
-          <div>
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Sources
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Where will your webhooks be coming from?
-            </p>
+          <div className="sm:flex sm:items-center">
+            <div className="sm:flex-auto">
+              <h3 className="text-lg font-semibold leading-6 text-gray-900">
+                Sources
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Where will your webhooks be coming from?
+              </p>
+            </div>
+            <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+              >
+                Add +
+              </button>
+            </div>
           </div>
           <div className="mt-6 rounded-md bg-gray-100 px-4">
             <div className="border-b border-gray-200">
