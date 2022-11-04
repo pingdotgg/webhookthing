@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  extends: ["../.eslintrc.cjs"],
+  extends: ["../../.eslintrc.json"],
   parserOptions: {
     ecmaVersion: "latest", // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of import
