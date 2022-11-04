@@ -1,5 +1,5 @@
 {
-  "name": "create-t3-turbo",
+  "name": "captain",
   "private": true,
   "packageManager": "pnpm@7.13.0",
   "scripts": {
@@ -15,11 +15,9 @@
   },
   "dependencies": {
     "@manypkg/cli": "^0.19.2",
+    "eslint": "^8.26.0",
+    "eslint-config-turbo": "^0.0.4",
     "prettier": "^2.7.1",
     "turbo": "^1.6.1"
-  },
-  "devDependencies": {
-    "eslint-config-turbo": "^0.0.4",
-    "eslint": "^8.26.0"
   }
 }
