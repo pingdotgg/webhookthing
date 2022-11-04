@@ -20,7 +20,7 @@ const METHOD_COLORS = {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const { data: requests } = trpc.post.all.useQuery();
+  const { data: requests } = trpc.customer.allWebRequests.useQuery();
 
   const [selectedRequest, setSelectedRequest] = useState("");
 
@@ -188,7 +188,7 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Headers</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 ">
+              <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 p-2">
                 <ul role="list" className="divide-y divide-gray-200">
                   {Object.entries(request.headers ?? {}).map(([key, value]) => (
                     <li
@@ -212,7 +212,7 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Body</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className=" max-h-[35vh] overflow-y-auto whitespace-pre rounded-md bg-gray-100 p-2 font-mono">
+              <div className="max-h-[35vh] overflow-y-auto whitespace-pre rounded-md bg-gray-100 p-2 font-mono">
                 {request.body
                   ? JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
                   : "Request has no body"}

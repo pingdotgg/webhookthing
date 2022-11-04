@@ -4,16 +4,30 @@ import { z } from "zod";
 export const customerRouter = t.router({
   allWebRequests: t.procedure.query(({ ctx }) => {
     return ctx.prisma.requestObject.findMany({
+      where: {
+        project: {
+          Members: {
+            some: {
+              userId: ctx.session?.user?.id,
+            },
+          },
+        },
+      },
       orderBy: { timestamp: "desc" },
     });
   }),
   allProjects: t.procedure.query(({ ctx }) => {
     return ctx.prisma.project.findMany({
       where: {
-        ownerId: ctx.session?.user?.id,
+        Members: {
+          some: {
+            userId: ctx.session?.user?.id,
+            role: "OWNER",
+          },
+        },
       },
       include: {
-        owner: true,
+        Members: true,
       },
     });
   }),
@@ -25,7 +39,7 @@ export const customerRouter = t.router({
           id: input.id,
         },
         include: {
-          owner: true,
+          Members: true,
         },
       });
     }),
