@@ -20,7 +20,14 @@ pnpm dev-cli
 
 ## TODO
 
-- Start CLI
-- Move injest over to edge (correctly)
+### Web UI
+
 - Project creation
 - Source/destination(s) management
+
+### CLI
+
+- Pusher
+- Auth of some form
+- Input flow
+- Actual webhook forwarding
