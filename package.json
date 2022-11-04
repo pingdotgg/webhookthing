@@ -6,6 +6,7 @@
     "db-push": "pnpm --filter @captain/db db-push",
     "build": "turbo build",
     "dev": "turbo dev --parallel",
+    "dev-cli": "turbo dev-cli",
     "cleen": "turbo clean",
     "clean": "rm -rf node_modules",
     "lint": "turbo lint && manypkg check",
