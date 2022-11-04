@@ -1,6 +1,6 @@
 import { defineConfig } from "tsup";
 
-const isDev = process.env.npm_lifecycle_event === "dev";
+const isDev = process.env.npm_lifecycle_event === "dev-cli";
 
 export default defineConfig({
   clean: true,
