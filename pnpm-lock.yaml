@@ -133,6 +133,7 @@ importers:
       tailwindcss: ^3.1.8
       typescript: ^4.8.3
       zod: ^3.19.1
+      zustand: ^4.1.4
     dependencies:
       '@captain/auth': link:../deps/auth
       '@captain/db': link:../deps/db
@@ -149,6 +150,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       zod: 3.19.1
+      zustand: 4.1.4_react@18.2.0
     devDependencies:
       '@planetscale/database': 1.4.0
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
@@ -4089,4 +4091,20 @@ packages:
 
   /zod/3.19.1:
     resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
+
+  /zustand/4.1.4_react@18.2.0:
+    resolution: {integrity: sha512-k2jVOlWo8p4R83mQ+/uyB8ILPO2PCJOf+QVjcL+1PbMCk1w5OoPYpAIxy9zd93FSfmJqoH6lGdwzzjwqJIRU5A==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false

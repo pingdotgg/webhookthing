@@ -3,7 +3,7 @@ import classNames from "classnames";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { Modal } from "../../../components/common/modal";
+import { Modal, useConfirmationModal } from "../../../components/common/modal";
 import { trpc } from "../../../utils/trpc";
 
 const ProjectsSettings: NextPage = () => {
@@ -15,6 +15,7 @@ const ProjectsSettings: NextPage = () => {
   const { mutate: createProject } = trpc.customer.createProject.useMutation({
     onSuccess: () => {
       utils.customer.allProjects.invalidate();
+      setProjectName("");
     },
   });
 
@@ -29,6 +30,19 @@ const ProjectsSettings: NextPage = () => {
 
   const modalOpenState = useState(false);
   const [projectName, setProjectName] = useState("");
+
+  const openDeleteModal = useConfirmationModal({
+    title: "Delete Projects",
+    description:
+      "Are you sure you want to delete the selected projects? This action cannot be undone. This will also delete all of the data associated with the project (e.g. sources, destinations, etc).",
+    confirmationLabel: "Delete",
+    variant: "danger",
+    icon: <TrashIcon className="h-6 w-6 text-white" aria-hidden="true" />,
+    onConfirm: () => {
+      deleteProjects({ idsToDelete: selectedProjects });
+      setSelectedProjects([]);
+    },
+  });
 
   if (status === "loading" || !session) return null;
 
@@ -206,10 +220,7 @@ const ProjectsSettings: NextPage = () => {
               {selectedProjects.length > 0 && (
                 <button
                   className="m-2 inline-flex items-center rounded-full border border-transparent bg-red-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                  onClick={() => {
-                    deleteProjects({ idsToDelete: selectedProjects });
-                    setSelectedProjects([]);
-                  }}
+                  onClick={() => openDeleteModal()}
                 >
                   Delete Selected
                 </button>
