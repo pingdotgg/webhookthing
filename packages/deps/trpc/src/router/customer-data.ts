@@ -260,7 +260,7 @@ export const customerRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       const member = await ctx.prisma.projectMember.delete({
         where: {
-          userId_projectId: {
+          projectId_userId: {
             userId: input.userId,
             projectId: input.projectId,
           },
