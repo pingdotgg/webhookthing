@@ -1,6 +1,7 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { Avatar } from "../../../components/common/avatar";
 import { trpc } from "../../../utils/trpc";
 
 export default function ProjectSettings() {
@@ -116,13 +117,17 @@ export default function ProjectSettings() {
                     {project.Members.map((person) => (
                       <li key={person.id} className="flex py-4">
                         <div className="flex w-full flex-row items-center justify-between">
-                          <div className="ml-3 flex flex-col">
-                            <span className="text-sm font-medium text-gray-900">
-                              {person.user.name}
-                            </span>
-                            <span className="text-sm text-gray-500">
-                              {person.user.email}
-                            </span>
+                          <div className="flex flex-row items-center">
+                            <Avatar image={person.user.image} />
+
+                            <div className="ml-3 flex flex-col">
+                              <span className="text-sm font-medium text-gray-900">
+                                {person.user.name}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {person.user.email}
+                              </span>
+                            </div>
                           </div>
                           {person.role !== "OWNER" ? (
                             <button>
