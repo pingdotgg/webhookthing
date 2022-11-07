@@ -27,5 +27,12 @@ export default withTM(["@captain/trpc", "@captain/db", "@captain/auth"])(
     eslint: {
       ignoreDuringBuilds: true,
     },
+    redirects: async () => [
+      {
+        source: "/settings",
+        destination: "/settings/projects",
+        permanent: false,
+      },
+    ],
   })
 );
