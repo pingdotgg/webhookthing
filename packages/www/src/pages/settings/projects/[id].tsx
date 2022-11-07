@@ -1,6 +1,7 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { Avatar } from "../../../components/common/avatar";
 import { trpc } from "../../../utils/trpc";
 
@@ -29,6 +30,24 @@ export default function ProjectSettings() {
       utils.customer.projectById.invalidate({ id });
     },
   });
+
+  const { mutate: addMember } = trpc.customer.addMemberToProject.useMutation({
+    onSuccess: () => {
+      utils.customer.projectById.invalidate({ id });
+      setAddMemberRole("VIEWER");
+      setAddMemberEmail("");
+    },
+  });
+
+  const { mutate: removePendingMember } =
+    trpc.customer.removePendingMember.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id });
+      },
+    });
+
+  const [addMemberEmail, setAddMemberEmail] = useState("");
+  const [addMemberRole, setAddMemberRole] = useState("VIEWER");
 
   if (status === "loading" || !session || !project) return null;
 
@@ -92,15 +111,37 @@ export default function ProjectSettings() {
                       type="text"
                       name="add-team-members"
                       id="add-team-members"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       placeholder="Email address"
                       aria-describedby="add-team-members-helper"
+                      value={addMemberEmail}
+                      onChange={(e) => setAddMemberEmail(e.target.value)}
                     />
+                  </div>
+                  <div className="ml-3">
+                    <select
+                      id="role"
+                      name="role"
+                      className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      defaultValue="Member"
+                      value={addMemberRole}
+                      onChange={(e) => setAddMemberRole(e.target.value)}
+                    >
+                      <option>VIEWER</option>
+                      <option>ADMIN</option>
+                    </select>
                   </div>
                   <span className="ml-3">
                     <button
                       type="button"
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick={() => {
+                        addMember({
+                          projectId: project.id,
+                          email: addMemberEmail,
+                          role: addMemberRole as "VIEWER" | "ADMIN",
+                        });
+                      }}
                     >
                       <PlusIcon
                         className="-ml-2 mr-1 h-5 w-5 text-gray-400"
@@ -115,7 +156,7 @@ export default function ProjectSettings() {
                 <div className="border-b border-gray-200">
                   <ul role="list" className="divide-y divide-gray-200">
                     {project.Members.map((person) => (
-                      <li key={person.id} className="flex py-4">
+                      <li key={person.userId} className="flex py-4">
                         <div className="flex w-full flex-row items-center justify-between">
                           <div className="flex flex-row items-center">
                             <Avatar image={person.user.image} />
@@ -129,12 +170,49 @@ export default function ProjectSettings() {
                             </div>
                           </div>
                           {person.role !== "OWNER" ? (
-                            <button>
-                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
-                            </button>
+                            <div className="flex flex-row items-center gap-2">
+                              <span className="text-sm text-gray-500">
+                                {person.role}
+                              </span>
+                              <button>
+                                <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                              </button>
+                            </div>
                           ) : (
                             <span className="text-sm text-gray-500">Owner</span>
                           )}
+                        </div>
+                      </li>
+                    ))}
+                    {project.PendingMembers.map((person) => (
+                      <li key={person.email} className="flex py-4">
+                        <div className="flex w-full flex-row items-center justify-between">
+                          <div className="flex flex-row items-center">
+                            <Avatar />
+                            <div className="ml-3 flex flex-col">
+                              <span className="text-sm font-medium text-gray-900">
+                                Invite Pending
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {person.email}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex flex-row items-center gap-2">
+                            <span className="text-sm text-gray-500">
+                              Pending
+                            </span>
+                            <button
+                              onClick={() =>
+                                removePendingMember({
+                                  projectId: project.id,
+                                  email: person.email,
+                                })
+                              }
+                            >
+                              <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
+                            </button>
+                          </div>
                         </div>
                       </li>
                     ))}

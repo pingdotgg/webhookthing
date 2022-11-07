@@ -44,6 +44,8 @@ export const customerRouter = t.router({
               user: true,
             },
           },
+          PendingMembers: true,
+
           Sources: true,
           Destinations: true,
           LocalListeners: true,
@@ -193,5 +195,143 @@ export const customerRouter = t.router({
           id: input.id,
         },
       });
+    }),
+
+  addMemberToProject: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        email: z.string(),
+        role: z.enum(["ADMIN", "VIEWER"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          email: input.email,
+        },
+      });
+
+      if (!user) {
+        // User does not exist in the database yet, create pending user, send email to invite them.
+
+        const pendingMember = await ctx.prisma.pendingProjectMember.create({
+          data: {
+            email: input.email,
+            role: input.role,
+            project: {
+              connect: {
+                id: input.projectId,
+              },
+            },
+          },
+        });
+
+        // TODO: Send email to invite user
+
+        return pendingMember;
+      }
+
+      const member = await ctx.prisma.projectMember.create({
+        data: {
+          role: input.role,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+          project: {
+            connect: {
+              id: input.projectId,
+            },
+          },
+        },
+      });
+
+      return member;
+    }),
+  removeMemberFromProject: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const member = await ctx.prisma.projectMember.delete({
+        where: {
+          userId_projectId: {
+            userId: input.userId,
+            projectId: input.projectId,
+          },
+        },
+      });
+
+      return member;
+    }),
+  updateMemberRole: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        userId: z.string(),
+        role: z.enum(["ADMIN", "VIEWER"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const member = await ctx.prisma.projectMember.update({
+        where: {
+          projectId_userId: {
+            userId: input.userId,
+            projectId: input.projectId,
+          },
+        },
+        data: {
+          role: input.role,
+        },
+      });
+
+      return member;
+    }),
+  removePendingMember: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const member = await ctx.prisma.pendingProjectMember.delete({
+        where: {
+          projectId_email: {
+            email: input.email,
+            projectId: input.projectId,
+          },
+        },
+      });
+
+      return member;
+    }),
+  updatePendingMemberRole: t.procedure
+    .input(
+      z.object({
+        projectId: z.string(),
+        email: z.string(),
+        role: z.enum(["ADMIN", "VIEWER"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const member = await ctx.prisma.pendingProjectMember.update({
+        where: {
+          projectId_email: {
+            email: input.email,
+            projectId: input.projectId,
+          },
+        },
+        data: {
+          role: input.role,
+        },
+      });
+
+      return member;
     }),
 });

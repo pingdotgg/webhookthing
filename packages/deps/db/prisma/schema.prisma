@@ -60,7 +60,8 @@ model Project {
     id   String @id @default(cuid())
     name String
 
-    Members ProjectMember[]
+    Members        ProjectMember[]
+    PendingMembers PendingProjectMember[]
 
     RequestObject RequestObject[]
 
@@ -76,7 +77,6 @@ enum ROLE {
 }
 
 model ProjectMember {
-    id   String @id @default(cuid())
     role ROLE
 
     projectId String
@@ -84,6 +84,19 @@ model ProjectMember {
 
     userId String
     user   User   @relation(fields: [userId], references: [id])
+
+    @@unique([projectId, userId])
+}
+
+model PendingProjectMember {
+    role ROLE
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+
+    email String
+
+    @@unique([projectId, email])
 }
 
 // app stuff
