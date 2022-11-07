@@ -119,7 +119,6 @@ export default function ProjectSettings() {
                         <div className="flex w-full flex-row items-center justify-between">
                           <div className="flex flex-row items-center">
                             <Avatar image={person.user.image} />
-
                             <div className="ml-3 flex flex-col">
                               <span className="text-sm font-medium text-gray-900">
                                 {person.user.name}
