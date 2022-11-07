@@ -74,13 +74,52 @@ export const customerRouter = t.router({
   deleteProjects: t.procedure
     .input(z.object({ idsToDelete: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
-      const project = await ctx.prisma.project.deleteMany({
+      // Delete everything associated with the project first
+      await ctx.prisma.requestObject.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+      await ctx.prisma.projectMember.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+      await ctx.prisma.source.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+      await ctx.prisma.destination.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+      await ctx.prisma.localListener.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
+      // Delete the project
+      await ctx.prisma.project.deleteMany({
         where: {
           id: {
             in: input.idsToDelete,
           },
         },
       });
+
+      return true;
     }),
   createSource: t.procedure
     .input(
