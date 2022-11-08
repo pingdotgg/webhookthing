@@ -276,7 +276,7 @@ export default function ProjectSettings() {
                   className="-ml-2 mr-1 h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
-                Add Source
+                Add
               </button>
             </div>
           </div>
@@ -367,7 +367,7 @@ export default function ProjectSettings() {
                       className="-ml-2 mr-1 h-5 w-5 text-gray-400"
                       aria-hidden="true"
                     />
-                    Add Destination
+                    Add
                   </button>
                 </div>
               </div>
