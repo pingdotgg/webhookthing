@@ -289,7 +289,11 @@ export default function ProjectSettings() {
           </div>
           <div className="mt-6 rounded-md bg-gray-100 px-4">
             <div className="border-b border-gray-200">
-              <ul role="list" className="divide-y divide-gray-200">
+              <AutoAnimate
+                as="ul"
+                role="list"
+                className="divide-y divide-gray-200"
+              >
                 {project.Sources.length > 0 ? (
                   project.Sources.map((source) => (
                     <li key={source.id} className="flex py-4">
@@ -327,7 +331,7 @@ export default function ProjectSettings() {
                     </div>
                   </div>
                 )}
-              </ul>
+              </AutoAnimate>
             </div>
           </div>
         </div>
@@ -365,7 +369,11 @@ export default function ProjectSettings() {
               </div>
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
-                  <ul role="list" className="divide-y divide-gray-200">
+                  <AutoAnimate
+                    as="ul"
+                    role="list"
+                    className="divide-y divide-gray-200"
+                  >
                     {project.Destinations.length > 0 ? (
                       project.Destinations.map((destination) => (
                         <li key={destination.id} className="flex py-4">
@@ -405,7 +413,7 @@ export default function ProjectSettings() {
                         </div>
                       </div>
                     )}
-                  </ul>
+                  </AutoAnimate>
                 </div>
               </div>
             </div>
@@ -419,7 +427,11 @@ export default function ProjectSettings() {
               </p>
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
-                  <ul role="list" className="divide-y divide-gray-200">
+                  <AutoAnimate
+                    as="ul"
+                    role="list"
+                    className="divide-y divide-gray-200"
+                  >
                     {project.LocalListeners.length > 0 ? (
                       project.LocalListeners.map((listener) => (
                         <li key={listener.id} className="flex py-4">
@@ -456,7 +468,7 @@ export default function ProjectSettings() {
                         </div>
                       </div>
                     )}
-                  </ul>
+                  </AutoAnimate>
                 </div>
               </div>
             </div>

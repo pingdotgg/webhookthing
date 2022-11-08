@@ -4,6 +4,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Modal, useConfirmationModal } from "../../../components/common/modal";
+import { AutoAnimate } from "../../../components/util/autoanimate";
 import { trpc } from "../../../utils/trpc";
 
 const ProjectsSettings: NextPage = () => {
@@ -160,7 +161,10 @@ const ProjectsSettings: NextPage = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <AutoAnimate
+                    as="tbody"
+                    className="divide-y divide-gray-200 bg-white"
+                  >
                     {(projects ?? []).map((p) => (
                       <tr
                         key={p.id}
@@ -214,7 +218,7 @@ const ProjectsSettings: NextPage = () => {
                         </td>
                       </tr>
                     ))}
-                  </tbody>
+                  </AutoAnimate>
                 </table>
               </div>
               {selectedProjects.length > 0 && (
