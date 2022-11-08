@@ -1,10 +1,16 @@
 import { AutoAnimate } from "../../../components/util/autoanimate";
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar } from "../../../components/common/avatar";
 import { trpc } from "../../../utils/trpc";
+import { Modal } from "../../../components/common/modal";
 
 export default function ProjectSettings() {
   const id = useRouter().asPath.split("/").pop() as string;
@@ -63,6 +69,9 @@ export default function ProjectSettings() {
 
   const [addMemberEmail, setAddMemberEmail] = useState("");
   const [addMemberRole, setAddMemberRole] = useState("VIEWER");
+
+  const createSourceModalState = useState(false);
+  const createDestinationModalState = useState(false);
 
   if (status === "loading" || !session || !project) return null;
 
@@ -279,9 +288,16 @@ export default function ProjectSettings() {
               </p>
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+              <CreateSourceModal
+                openState={createSourceModalState}
+                projectId={project.id}
+              />
               <button
                 type="button"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                onClick={() => {
+                  createSourceModalState[1](true);
+                }}
               >
                 Add +
               </button>
@@ -359,9 +375,16 @@ export default function ProjectSettings() {
                   </p>
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                  <CreateDestinationModal
+                    openState={createDestinationModalState}
+                    projectId={project.id}
+                  />
                   <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                    onClick={() => {
+                      createDestinationModalState[1](true);
+                    }}
                   >
                     Add +
                   </button>
@@ -495,3 +518,176 @@ export default function ProjectSettings() {
     </div>
   );
 }
+
+const CreateSourceModal: React.FC<{
+  projectId: string;
+  openState: [boolean, Dispatch<SetStateAction<boolean>>];
+}> = ({ openState, projectId }) => {
+  const utils = trpc.useContext();
+
+  const [sourceName, setSourceName] = useState("");
+  const [domain, setDomain] = useState("");
+
+  const { mutate: createSource } = trpc.customer.createSource.useMutation({
+    onSuccess: () => {
+      utils.customer.projectById.invalidate({ id: projectId });
+      setSourceName("");
+      setDomain("");
+      openState[1](false);
+    },
+  });
+
+  return (
+    <Modal openState={openState}>
+      <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => openState[1](false)}
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Create Source
+            </h3>
+            <div className="mt-2">
+              <label
+                htmlFor="source-name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Source Name
+              </label>
+              <input
+                type="text"
+                name="source-name"
+                id="source-name"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value)}
+              />
+              <label
+                htmlFor="Domain"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Domain
+              </label>
+              <input
+                type="text"
+                name="Domain"
+                id="Domain"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+              />
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    createSource({ name: sourceName, projectId, domain });
+                    openState[1](false);
+                  }}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const CreateDestinationModal: React.FC<{
+  projectId: string;
+  openState: [boolean, Dispatch<SetStateAction<boolean>>];
+}> = ({ openState, projectId }) => {
+  const utils = trpc.useContext();
+
+  const [destinationName, setDestinationName] = useState("");
+  const [url, setUrl] = useState("");
+
+  const { mutate: createDestination } =
+    trpc.customer.createDestination.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id: projectId });
+        setDestinationName("");
+        setUrl("");
+        openState[1](false);
+      },
+    });
+
+  return (
+    <Modal openState={openState}>
+      <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => openState[1](false)}
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Create Destination
+            </h3>
+            <div className="mt-2">
+              <label
+                htmlFor="destination-name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Destination Name
+              </label>
+              <input
+                type="text"
+                name="destination-name"
+                id="destination-name"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={destinationName}
+                onChange={(e) => setDestinationName(e.target.value)}
+              />
+              <label
+                htmlFor="Domain"
+                className="block text-sm font-medium text-gray-700"
+              >
+                URL
+              </label>
+              <input
+                type="text"
+                name="Domain"
+                id="Domain"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    createDestination({
+                      name: destinationName,
+                      projectId,
+                      url,
+                    });
+                    openState[1](false);
+                  }}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};

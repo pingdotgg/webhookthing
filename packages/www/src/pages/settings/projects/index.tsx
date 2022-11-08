@@ -2,7 +2,7 @@ import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, useConfirmationModal } from "../../../components/common/modal";
 import { AutoAnimate } from "../../../components/util/autoanimate";
 import { trpc } from "../../../utils/trpc";
@@ -12,13 +12,6 @@ const ProjectsSettings: NextPage = () => {
   const utils = trpc.useContext();
 
   const { data: projects } = trpc.customer.allProjects.useQuery();
-
-  const { mutate: createProject } = trpc.customer.createProject.useMutation({
-    onSuccess: () => {
-      utils.customer.allProjects.invalidate();
-      setProjectName("");
-    },
-  });
 
   const { mutate: deleteProjects } = trpc.customer.deleteProjects.useMutation({
     onSuccess: () => {
@@ -30,7 +23,6 @@ const ProjectsSettings: NextPage = () => {
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
 
   const modalOpenState = useState(false);
-  const [projectName, setProjectName] = useState("");
 
   const openDeleteModal = useConfirmationModal({
     title: "Delete Projects",
@@ -49,55 +41,7 @@ const ProjectsSettings: NextPage = () => {
 
   return (
     <>
-      <Modal openState={modalOpenState}>
-        <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:mt-0 sm:text-left">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-                <button
-                  type="button"
-                  className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={() => modalOpenState[1](false)}
-                >
-                  <span className="sr-only">Close</span>
-                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Create Project
-              </h3>
-              <div className="mt-2">
-                <label
-                  htmlFor="project-name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Project Name
-                </label>
-                <input
-                  type="text"
-                  name="project-name"
-                  id="project-name"
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
-                  placeholder="My Project"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
-                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <button
-                    className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={() => {
-                      createProject({ name: projectName });
-                      modalOpenState[1](false);
-                    }}
-                  >
-                    Create
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <CreateProjectModal openState={modalOpenState} />
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
@@ -238,3 +182,70 @@ const ProjectsSettings: NextPage = () => {
 };
 
 export default ProjectsSettings;
+
+const CreateProjectModal: React.FC<{
+  openState: [boolean, Dispatch<SetStateAction<boolean>>];
+}> = ({ openState }) => {
+  const utils = trpc.useContext();
+
+  const [projectName, setProjectName] = useState("");
+
+  const { mutate: createProject } = trpc.customer.createProject.useMutation({
+    onSuccess: () => {
+      utils.customer.allProjects.invalidate();
+      setProjectName("");
+    },
+  });
+
+  return (
+    <Modal openState={openState}>
+      <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => openState[1](false)}
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Create Project
+            </h3>
+            <div className="mt-2">
+              <label
+                htmlFor="project-name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Project Name
+              </label>
+              <input
+                type="text"
+                name="project-name"
+                id="project-name"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                placeholder="My Project"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+              />
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    createProject({ name: projectName });
+                    openState[1](false);
+                  }}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
