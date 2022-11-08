@@ -9,7 +9,7 @@ export default function TopNav() {
   const { data: session } = useSession();
   return (
     <Disclosure as="nav" className="bg-white shadow">
-      {({ open }) => (
+      {() => (
         <>
           <div className="mx-auto px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 justify-between">
