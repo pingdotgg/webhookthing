@@ -130,7 +130,8 @@ export default function ProjectSettings() {
                   <span className="ml-3">
                     <button
                       type="button"
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="disabled:hover:none inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 sm:w-auto"
+                      disabled={!addMemberEmail}
                       onClick={() => {
                         addMember({
                           projectId: project.id,
@@ -143,7 +144,7 @@ export default function ProjectSettings() {
                         className="-ml-2 mr-1 h-5 w-5 text-gray-400"
                         aria-hidden="true"
                       />
-                      <span>Add</span>
+                      Add
                     </button>
                   </span>
                 </div>
@@ -271,7 +272,11 @@ export default function ProjectSettings() {
                   createSourceModalState[1](true);
                 }}
               >
-                Add +
+                <PlusIcon
+                  className="-ml-2 mr-1 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+                Add Source
               </button>
             </div>
           </div>
@@ -358,7 +363,11 @@ export default function ProjectSettings() {
                       createDestinationModalState[1](true);
                     }}
                   >
-                    Add +
+                    <PlusIcon
+                      className="-ml-2 mr-1 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    Add Destination
                   </button>
                 </div>
               </div>
