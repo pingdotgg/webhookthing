@@ -91,6 +91,13 @@ export const customerRouter = t.router({
           },
         },
       });
+      await ctx.prisma.pendingProjectMember.deleteMany({
+        where: {
+          projectId: {
+            in: input.idsToDelete,
+          },
+        },
+      });
       await ctx.prisma.source.deleteMany({
         where: {
           projectId: {
