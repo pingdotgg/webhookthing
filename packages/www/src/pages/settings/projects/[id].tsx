@@ -85,33 +85,6 @@ export default function ProjectSettings() {
           <div className="pt-8">
             <div>
               <h3 className="text-lg font-semibold leading-6 text-gray-900">
-                Basic Information
-              </h3>
-            </div>
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 ">
-              <div>
-                <label
-                  htmlFor="project-name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Project Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    name="project-name"
-                    id="project-name"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
-                    defaultValue={project.name}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-8">
-            <div>
-              <h3 className="text-lg font-semibold leading-6 text-gray-900">
                 Members
               </h3>
               <p className="mt-1 text-sm text-gray-500">
@@ -147,7 +120,6 @@ export default function ProjectSettings() {
                       id="role"
                       name="role"
                       className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                      defaultValue="Member"
                       value={addMemberRole}
                       onChange={(e) => setAddMemberRole(e.target.value)}
                     >
@@ -495,23 +467,6 @@ export default function ProjectSettings() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="pt-5">
-          <div className="flex justify-end">
-            <button
-              type="button"
-              className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Save
-            </button>
           </div>
         </div>
       </div>
