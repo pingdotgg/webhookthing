@@ -103,6 +103,7 @@ importers:
       '@captain/auth': '*'
       '@captain/db': '*'
       '@captain/trpc': '*'
+      '@formkit/auto-animate': ^1.0.0-beta.3
       '@headlessui/react': ^1.7.4
       '@heroicons/react': ^2.0.12
       '@planetscale/database': ^1.4.0
@@ -138,6 +139,7 @@ importers:
       '@captain/auth': link:../deps/auth
       '@captain/db': link:../deps/db
       '@captain/trpc': link:../deps/trpc
+      '@formkit/auto-animate': 1.0.0-beta.3
       '@headlessui/react': 1.7.4_biqbaboplfbrettd7655fr4n2y
       '@heroicons/react': 2.0.12_react@18.2.0
       '@tanstack/react-query': 4.9.0_biqbaboplfbrettd7655fr4n2y
@@ -224,6 +226,10 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+
+  /@formkit/auto-animate/1.0.0-beta.3:
+    resolution: {integrity: sha512-glsi+ytwQpxT/Ctr9GtcIfVr4dO6mJ04mQbNU8MFSdCdqMopHtyfU5Fib0+9lNFIeR0luY4/0NW95/2R5pKsag==}
+    dev: false
 
   /@headlessui/react/1.7.4_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-D8n5yGCF3WIkPsjEYeM8knn9jQ70bigGGb5aUvN6y4BGxcT3OcOQOKcM3zRGllRCZCFxCZyQvYJF6ZE7bQUOyQ==}

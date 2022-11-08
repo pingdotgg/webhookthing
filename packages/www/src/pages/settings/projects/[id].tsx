@@ -1,3 +1,4 @@
+import { AutoAnimate } from "../../../components/util/autoanimate";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -41,6 +42,20 @@ export default function ProjectSettings() {
 
   const { mutate: removePendingMember } =
     trpc.customer.removePendingMember.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id });
+      },
+    });
+
+  const { mutate: updateMemberRole } =
+    trpc.customer.updateMemberRole.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id });
+      },
+    });
+
+  const { mutate: updatePendingMemberRole } =
+    trpc.customer.updatePendingMemberRole.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id });
       },
@@ -127,8 +142,8 @@ export default function ProjectSettings() {
                       value={addMemberRole}
                       onChange={(e) => setAddMemberRole(e.target.value)}
                     >
-                      <option>VIEWER</option>
-                      <option>ADMIN</option>
+                      <option value={"VIEWER"}>Viewer</option>
+                      <option value={"ADMIN"}>Admin</option>
                     </select>
                   </div>
                   <span className="ml-3">
@@ -154,7 +169,11 @@ export default function ProjectSettings() {
               </div>
               <div className="mt-6 rounded-md bg-gray-100 px-4">
                 <div className="border-b border-gray-200">
-                  <ul role="list" className="divide-y divide-gray-200">
+                  <AutoAnimate
+                    as="ul"
+                    role="list"
+                    className="divide-y divide-gray-200"
+                  >
                     {project.Members.map((person) => (
                       <li key={person.userId} className="flex py-4">
                         <div className="flex w-full flex-row items-center justify-between">
@@ -171,9 +190,22 @@ export default function ProjectSettings() {
                           </div>
                           {person.role !== "OWNER" ? (
                             <div className="flex flex-row items-center gap-2">
-                              <span className="text-sm text-gray-500">
-                                {person.role}
-                              </span>
+                              <select
+                                id="role"
+                                name="role"
+                                className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                defaultValue={person.role}
+                                onChange={(e) => {
+                                  updateMemberRole({
+                                    projectId: project.id,
+                                    userId: person.userId,
+                                    role: e.target.value as "VIEWER" | "ADMIN",
+                                  });
+                                }}
+                              >
+                                <option value={"VIEWER"}>Viewer</option>
+                                <option value={"ADMIN"}>Admin</option>
+                              </select>
                               <button>
                                 <TrashIcon className="h-5 w-5  text-gray-500 hover:text-red-600" />
                               </button>
@@ -199,9 +231,22 @@ export default function ProjectSettings() {
                             </div>
                           </div>
                           <div className="flex flex-row items-center gap-2">
-                            <span className="text-sm text-gray-500">
-                              Pending
-                            </span>
+                            <select
+                              id="role"
+                              name="role"
+                              className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              defaultValue={person.role}
+                              onChange={(e) => {
+                                updatePendingMemberRole({
+                                  projectId: project.id,
+                                  email: person.email,
+                                  role: e.target.value as "VIEWER" | "ADMIN",
+                                });
+                              }}
+                            >
+                              <option value={"VIEWER"}>Viewer</option>
+                              <option value={"ADMIN"}>Admin</option>
+                            </select>
                             <button
                               onClick={() =>
                                 removePendingMember({
@@ -216,7 +261,7 @@ export default function ProjectSettings() {
                         </div>
                       </li>
                     ))}
-                  </ul>
+                  </AutoAnimate>
                 </div>
               </div>
             </div>
