@@ -2,6 +2,7 @@ import { getProviders, signIn } from "next-auth/react";
 import type { Provider } from "next-auth/providers";
 import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { NoLayout } from "../components/layout/app-layout";
 
 const SignIn = ({ providers }: { providers: Provider[] }) => {
   const router = useRouter();
@@ -34,6 +35,8 @@ const SignIn = ({ providers }: { providers: Provider[] }) => {
 };
 
 export default SignIn;
+
+SignIn.getLayout = NoLayout;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const providers = await getProviders();
