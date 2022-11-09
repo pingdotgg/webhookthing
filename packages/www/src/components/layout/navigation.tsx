@@ -4,6 +4,7 @@ import { ForwardIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { Avatar } from "../common/avatar";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function TopNav() {
   const { data: session } = useSession();
@@ -15,10 +16,10 @@ export default function TopNav() {
             <div className="relative flex h-16 justify-between">
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <a href="/">
+                  <Link href="/">
                     <ForwardIcon className="block h-8 w-auto text-indigo-600 lg:hidden" />
                     <ForwardIcon className="hidden h-8 w-auto text-indigo-600 lg:block " />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
