@@ -22,12 +22,18 @@ export const customerRouter = t.router({
         Members: {
           some: {
             userId: ctx.session?.user?.id,
-            role: "OWNER",
+            role: {
+              in: ["OWNER", "ADMIN"],
+            },
           },
         },
       },
       include: {
-        Members: true,
+        Members: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }),

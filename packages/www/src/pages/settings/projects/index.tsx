@@ -150,7 +150,8 @@ const ProjectsSettings: NextPage = () => {
                           {p.Members.find((m) => m.role === "OWNER")?.userId ===
                           session.user?.id
                             ? "You"
-                            : p.name}
+                            : p.Members.find((m) => m.role === "OWNER")?.user
+                                ?.name ?? "No Owner"}
                         </td>
                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                           <a
