@@ -6,8 +6,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, useConfirmationModal } from "../../../components/common/modal";
 import { AutoAnimate } from "../../../components/util/autoanimate";
 import { trpc } from "../../../utils/trpc";
+import { useRequireAuth } from "../../../utils/use-require-auth";
 
 const ProjectsSettings: NextPage = () => {
+  useRequireAuth();
+
   const { data: session, status } = useSession();
   const utils = trpc.useContext();
 

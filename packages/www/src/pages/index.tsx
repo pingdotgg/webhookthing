@@ -5,6 +5,7 @@ import { ArrowPathIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { trpc } from "../utils/trpc";
 import type { RequestObject } from "@prisma/client";
+import { useRequireAuth } from "../utils/use-require-auth";
 
 const METHOD_COLORS = {
   GET: "bg-blue-500",
@@ -19,6 +20,8 @@ const METHOD_COLORS = {
 };
 
 const Home: NextPage = () => {
+  useRequireAuth();
+
   const { data: session, status } = useSession();
   const { data: requests } = trpc.customer.allWebRequests.useQuery();
 

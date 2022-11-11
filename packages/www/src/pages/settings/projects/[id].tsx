@@ -11,8 +11,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar } from "../../../components/common/avatar";
 import { trpc } from "../../../utils/trpc";
 import { Modal } from "../../../components/common/modal";
+import { useRequireAuth } from "../../../utils/use-require-auth";
 
 export default function ProjectSettings() {
+  useRequireAuth();
+
   const id = useRouter().asPath.split("/").pop() as string;
   const utils = trpc.useContext();
 
