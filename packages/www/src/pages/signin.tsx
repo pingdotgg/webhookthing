@@ -4,6 +4,7 @@ import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { NoLayout } from "../components/layout/app-layout";
 import { ForwardIcon } from "@heroicons/react/24/outline";
+import { LogoMark } from "../components/common/logo";
 
 const SignIn = ({ providers }: { providers: Provider[] }) => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const SignIn = ({ providers }: { providers: Provider[] }) => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <ForwardIcon className="mx-auto h-12 w-auto text-indigo-600" />
+            <LogoMark className="mx-auto h-12 w-auto text-indigo-600" />
             <h1 className="text-center text-3xl font-extrabold text-gray-900">
               Captain
             </h1>

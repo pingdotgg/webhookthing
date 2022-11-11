@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { Avatar } from "../common/avatar";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { LogoMark } from "../common/logo";
 
 export default function TopNav() {
   const { data: session } = useSession();
@@ -18,8 +19,8 @@ export default function TopNav() {
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/">
                     <>
-                      <ForwardIcon className="block h-8 w-auto text-indigo-600 lg:hidden" />
-                      <ForwardIcon className="hidden h-8 w-auto text-indigo-600 lg:block " />
+                      <LogoMark className="block h-8 w-auto text-indigo-600 lg:hidden" />
+                      <LogoMark className="hidden h-8 w-auto text-indigo-600 lg:block " />
                     </>
                   </Link>
                 </div>
