@@ -12,6 +12,7 @@ import { Avatar } from "../../../components/common/avatar";
 import { trpc } from "../../../utils/trpc";
 import { Modal } from "../../../components/common/modal";
 import { useRequireAuth } from "../../../utils/use-require-auth";
+import type { Source, Destination } from "@prisma/client";
 
 export default function ProjectSettings() {
   useRequireAuth();
@@ -75,6 +76,13 @@ export default function ProjectSettings() {
 
   const createSourceModalState = useState(false);
   const createDestinationModalState = useState(false);
+
+  const editSourceModalState = useState(false);
+  const editDestinationModalState = useState(false);
+
+  const [selectedSource, setSelectedSource] = useState<Source | null>(null);
+  const [selectedDestination, setSelectedDestination] =
+    useState<Destination | null>(null);
 
   if (status === "loading" || !session || !project) return null;
 
@@ -268,6 +276,11 @@ export default function ProjectSettings() {
                 openState={createSourceModalState}
                 projectId={project.id}
               />
+              <EditSourceModal
+                openState={editSourceModalState}
+                projectId={project.id}
+                selectedSource={selectedSource}
+              />
               <button
                 type="button"
                 className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
@@ -303,7 +316,14 @@ export default function ProjectSettings() {
                           </span>
                         </div>
                         <div className="flex flex-row gap-2">
-                          <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                          <button
+                            onClick={() => {
+                              setSelectedSource(source);
+                              editSourceModalState[1](true);
+                            }}
+                          >
+                            <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                          </button>
                           <button
                             onClick={() => deleteSource({ id: source.id })}
                           >
@@ -359,6 +379,11 @@ export default function ProjectSettings() {
                     openState={createDestinationModalState}
                     projectId={project.id}
                   />
+                  <EditDestinationModal
+                    openState={editDestinationModalState}
+                    projectId={project.id}
+                    selectedDestination={selectedDestination}
+                  />
                   <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
@@ -394,7 +419,14 @@ export default function ProjectSettings() {
                               </span>
                             </div>
                             <div className="flex flex-row gap-2">
-                              <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                              <button
+                                onClick={() => {
+                                  setSelectedDestination(destination);
+                                  editDestinationModalState[1](true);
+                                }}
+                              >
+                                <PencilIcon className="h-5 w-5  text-gray-500 hover:text-blue-600" />
+                              </button>
                               <button
                                 onClick={() =>
                                   deleteDestination({ id: destination.id })
@@ -570,6 +602,97 @@ const CreateSourceModal: React.FC<{
   );
 };
 
+const EditSourceModal: React.FC<{
+  projectId: string;
+  openState: [boolean, Dispatch<SetStateAction<boolean>>];
+  selectedSource: { name: string; domain: string; id: string } | null;
+}> = ({ openState, projectId, selectedSource }) => {
+  const utils = trpc.useContext();
+
+  const [sourceName, setSourceName] = useState(selectedSource?.name);
+  const [domain, setDomain] = useState(selectedSource?.domain);
+
+  const { mutate: updateSource } = trpc.customer.updateSource.useMutation({
+    onSuccess: () => {
+      utils.customer.projectById.invalidate({ id: projectId });
+      openState[1](false);
+    },
+  });
+
+  if (!selectedSource) return null;
+
+  return (
+    <Modal openState={openState}>
+      <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => openState[1](false)}
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Update Source: {selectedSource.name}
+            </h3>
+            <div className="mt-2">
+              <label
+                htmlFor="source-name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Source Name
+              </label>
+              <input
+                type="text"
+                name="source-name"
+                id="source-name"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value)}
+              />
+              <label
+                htmlFor="Domain"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Domain
+              </label>
+              <input
+                type="text"
+                name="Domain"
+                id="Domain"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+              />
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    if (sourceName && domain) {
+                      updateSource({
+                        id: selectedSource.id,
+                        name: sourceName,
+                        domain,
+                      });
+                      openState[1](false);
+                    }
+                  }}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 const CreateDestinationModal: React.FC<{
   projectId: string;
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -649,6 +772,100 @@ const CreateDestinationModal: React.FC<{
                   }}
                 >
                   Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const EditDestinationModal: React.FC<{
+  projectId: string;
+  openState: [boolean, Dispatch<SetStateAction<boolean>>];
+  selectedDestination: { name: string; url: string; id: string } | null;
+}> = ({ openState, projectId, selectedDestination }) => {
+  const utils = trpc.useContext();
+
+  const [destinationName, setDestinationName] = useState(
+    selectedDestination?.name
+  );
+  const [url, setUrl] = useState(selectedDestination?.url);
+
+  const { mutate: updateDestination } =
+    trpc.customer.updateDestination.useMutation({
+      onSuccess: () => {
+        utils.customer.projectById.invalidate({ id: projectId });
+        openState[1](false);
+      },
+    });
+
+  if (!selectedDestination) return null;
+
+  return (
+    <Modal openState={openState}>
+      <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="sm:flex sm:items-start">
+          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+            <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => openState[1](false)}
+              >
+                <span className="sr-only">Close</span>
+                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Update Destination: {selectedDestination.name}
+            </h3>
+            <div className="mt-2">
+              <label
+                htmlFor="destination-name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Destination Name
+              </label>
+              <input
+                type="text"
+                name="destination-name"
+                id="destination-name"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={destinationName}
+                onChange={(e) => setDestinationName(e.target.value)}
+              />
+              <label
+                htmlFor="url"
+                className="block text-sm font-medium text-gray-700"
+              >
+                URL
+              </label>
+              <input
+                type="text"
+                name="url"
+                id="url"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:text-gray-400 sm:text-sm"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  className="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    if (destinationName && url) {
+                      updateDestination({
+                        id: selectedDestination.id,
+                        name: destinationName,
+                        url,
+                      });
+                      openState[1](false);
+                    }
+                  }}
+                >
+                  Save Changes
                 </button>
               </div>
             </div>

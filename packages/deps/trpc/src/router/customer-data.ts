@@ -136,6 +136,15 @@ export const customerRouter = t.router({
 
       return true;
     }),
+  getSourceById: t.procedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.source.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
   createSource: t.procedure
     .input(
       z.object({
@@ -158,6 +167,25 @@ export const customerRouter = t.router({
       });
 
       return source;
+    }),
+  updateSource: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        domain: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const source = await ctx.prisma.source.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          domain: input.domain,
+        },
+      });
     }),
   deleteSource: t.procedure
     .input(z.object({ id: z.string() }))
@@ -191,6 +219,26 @@ export const customerRouter = t.router({
 
       return destination;
     }),
+  updateDestination: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        url: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const destination = await ctx.prisma.destination.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          url: input.url,
+        },
+      });
+    }),
+
   deleteDestination: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
