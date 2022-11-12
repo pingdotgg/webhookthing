@@ -152,7 +152,7 @@ export default function ProjectSettings() {
                       }}
                     >
                       <PlusIcon
-                        className="-ml-2 mr-1 h-5 w-5 text-gray-400"
+                        className="-ml-2 mr-1 h-5 w-5"
                         aria-hidden="true"
                       />
                       Add
@@ -288,10 +288,7 @@ export default function ProjectSettings() {
                   createSourceModalState[1](true);
                 }}
               >
-                <PlusIcon
-                  className="-ml-2 mr-1 h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
+                <PlusIcon className="-ml-2 mr-1 h-5 w-5" aria-hidden="true" />
                 Add
               </button>
             </div>
@@ -392,7 +389,7 @@ export default function ProjectSettings() {
                     }}
                   >
                     <PlusIcon
-                      className="-ml-2 mr-1 h-5 w-5 text-gray-400"
+                      className="-ml-2 mr-1 h-5 w-5"
                       aria-hidden="true"
                     />
                     Add
