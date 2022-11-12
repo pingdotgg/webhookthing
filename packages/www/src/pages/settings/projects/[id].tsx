@@ -536,8 +536,8 @@ const CreateSourceModal: React.FC<{
   return (
     <Modal openState={openState}>
       <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div className="sm:flex sm:items-start">
-          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+        <div className="flex items-start">
+          <div className="mt-3 w-full text-center sm:mt-0 sm:text-left">
             <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
@@ -621,8 +621,8 @@ const EditSourceModal: React.FC<{
   return (
     <Modal openState={openState}>
       <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div className="sm:flex sm:items-start">
-          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+        <div className="flex items-start">
+          <div className="mt-3 w-full text-center sm:mt-0 sm:text-left">
             <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
@@ -712,8 +712,8 @@ const CreateDestinationModal: React.FC<{
   return (
     <Modal openState={openState}>
       <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div className="sm:flex sm:items-start">
-          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+        <div className="flex items-start">
+          <div className="mt-3 w-full text-center sm:mt-0 sm:text-left">
             <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"
@@ -804,8 +804,8 @@ const EditDestinationModal: React.FC<{
   return (
     <Modal openState={openState}>
       <div className="rounded-md bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div className="sm:flex sm:items-start">
-          <div className="mt-3 text-center sm:mt-0 sm:text-left">
+        <div className="flex items-start">
+          <div className="mt-3 w-full text-center sm:mt-0 sm:text-left">
             <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
               <button
                 type="button"

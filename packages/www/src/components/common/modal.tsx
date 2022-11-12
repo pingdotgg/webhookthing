@@ -58,7 +58,7 @@ export const Modal: React.FC<{
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block text-left align-bottom sm:align-middle">
+            <div className="relative inline-block w-1/3 text-left align-bottom sm:align-middle">
               {children}
             </div>
           </Transition.Child>
@@ -141,7 +141,7 @@ const ConfirmationModal: React.FC<
         {icon && (
           <div
             className={classNames(
-              "mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full border sm:mx-0 sm:h-10 sm:w-10",
+              "mx-auto flex h-12 shrink-0 items-center justify-center rounded-full border sm:mx-0 sm:h-10",
               {
                 "border-gray-700 bg-gray-600": variant === "primary",
                 "border-red-700 bg-red-600": variant === "danger",
