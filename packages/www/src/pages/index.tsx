@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowPathIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 import { trpc } from "../utils/trpc";
-import type { RequestObject } from "@prisma/client";
+import type { RequestObject, Destination } from "@prisma/client";
 import { useRequireAuth } from "../utils/use-require-auth";
 import SplitButtonDropdown from "../components/common/button";
 
@@ -25,6 +25,7 @@ const Home: NextPage = () => {
 
   const { data: session, status } = useSession();
   const { data: requests } = trpc.customer.allWebRequests.useQuery();
+  const { data: destinations } = trpc.customer.allDestinations.useQuery();
 
   const [selectedRequest, setSelectedRequest] = useState("");
 
@@ -105,6 +106,7 @@ const Home: NextPage = () => {
             {requests && (
               <RequestInfo
                 request={requests.find((r) => r.id === selectedRequest)}
+                destinations={destinations ?? []}
               />
             )}
           </section>
@@ -118,7 +120,8 @@ export default Home;
 
 const RequestInfo: React.FC<{
   request?: RequestObject;
-}> = ({ request }) => {
+  destinations: Destination[];
+}> = ({ request, destinations }) => {
   if (!request) {
     return (
       <div className="overflow-hidden bg-white shadow sm:rounded-lg">
@@ -137,6 +140,7 @@ const RequestInfo: React.FC<{
   }
 
   const { mutate: replay } = trpc.webhook.replay.useMutation({});
+  const { mutate: getCurl, data } = trpc.webhook.getCurl.useMutation({});
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">
@@ -153,46 +157,33 @@ const RequestInfo: React.FC<{
             onClick={() => {
               replay({ id: request.id });
             }}
-            items={[
-              {
-                name: "destination1",
+            items={(destinations ?? []).map((d) => {
+              return {
+                name: d.name,
                 action: () => {
-                  const { data } = trpc.webhook.getCurl.useQuery({
+                  replay({
                     id: request.id,
-                    destination: "destination1",
+                    destinations: [d.id],
                   });
-
-                  if (data) navigator.clipboard.writeText(data.curlCommand);
                 },
-              },
-            ]}
+              };
+            })}
           />
           <SplitButtonDropdown
             label="Copy cURL"
             icon={<ClipboardIcon className="test-white h-4 w-4" />}
-            items={[
-              {
-                name: "destination1",
+            items={(destinations ?? []).map((d) => {
+              return {
+                name: d.name,
                 action: () => {
-                  const { data } = trpc.webhook.getCurl.useQuery({
+                  getCurl({
                     id: request.id,
-                    destination: "destination1",
-                  });
-
-                  if (data) navigator.clipboard.writeText(data.curlCommand);
-                },
-              },
-              {
-                name: "destination2",
-                action: () => {
-                  const { data } = trpc.webhook.getCurl.useQuery({
-                    id: request.id,
-                    destination: "destination2",
+                    destination: d.name,
                   });
                   if (data) navigator.clipboard.writeText(data.curlCommand);
                 },
-              },
-            ]}
+              };
+            })}
           />
         </div>
       </div>

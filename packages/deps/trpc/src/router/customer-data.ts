@@ -37,6 +37,19 @@ export const customerRouter = t.router({
       },
     });
   }),
+  allDestinations: t.procedure.query(({ ctx }) => {
+    return ctx.prisma.destination.findMany({
+      where: {
+        project: {
+          Members: {
+            some: {
+              userId: ctx.session?.user?.id,
+            },
+          },
+        },
+      },
+    });
+  }),
   projectById: t.procedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {

@@ -4,7 +4,9 @@ import { JSONObject } from "superjson/dist/types";
 
 export const webhookRouter = t.router({
   replay: t.procedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({ id: z.string(), destinations: z.array(z.string()).optional() })
+    )
     .mutation(async ({ ctx, input }) => {
       const request = await ctx.prisma.requestObject.findUnique({
         where: {
@@ -14,7 +16,7 @@ export const webhookRouter = t.router({
       if (!request) {
         throw new Error("Request not found");
       }
-      const forwardingUrls = await ctx.prisma.destination
+      let forwardingUrls = await ctx.prisma.destination
         .findMany({
           where: {
             projectId: request.projectId,
@@ -23,6 +25,13 @@ export const webhookRouter = t.router({
         .then((destinations) =>
           destinations.map((destination) => destination.url)
         );
+
+      // If destinations are specified, only forward to those
+      if (input.destinations) {
+        forwardingUrls = forwardingUrls.filter((url) =>
+          input.destinations?.includes(url)
+        );
+      }
 
       // replay the request to all destinations
       await Promise.all(
@@ -39,7 +48,7 @@ export const webhookRouter = t.router({
     }),
   getCurl: t.procedure
     .input(z.object({ id: z.string(), destination: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const request = await ctx.prisma.requestObject.findUnique({
         where: {
           id: input.id,
