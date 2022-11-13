@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { trpc } from "../utils/trpc";
 import type { RequestObject } from "@prisma/client";
 import { useRequireAuth } from "../utils/use-require-auth";
+import SplitButtonDropdown from "../components/common/button";
 
 const METHOD_COLORS = {
   GET: "bg-blue-500",
@@ -135,6 +136,8 @@ const RequestInfo: React.FC<{
     );
   }
 
+  const { mutate: replay } = trpc.webhook.replay.useMutation({});
+
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">
       <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between py-3 sm:flex-nowrap sm:px-6">
@@ -147,16 +150,39 @@ const RequestInfo: React.FC<{
           <button
             type="button"
             className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            onClick={() => {
+              replay({ id: request.id });
+            }}
           >
             <ArrowPathIcon className="test-white h-4 w-4" /> Replay
           </button>
-          <button
-            type="button"
-            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <ClipboardIcon className="test-white h-4 w-4" />
-            Copy cURL
-          </button>
+          <SplitButtonDropdown
+            label="Copy cURL"
+            icon={<ClipboardIcon className="test-white h-4 w-4" />}
+            items={[
+              {
+                name: "destination1",
+                action: () => {
+                  const { data } = trpc.webhook.getCurl.useQuery({
+                    id: request.id,
+                    destination: "destination1",
+                  });
+
+                  if (data) navigator.clipboard.writeText(data.curlCommand);
+                },
+              },
+              {
+                name: "destination2",
+                action: () => {
+                  const { data } = trpc.webhook.getCurl.useQuery({
+                    id: request.id,
+                    destination: "destination2",
+                  });
+                  if (data) navigator.clipboard.writeText(data.curlCommand);
+                },
+              },
+            ]}
+          />
         </div>
       </div>
       <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
