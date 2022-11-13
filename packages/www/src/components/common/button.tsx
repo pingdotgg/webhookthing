@@ -12,17 +12,30 @@ export default function SplitButtonDropdown({
   items,
   label,
   icon,
+  onClick,
 }: {
   items: ListItem[];
   label: string;
   icon?: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
     <div className="inline-flex rounded-md shadow-sm">
-      <div className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
-        {icon}
-        {label}
-      </div>
+      {onClick ? (
+        <button
+          onClick={onClick}
+          className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          {icon}
+          {label}
+        </button>
+      ) : (
+        <div className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
+          {icon}
+          {label}
+        </div>
+      )}
+
       <Menu as="div" className="relative -ml-px block">
         <Menu.Button className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
           <span className="sr-only">Open options</span>

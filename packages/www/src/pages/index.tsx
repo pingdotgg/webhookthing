@@ -147,15 +147,26 @@ const RequestInfo: React.FC<{
           </h3>
         </div>
         <div className="ml-4 mt-2 flex flex-shrink-0 gap-1">
-          <button
-            type="button"
-            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          <SplitButtonDropdown
+            label="Replay"
+            icon={<ArrowPathIcon className="test-white h-4 w-4" />}
             onClick={() => {
               replay({ id: request.id });
             }}
-          >
-            <ArrowPathIcon className="test-white h-4 w-4" /> Replay
-          </button>
+            items={[
+              {
+                name: "destination1",
+                action: () => {
+                  const { data } = trpc.webhook.getCurl.useQuery({
+                    id: request.id,
+                    destination: "destination1",
+                  });
+
+                  if (data) navigator.clipboard.writeText(data.curlCommand);
+                },
+              },
+            ]}
+          />
           <SplitButtonDropdown
             label="Copy cURL"
             icon={<ClipboardIcon className="test-white h-4 w-4" />}
