@@ -1,12 +1,11 @@
 // src/server/router/index.ts
 import { t } from "../trpc";
 import { customerRouter } from "./customer-data";
-
-import { postRouter } from "./post";
+import { webhookRouter } from "./webhooks";
 
 export const appRouter = t.router({
-  post: postRouter,
   customer: customerRouter,
+  webhook: webhookRouter,
 });
 
 // export type definition of API
