@@ -80,15 +80,34 @@ const injest = async (req: NextRequest) => {
 
   console.log(destinations);
 
-  // await Promise.all(
-  //   destinations.map(async (destination) => {
-  //     await fetch(destination.url, {
-  //       method: data.method,
-  //       headers: JSON.parse(data.headers),
-  //       body: data.body,
-  //     });
-  //   })
-  // );
+  await Promise.all(
+    destinations.map(async (dest) => {
+      const url = dest.url;
+
+      const fwdHost = url.match(
+        /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im
+      )?.[1] as string;
+
+      const options = ["GET", "HEAD"].includes(data.method)
+        ? {
+            method: data.method,
+            headers: {
+              ...JSON.parse(data.headers),
+              host: fwdHost,
+            },
+          }
+        : {
+            method: data.method,
+            headers: {
+              ...JSON.parse(data.headers),
+              host: fwdHost,
+            },
+            body: data.body,
+          };
+
+      await fetch(url, options);
+    })
+  );
 
   return NextResponse.next({ status: 200 });
 };
