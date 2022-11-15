@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { ArrowPathIcon, ClipboardIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
+
 import { trpc } from "../utils/trpc";
-import type { RequestObject, Destination } from "@prisma/client";
 import { useRequireAuth } from "../utils/use-require-auth";
 import SplitButtonDropdown from "../components/common/button";
+
+import type { RequestObject, Destination } from "@prisma/client";
 
 const METHOD_COLORS = {
   GET: "bg-blue-500",
@@ -140,7 +142,6 @@ const RequestInfo: React.FC<{
   }
 
   const { mutate: replay } = trpc.webhook.replay.useMutation({});
-  const { mutate: getCurl, data } = trpc.webhook.getCurl.useMutation({});
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">
@@ -165,22 +166,6 @@ const RequestInfo: React.FC<{
                     id: request.id,
                     destinations: [d.id],
                   });
-                },
-              };
-            })}
-          />
-          <SplitButtonDropdown
-            label="Copy cURL"
-            icon={<ClipboardIcon className="test-white h-4 w-4" />}
-            items={(destinations ?? []).map((d) => {
-              return {
-                name: d.name,
-                action: () => {
-                  getCurl({
-                    id: request.id,
-                    destination: d.name,
-                  });
-                  if (data) navigator.clipboard.writeText(data.curlCommand);
                 },
               };
             })}

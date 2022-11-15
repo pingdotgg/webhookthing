@@ -46,31 +46,4 @@ export const webhookRouter = t.router({
 
       return { success: true };
     }),
-  getCurl: t.procedure
-    .input(z.object({ id: z.string(), destination: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const request = await ctx.prisma.requestObject.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
-      if (!request) {
-        throw new Error("Request not found");
-      }
-      const destination = await ctx.prisma.destination.findUnique({
-        where: {
-          id: input.destination,
-        },
-      });
-      if (!destination) {
-        throw new Error("Destination not found");
-      }
-
-      // generate curl command string from request
-      const curlCommand = `curl -X ${request.method} -H "${Object.entries(
-        request.headers as JSONObject
-      )}" ${destination.url} -d ${request.body}`;
-
-      return { curlCommand };
-    }),
 });
