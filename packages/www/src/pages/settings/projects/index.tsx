@@ -12,13 +12,13 @@ const ProjectsSettings: NextPage = () => {
   useRequireAuth();
 
   const { data: session, status } = useSession();
-  const utils = trpc.useContext();
+  const tCtx = trpc.useContext();
 
   const { data: projects } = trpc.customer.allProjects.useQuery();
 
   const { mutate: deleteProjects } = trpc.customer.deleteProjects.useMutation({
     onSuccess: () => {
-      utils.customer.allProjects.invalidate();
+      tCtx.customer.allProjects.invalidate();
     },
   });
 
