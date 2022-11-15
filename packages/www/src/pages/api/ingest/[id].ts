@@ -19,11 +19,14 @@ const injest = async (req: NextRequest) => {
       { status: 400 }
     );
   }
+  console.log("projectId", projectId);
 
   // confirm project exists
   const project = await conn.execute("SELECT * FROM Project WHERE id = ?", [
     projectId,
   ]);
+
+  console.log("project", project);
 
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
@@ -43,6 +46,7 @@ const injest = async (req: NextRequest) => {
   // TODO: this should probably do different things based on the content-type
   const parsedBody = await req.text();
 
+  console.log("parsedBody", parsedBody);
   const data = {
     id: nanoid(),
     host: host ?? "",
@@ -53,7 +57,7 @@ const injest = async (req: NextRequest) => {
     size: size ?? 0,
   };
 
-  await conn.execute(
+  const dbWrite = await conn.execute(
     "INSERT INTO RequestObject (projectId, id, host, endpoint, method, headers, body, size) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     [
       projectId,
@@ -67,11 +71,12 @@ const injest = async (req: NextRequest) => {
     ]
   );
 
+  console.log("dbWrite", dbWrite);
+
   // TODO: Forward request to all destinations for this project
-  const destinations = (await conn.execute(
-    "SELECT * FROM destinations WHERE projectId = ?",
-    [projectId]
-  )) as unknown as Destination[];
+  const destinations = (await conn
+    .execute("SELECT * FROM Destination WHERE projectId = ?", [projectId])
+    .then((res) => res.rows)) as unknown as Destination[];
 
   console.log(destinations);
 

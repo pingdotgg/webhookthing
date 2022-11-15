@@ -36,11 +36,28 @@ export const webhookRouter = t.router({
       // replay the request to all destinations
       await Promise.all(
         forwardingUrls.map(async (url) => {
-          await fetch(url, {
-            method: request.method,
-            headers: (request.headers as HeadersInit) ?? {}, // TODO: types?
-            body: request.body,
-          });
+          const fwdHost = url.match(
+            /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im
+          )?.[1] as string;
+
+          const options = ["GET", "HEAD"].includes(request.method)
+            ? {
+                method: request.method,
+                headers: {
+                  ...(request.headers as HeadersInit),
+                  host: fwdHost,
+                },
+              }
+            : {
+                method: request.method,
+                headers: {
+                  ...(request.headers as HeadersInit),
+                  host: fwdHost,
+                },
+                body: request.body,
+              };
+
+          await fetch(url, options);
         })
       );
 
