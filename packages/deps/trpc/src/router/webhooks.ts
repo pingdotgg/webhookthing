@@ -16,22 +16,26 @@ export const webhookRouter = t.router({
       if (!request) {
         throw new Error("Request not found");
       }
-      let forwardingUrls = await ctx.prisma.destination
+      let forwardingUrls = (await ctx.prisma.destination
         .findMany({
           where: {
             projectId: request.projectId,
           },
         })
         .then((destinations) =>
-          destinations.map((destination) => destination.url)
-        );
-
-      // If destinations are specified, only forward to those
-      if (input.destinations) {
-        forwardingUrls = forwardingUrls.filter((url) =>
-          input.destinations?.includes(url)
-        );
-      }
+          destinations
+            .map((destination) => {
+              // If destinations are specified, only forward to those
+              if (input.destinations) {
+                if (input.destinations.includes(destination.id)) {
+                  return destination.url;
+                }
+              } else {
+                return destination.url;
+              }
+            })
+            .filter((x) => x !== undefined)
+        )) as string[];
 
       // replay the request to all destinations
       await Promise.all(
