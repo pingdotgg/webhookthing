@@ -91,7 +91,7 @@ const useModalStore = create<ModalStoreState>((set) => ({
 }));
 
 export const useConfirmationModal = (options: ConfirmationModalOptions) => {
-  const setContent = useModalStore((s) => s.setContent);
+  const { setContent } = useModalStore();
   const { onConfirm, ...rest } = options;
   const trigger = () => {
     setContent(
@@ -109,7 +109,7 @@ export const useConfirmationModal = (options: ConfirmationModalOptions) => {
 };
 
 export const ModalContainer: React.FC = () => {
-  const [content, setContent] = useModalStore((s) => [s.content, s.setContent]);
+  const { content, setContent } = useModalStore();
   return (
     <Modal openState={[!!content, (open) => !open && setContent(undefined)]}>
       {content}
