@@ -206,21 +206,29 @@ const RequestInfo: React.FC<{
             <dd className="mt-1 text-sm text-gray-900">
               <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 p-2">
                 <ul role="list" className="divide-y divide-gray-200">
-                  {Object.entries(request.headers ?? {}).map(([key, value]) => (
-                    <li
-                      key={key}
-                      className="flex items-center justify-between py-1.5 pl-3 pr-4 font-mono text-sm odd:bg-gray-100"
-                    >
-                      <div className="flex w-0 flex-1 items-center">
-                        <span className="ml-2 w-0 flex-1 text-ellipsis">
-                          {key}
-                        </span>
-                      </div>
-                      <div className="ml-4 w-2/3 flex-shrink-0 text-ellipsis">
-                        {value}
-                      </div>
-                    </li>
-                  ))}
+                  {Object.entries(request.headers ?? {}).length > 0 ? (
+                    Object.entries(request.headers ?? {}).map(
+                      ([key, value]) => (
+                        <li
+                          key={key}
+                          className="flex items-center justify-between py-1.5 pl-3 pr-4 font-mono text-sm odd:bg-gray-100"
+                        >
+                          <div className="flex w-0 flex-1 items-center">
+                            <span className="ml-2 w-0 flex-1 text-ellipsis">
+                              {key}
+                            </span>
+                          </div>
+                          <div className="ml-4 w-2/3 flex-shrink-0 text-ellipsis">
+                            {value}
+                          </div>
+                        </li>
+                      )
+                    )
+                  ) : (
+                    <span className="font-sans text-gray-400">
+                      Request has no headers.
+                    </span>
+                  )}
                 </ul>
               </div>
             </dd>
@@ -228,10 +236,14 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Body</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className="max-h-[35vh] overflow-y-auto whitespace-pre rounded-md bg-gray-100 p-2 font-mono">
-                {request.body
-                  ? JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
-                  : "Request has no body"}
+              <div className="max-h-[35vh] overflow-y-auto whitespace-pre rounded-md border border-gray-200 p-2 font-mono">
+                {request.body ? (
+                  JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
+                ) : (
+                  <span className="font-sans text-gray-400">
+                    Request has no body.
+                  </span>
+                )}
               </div>
             </dd>
           </div>
