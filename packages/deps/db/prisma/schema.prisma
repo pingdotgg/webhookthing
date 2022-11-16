@@ -9,20 +9,6 @@ generator client {
     previewFeatures = ["referentialIntegrity"]
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
-model Project {
-    id String @id
-
-    name String
-
-    ownerId       String
-    owner         User            @relation(fields: [ownerId], references: [id])
-    RequestObject RequestObject[]
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -51,14 +37,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String          @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?         @unique
     emailVerified DateTime?
-    image         String?   @db.Text
+    image         String?         @db.Text
     accounts      Account[]
     sessions      Session[]
-    Project       Project[]
+    Projects      ProjectMember[]
 }
 
 model VerificationToken {
@@ -67,6 +53,50 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// permissions stuff
+model Project {
+    id   String @id @default(cuid())
+    name String
+
+    Members        ProjectMember[]
+    PendingMembers PendingProjectMember[]
+
+    RequestObject RequestObject[]
+
+    Sources        Source[]
+    Destinations   Destination[]
+    LocalListeners LocalListener[]
+}
+
+enum ROLE {
+    OWNER
+    ADMIN
+    VIEWER
+}
+
+model ProjectMember {
+    role ROLE
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@unique([projectId, userId])
+}
+
+model PendingProjectMember {
+    role ROLE
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+
+    email String
+
+    @@unique([projectId, email])
 }
 
 // app stuff
@@ -91,6 +121,34 @@ model RequestObject {
     body      String?      @db.Text
     timestamp DateTime     @default(now())
     size      Int
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+}
+
+model Source {
+    id     String @id @default(cuid())
+    name   String
+    domain String
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+}
+
+model Destination {
+    id   String @id @default(cuid())
+    name String
+    url  String
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [id])
+}
+
+model LocalListener {
+    id       String   @id @default(cuid())
+    name     String
+    key      String
+    lastSeen DateTime
 
     projectId String
     project   Project @relation(fields: [projectId], references: [id])

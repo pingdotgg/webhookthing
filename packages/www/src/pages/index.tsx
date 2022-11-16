@@ -1,10 +1,14 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { ArrowPathIcon, ClipboardIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
+
 import { trpc } from "../utils/trpc";
-import type { RequestObject } from "@prisma/client";
+import { useRequireAuth } from "../utils/use-require-auth";
+import SplitButtonDropdown from "../components/common/button";
+
+import type { RequestObject, Destination } from "@prisma/client";
 
 const METHOD_COLORS = {
   GET: "bg-blue-500",
@@ -19,8 +23,11 @@ const METHOD_COLORS = {
 };
 
 const Home: NextPage = () => {
+  useRequireAuth();
+
   const { data: session, status } = useSession();
-  const { data: requests } = trpc.post.all.useQuery();
+  const { data: requests } = trpc.customer.allWebRequests.useQuery();
+  const { data: destinations } = trpc.customer.allDestinations.useQuery();
 
   const [selectedRequest, setSelectedRequest] = useState("");
 
@@ -101,6 +108,7 @@ const Home: NextPage = () => {
             {requests && (
               <RequestInfo
                 request={requests.find((r) => r.id === selectedRequest)}
+                destinations={destinations ?? []}
               />
             )}
           </section>
@@ -114,7 +122,8 @@ export default Home;
 
 const RequestInfo: React.FC<{
   request?: RequestObject;
-}> = ({ request }) => {
+  destinations: Destination[];
+}> = ({ request, destinations }) => {
   if (!request) {
     return (
       <div className="overflow-hidden bg-white shadow sm:rounded-lg">
@@ -132,6 +141,8 @@ const RequestInfo: React.FC<{
     );
   }
 
+  const { mutate: replay } = trpc.webhook.replay.useMutation({});
+
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">
       <div className="-ml-4 -mt-2 flex flex-wrap items-center justify-between py-3 sm:flex-nowrap sm:px-6">
@@ -141,19 +152,24 @@ const RequestInfo: React.FC<{
           </h3>
         </div>
         <div className="ml-4 mt-2 flex flex-shrink-0 gap-1">
-          <button
-            type="button"
-            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <ArrowPathIcon className="test-white h-4 w-4" /> Replay
-          </button>
-          <button
-            type="button"
-            className="relative inline-flex items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <ClipboardIcon className="test-white h-4 w-4" />
-            Copy cURL
-          </button>
+          <SplitButtonDropdown
+            label="Replay"
+            icon={<ArrowPathIcon className="test-white h-4 w-4" />}
+            onClick={() => {
+              replay({ id: request.id });
+            }}
+            items={(destinations ?? []).map((d) => {
+              return {
+                name: d.name,
+                action: () => {
+                  replay({
+                    id: request.id,
+                    destinations: [d.id],
+                  });
+                },
+              };
+            })}
+          />
         </div>
       </div>
       <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
@@ -188,23 +204,31 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Headers</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 ">
+              <div className="max-h-[15vh] overflow-y-auto rounded-md border border-gray-200 p-2">
                 <ul role="list" className="divide-y divide-gray-200">
-                  {Object.entries(request.headers ?? {}).map(([key, value]) => (
-                    <li
-                      key={key}
-                      className="flex items-center justify-between py-1.5 pl-3 pr-4 font-mono text-sm odd:bg-gray-100"
-                    >
-                      <div className="flex w-0 flex-1 items-center">
-                        <span className="ml-2 w-0 flex-1 text-ellipsis">
-                          {key}
-                        </span>
-                      </div>
-                      <div className="ml-4 w-2/3 flex-shrink-0 text-ellipsis">
-                        {value}
-                      </div>
-                    </li>
-                  ))}
+                  {Object.entries(request.headers ?? {}).length > 0 ? (
+                    Object.entries(request.headers ?? {}).map(
+                      ([key, value]) => (
+                        <li
+                          key={key}
+                          className="flex items-center justify-between py-1.5 pl-3 pr-4 font-mono text-sm odd:bg-gray-100"
+                        >
+                          <div className="flex w-0 flex-1 items-center">
+                            <span className="ml-2 w-0 flex-1 text-ellipsis">
+                              {key}
+                            </span>
+                          </div>
+                          <div className="ml-4 w-2/3 flex-shrink-0 text-ellipsis">
+                            {value}
+                          </div>
+                        </li>
+                      )
+                    )
+                  ) : (
+                    <span className="font-sans text-gray-400">
+                      Request has no headers.
+                    </span>
+                  )}
                 </ul>
               </div>
             </dd>
@@ -212,10 +236,14 @@ const RequestInfo: React.FC<{
           <div className="sm:col-span-2">
             <dt className="text-sm font-medium text-gray-500">Body</dt>
             <dd className="mt-1 text-sm text-gray-900">
-              <div className=" max-h-[35vh] overflow-y-auto whitespace-pre rounded-md bg-gray-100 p-2 font-mono">
-                {request.body
-                  ? JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
-                  : "Request has no body"}
+              <div className="max-h-[35vh] overflow-y-auto whitespace-pre rounded-md border border-gray-200 p-2 font-mono">
+                {request.body ? (
+                  JSON.stringify(JSON.parse(request.body ?? "{}"), null, 2)
+                ) : (
+                  <span className="font-sans text-gray-400">
+                    Request has no body.
+                  </span>
+                )}
               </div>
             </dd>
           </div>

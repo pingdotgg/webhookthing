@@ -14,6 +14,8 @@
     "@captain/auth": "*",
     "@captain/db": "*",
     "@captain/trpc": "*",
+    "@formkit/auto-animate": "^1.0.0-beta.3",
+    "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.12",
     "@tanstack/react-query": "^4.7.2",
     "@trpc/client": "10.0.0-proxy-beta.25",
@@ -24,10 +26,12 @@
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "zod": "^3.19.1"
+    "zod": "^3.19.1",
+    "zustand": "^4.1.4"
   },
   "devDependencies": {
     "@planetscale/database": "^1.4.0",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^18.8.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
