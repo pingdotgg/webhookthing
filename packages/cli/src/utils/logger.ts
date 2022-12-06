@@ -14,3 +14,8 @@ export const logger = {
     console.log(chalk.green(...args));
   },
 };
+
+// formatters
+export const highlight = (text: string): string => {
+  return chalk.bold.underline(text);
+};

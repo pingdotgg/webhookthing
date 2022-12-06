@@ -19,8 +19,11 @@
     "fs-extra": "^10.1.0",
     "gradient-string": "^2.0.2",
     "inquirer": "^9.1.2",
+    "load-json-file": "^7.0.1",
     "ora": "6.1.2",
-    "sort-package-json": "^2.0.0"
+    "sort-package-json": "^2.0.0",
+    "write-json-file": "^5.0.0",
+    "xdg-app-paths": "^8.2.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
