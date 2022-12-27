@@ -3,12 +3,28 @@ import { runCli } from "./cli/index";
 import { logger } from "./utils/logger";
 import { renderTitle } from "./utils/renderTitle";
 
+import fastify from "fastify";
+
+const server = fastify();
+
+server.get("/api", async (request, reply) => {
+  return "pongin";
+});
+
 const main = async () => {
   renderTitle();
 
-  await runCli();  
+  server.listen({ port: 2033 }, (err, address) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    console.log(`Server listening at ${address}`);
+  });
 
-  process.exit(0);
+  await runCli();
+
+  // process.exit(0);
 };
 
 main().catch((err) => {
@@ -17,7 +33,7 @@ main().catch((err) => {
     logger.error(err);
   } else {
     logger.error(
-      "An unknown error has occurred. Please open an issue on github with the below:",
+      "An unknown error has occurred. Please open an issue on github with the below:"
     );
     console.log(err);
   }
