@@ -4,3 +4,4 @@ packages:
   - packages/deps/trpc
   - packages/deps/db
   - packages/cli
+  - packages/cli-web
