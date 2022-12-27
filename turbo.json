@@ -9,7 +9,7 @@
     },
     "build": {
       "dependsOn": ["^build", "^db-generate"],
-      "outputs": [".next/**"],
+      "outputs": [".next/**", "dist/**"],
       "env": ["DATABASE_HOST", "DATABASE_USERNAME", "DATABASE_PASSWORD"]
     },
     "lint": {

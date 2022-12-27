@@ -12,4 +12,8 @@ export default defineConfig({
   target: "esnext",
   outDir: "dist",
   onSuccess: isDev ? "node dist/index.js" : undefined,
+
+  publicDir: "../cli-web/dist",
+
+  noExternal: ["@captain/cli-web"],
 });

@@ -13,7 +13,10 @@
     "format:check": "prettier --check --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
+    "@captain/cli-web": "*",
+    "@captain/cli-api": "*",
     "@fastify/cors": "^8.2.0",
+    "@fastify/static": "^6.6.0",
     "chalk": "5.0.1",
     "commander": "^9.4.1",
     "execa": "^6.1.0",
@@ -32,7 +35,7 @@
     "@types/node": "^18.8.0",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
-    "tsup": "^6.2.3",
+    "tsup": "^6.5.0",
     "type-fest": "^3.0.0",
     "typescript": "^4.8.3"
   }
