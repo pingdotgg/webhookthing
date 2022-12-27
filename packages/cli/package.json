@@ -21,7 +21,8 @@
     "gradient-string": "^2.0.2",
     "inquirer": "^9.1.2",
     "ora": "6.1.2",
-    "sort-package-json": "^2.0.0"
+    "sort-package-json": "^2.0.0",
+    "@trpc/server": "10.0.0-proxy-beta.25"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",

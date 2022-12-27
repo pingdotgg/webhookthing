@@ -2,6 +2,7 @@ packages:
   - packages/www
   - packages/deps/auth
   - packages/deps/trpc
+  - packages/deps/cli-api
   - packages/deps/db
   - packages/cli
   - packages/cli-web

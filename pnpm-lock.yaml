@@ -18,6 +18,7 @@ importers:
 
   packages/cli:
     specifiers:
+      '@trpc/server': 10.0.0-proxy-beta.25
       '@types/fs-extra': ^9.0.13
       '@types/gradient-string': ^1.1.2
       '@types/inquirer': ^9.0.2
@@ -37,6 +38,7 @@ importers:
       type-fest: ^3.0.0
       typescript: ^4.8.3
     dependencies:
+      '@trpc/server': 10.0.0-proxy-beta.25
       chalk: 5.0.1
       commander: 9.4.1
       execa: 6.1.0
@@ -59,6 +61,7 @@ importers:
 
   packages/cli-web:
     specifiers:
+      '@captain/cli': '*'
       '@types/react': ^18.0.26
       '@types/react-dom': ^18.0.9
       '@vitejs/plugin-react': ^3.0.0
@@ -66,10 +69,13 @@ importers:
       react-dom: ^18.2.0
       typescript: ^4.9.3
       vite: ^4.0.0
+      zod: ^3.19.1
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      zod: 3.19.1
     devDependencies:
+      '@captain/cli': link:../cli
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
@@ -88,6 +94,21 @@ importers:
       next-auth: 4.14.0
     devDependencies:
       typescript: 4.8.4
+
+  packages/deps/cli-api:
+    specifiers:
+      '@trpc/client': 10.0.0-proxy-beta.25
+      '@trpc/server': 10.0.0-proxy-beta.25
+      superjson: ^1.10.1
+      typescript: ^4.8.3
+      zod: ^3.19.1
+    dependencies:
+      '@trpc/client': 10.0.0-proxy-beta.25_ndhcfffzalmz7qevgejzwgh3fi
+      '@trpc/server': 10.0.0-proxy-beta.25
+      superjson: 1.10.1
+      zod: 3.19.1
+    devDependencies:
+      typescript: 4.9.4
 
   packages/deps/db:
     specifiers:
