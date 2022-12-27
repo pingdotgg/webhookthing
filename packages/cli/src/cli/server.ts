@@ -10,10 +10,11 @@ server.register(cors, { origin: "*" });
 
 // Configure tRPC
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
-import { appRouter } from "./api";
+import { cliApiRouter } from "@captain/cli-api";
+
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
-  trpcOptions: { router: appRouter },
+  trpcOptions: { router: cliApiRouter },
 });
 
 import { fastifyStatic } from "@fastify/static";

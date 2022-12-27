@@ -1,6 +1,9 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
+
+import fs from "fs/promises";
+
 type User = {
   id: string;
   name: string;
@@ -12,6 +15,9 @@ export const t = initTRPC.create({
   transformer: superjson,
 });
 export const cliApiRouter = t.router({
+  getBlobs: t.procedure.query(async () => {
+    return await fs.readdir(process.cwd() + "/.captain/hooks");
+  }),
   getUserById: t.procedure.input(z.string()).query(({ input }) => {
     return users[input]; // input type is string
   }),

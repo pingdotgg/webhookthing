@@ -75,12 +75,14 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
+      superjson: ^1.12.1
       typescript: ^4.9.3
       vite: ^4.0.0
       zod: ^3.19.1
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      superjson: 1.12.1
       zod: 3.19.1
     devDependencies:
       '@captain/cli-api': link:../deps/cli-api
@@ -4749,6 +4751,13 @@ packages:
 
   /superjson/1.10.1:
     resolution: {integrity: sha512-7fvPVDHmkTKg6641B9c6vr6Zz5CwPtF9j0XFExeLxJxrMaeLU2sqebY3/yrI3l0K5zJ+H9QA3H+lIYj5ooCOkg==}
+    engines: {node: '>=10'}
+    dependencies:
+      copy-anything: 3.0.2
+    dev: false
+
+  /superjson/1.12.1:
+    resolution: {integrity: sha512-HMTj43zvwW5bD+JCZCvFf4DkZQCmiLTen4C+W1Xogj0SPOpnhxsriogM04QmBVGH5b3kcIIOr6FqQ/aoIDx7TQ==}
     engines: {node: '>=10'}
     dependencies:
       copy-anything: 3.0.2

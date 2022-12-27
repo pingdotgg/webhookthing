@@ -20,14 +20,9 @@ pnpm dev-cli
 
 ## TODO
 
-### Web UI
-
-- Project creation
-- Source/destination(s) management
-
 ### CLI
 
-- Pusher
-- Auth of some form
-- Input flow
-- Actual webhook forwarding
+- [ ] Fix asset serving in dev (or don't but remove public dir)
+- [ ] Bundle-ify
+- [ ] Build ux for reading json blobs
+- [ ] Build ux for calling json blobs

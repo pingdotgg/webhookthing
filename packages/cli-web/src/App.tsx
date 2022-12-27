@@ -20,10 +20,7 @@ function App() {
       <div className="card">
         <button
           onClick={async () => {
-            const res = await cliApiClient.createUser.mutate({
-              name: "test",
-              bio: "more",
-            });
+            const res = await cliApiClient.getBlobs.query();
             console.log(res);
             setCount((count) => count + 1);
           }}
