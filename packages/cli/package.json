@@ -3,17 +3,23 @@
   "version": "0.0.1",
   "type": "module",
   "main": "./src/index.ts",
+  "exports": "./dist/index.js",
+  "bin": {
+    "captain": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=14.16"
+  },
   "scripts": {
     "typecheck": "tsc",
-    "build": "tsup",
-    "dev-cli": "tsup --watch",
+    "build": "tsup --env.NODE_ENV production",
+    "dev-cli": "tsup --watch --env.NODE_ENV development",
     "clean": "rm -rf dist .turbo node_modules",
     "lint": "eslint",
     "format": "prettier --write --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore",
     "format:check": "prettier --check --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
-    "@captain/cli-web": "*",
     "@captain/cli-api": "*",
     "@fastify/cors": "^8.2.0",
     "@fastify/static": "^6.6.0",
@@ -21,14 +27,17 @@
     "commander": "^9.4.1",
     "execa": "^6.1.0",
     "fastify": "^4.10.2",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
+    "graceful-fs": "^4.2.10",
     "gradient-string": "^2.0.2",
     "inquirer": "^9.1.2",
     "ora": "6.1.2",
     "sort-package-json": "^2.0.0",
-    "@trpc/server": "10.0.0-proxy-beta.25"
+    "@trpc/server": "10.0.0-proxy-beta.25",
+    "universalify": "^2.0.0"
   },
   "devDependencies": {
+    "@captain/cli-web": "*",
     "@types/fs-extra": "^9.0.13",
     "@types/gradient-string": "^1.1.2",
     "@types/inquirer": "^9.0.2",

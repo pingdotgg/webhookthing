@@ -20,13 +20,13 @@ server.register(fastifyTRPCPlugin, {
 import { fastifyStatic } from "@fastify/static";
 import path from "path";
 
-const p = path.join(process.cwd(), "public");
-console.log("\n\n\n path?", p);
+const webPath = path.join(__dirname, "web");
+console.log(webPath);
 
 // serve static assets
 // TODO: Make this dynamic in dev
 server.register(fastifyStatic, {
-  root: path.join(process.cwd(), "web"),
+  root: webPath,
 });
 
 server.get("/api", async (request, reply) => {

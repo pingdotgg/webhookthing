@@ -31,7 +31,8 @@ importers:
       commander: ^9.4.1
       execa: ^6.1.0
       fastify: ^4.10.2
-      fs-extra: ^10.1.0
+      fs-extra: ^11.1.0
+      graceful-fs: ^4.2.10
       gradient-string: ^2.0.2
       inquirer: ^9.1.2
       ora: 6.1.2
@@ -41,9 +42,9 @@ importers:
       tsup: ^6.5.0
       type-fest: ^3.0.0
       typescript: ^4.8.3
+      universalify: ^2.0.0
     dependencies:
       '@captain/cli-api': link:../deps/cli-api
-      '@captain/cli-web': link:../cli-web
       '@fastify/cors': 8.2.0
       '@fastify/static': 6.6.0
       '@trpc/server': 10.0.0-proxy-beta.25
@@ -51,12 +52,15 @@ importers:
       commander: 9.4.1
       execa: 6.1.0
       fastify: 4.10.2
-      fs-extra: 10.1.0
+      fs-extra: 11.1.0
+      graceful-fs: 4.2.10
       gradient-string: 2.0.2
       inquirer: 9.1.4
       ora: 6.1.2
       sort-package-json: 2.0.0
+      universalify: 2.0.0
     devDependencies:
+      '@captain/cli-web': link:../cli-web
       '@types/fs-extra': 9.0.13
       '@types/gradient-string': 1.1.2
       '@types/inquirer': 9.0.2
@@ -2859,9 +2863,9 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /fs-extra/10.1.0:
-    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
-    engines: {node: '>=12'}
+  /fs-extra/11.1.0:
+    resolution: {integrity: sha512-0rcTq621PD5jM/e0a3EJoGC/1TC5ZBCERW82LQuwfGnCa1V8w7dpYH1yNu+SLb6E5dkeCBzKEyLGlFrnr+dUyw==}
+    engines: {node: '>=14.14'}
     dependencies:
       graceful-fs: 4.2.10
       jsonfile: 6.1.0

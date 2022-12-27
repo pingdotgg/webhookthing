@@ -15,5 +15,7 @@ export default defineConfig({
 
   publicDir: "../cli-web/dist",
 
+  shims: true,
+
   noExternal: ["@captain/cli-api"],
 });
