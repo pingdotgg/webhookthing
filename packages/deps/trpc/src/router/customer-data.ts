@@ -1,58 +1,65 @@
-import { t } from "../trpc";
 import { z } from "zod";
 
-export const customerRouter = t.router({
-  allWebRequests: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.requestObject.findMany({
-      where: {
-        project: {
+import { createRouter } from "./context";
+
+export const customerRouter = createRouter()
+  .query("allWebRequests", {
+    resolve: async ({ ctx }) => {
+      return ctx.prisma.requestObject.findMany({
+        where: {
+          project: {
+            Members: {
+              some: {
+                userId: ctx.session?.user?.id,
+              },
+            },
+          },
+        },
+        orderBy: { timestamp: "desc" },
+      });
+    },
+  })
+  .query("allProjects", {
+    resolve: async ({ ctx }) => {
+      return ctx.prisma.project.findMany({
+        where: {
           Members: {
             some: {
               userId: ctx.session?.user?.id,
+              role: {
+                in: ["OWNER", "ADMIN"],
+              },
             },
           },
         },
-      },
-      orderBy: { timestamp: "desc" },
-    });
-  }),
-  allProjects: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.project.findMany({
-      where: {
-        Members: {
-          some: {
-            userId: ctx.session?.user?.id,
-            role: {
-              in: ["OWNER", "ADMIN"],
-            },
-          },
-        },
-      },
-      include: {
-        Members: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-  }),
-  allDestinations: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.destination.findMany({
-      where: {
-        project: {
+        include: {
           Members: {
-            some: {
-              userId: ctx.session?.user?.id,
+            include: {
+              user: true,
             },
           },
         },
-      },
-    });
-  }),
-  projectById: t.procedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
+      });
+    },
+  })
+  .query("allDestinations", {
+    resolve: async ({ ctx }) => {
+      return ctx.prisma.destination.findMany({
+        where: {
+          project: {
+            Members: {
+              some: {
+                userId: ctx.session?.user?.id,
+              },
+            },
+          },
+        },
+      });
+    },
+  })
+  .query("projectById", {
+    input: z.object({ id: z.string() }),
+    resolve: async ({ ctx, input }) => {
       return ctx.prisma.project.findUnique({
         where: {
           id: input.id,
@@ -70,10 +77,21 @@ export const customerRouter = t.router({
           LocalListeners: true,
         },
       });
-    }),
-  createProject: t.procedure
-    .input(z.object({ name: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    },
+  })
+  .query("getSourceById", {
+    input: z.object({ id: z.string() }),
+    resolve: async ({ ctx, input }) => {
+      return ctx.prisma.source.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    },
+  })
+  .mutation("createProject", {
+    input: z.object({ name: z.string() }),
+    resolve: async ({ ctx, input }) => {
       const project = await ctx.prisma.project.create({
         data: {
           name: input.name,
@@ -89,12 +107,12 @@ export const customerRouter = t.router({
           },
         },
       });
-
       return project;
-    }),
-  deleteProjects: t.procedure
-    .input(z.object({ idsToDelete: z.array(z.string()) }))
-    .mutation(async ({ ctx, input }) => {
+    },
+  })
+  .mutation("deleteProjects", {
+    input: z.object({ idsToDelete: z.array(z.string()) }),
+    resolve: async ({ ctx, input }) => {
       // Delete everything associated with the project first
       await ctx.prisma.requestObject.deleteMany({
         where: {
@@ -146,27 +164,16 @@ export const customerRouter = t.router({
           },
         },
       });
-
       return true;
+    },
+  })
+  .mutation("createSource", {
+    input: z.object({
+      projectId: z.string(),
+      name: z.string(),
+      domain: z.string(),
     }),
-  getSourceById: t.procedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return ctx.prisma.source.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
-    }),
-  createSource: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        name: z.string(),
-        domain: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const source = await ctx.prisma.source.create({
         data: {
           name: input.name,
@@ -178,18 +185,16 @@ export const customerRouter = t.router({
           },
         },
       });
-
       return source;
+    },
+  })
+  .mutation("updateSource", {
+    input: z.object({
+      id: z.string(),
+      name: z.string(),
+      domain: z.string(),
     }),
-  updateSource: t.procedure
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        domain: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const source = await ctx.prisma.source.update({
         where: {
           id: input.id,
@@ -199,25 +204,25 @@ export const customerRouter = t.router({
           domain: input.domain,
         },
       });
-    }),
-  deleteSource: t.procedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    },
+  })
+  .mutation("deleteSource", {
+    input: z.object({ id: z.string() }),
+    resolve: async ({ ctx, input }) => {
       const source = await ctx.prisma.source.delete({
         where: {
           id: input.id,
         },
       });
+    },
+  })
+  .mutation("createDestination", {
+    input: z.object({
+      projectId: z.string(),
+      name: z.string(),
+      url: z.string(),
     }),
-  createDestination: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        name: z.string(),
-        url: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const destination = await ctx.prisma.destination.create({
         data: {
           name: input.name,
@@ -231,16 +236,15 @@ export const customerRouter = t.router({
       });
 
       return destination;
+    },
+  })
+  .mutation("updateDestination", {
+    input: z.object({
+      id: z.string(),
+      name: z.string(),
+      url: z.string(),
     }),
-  updateDestination: t.procedure
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        url: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const destination = await ctx.prisma.destination.update({
         where: {
           id: input.id,
@@ -250,36 +254,35 @@ export const customerRouter = t.router({
           url: input.url,
         },
       });
-    }),
-
-  deleteDestination: t.procedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    },
+  })
+  .mutation("deleteDestination", {
+    input: z.object({ id: z.string() }),
+    resolve: async ({ ctx, input }) => {
       const destination = await ctx.prisma.destination.delete({
         where: {
           id: input.id,
         },
       });
-    }),
-  deleteListener: t.procedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
+    },
+  })
+  .mutation("deleteListener", {
+    input: z.object({ id: z.string() }),
+    resolve: async ({ ctx, input }) => {
       const listener = await ctx.prisma.localListener.delete({
         where: {
           id: input.id,
         },
       });
+    },
+  })
+  .mutation("addMemberToProject", {
+    input: z.object({
+      projectId: z.string(),
+      email: z.string(),
+      role: z.enum(["ADMIN", "VIEWER"]),
     }),
-
-  addMemberToProject: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        email: z.string(),
-        role: z.enum(["ADMIN", "VIEWER"]),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
         where: {
           email: input.email,
@@ -323,15 +326,14 @@ export const customerRouter = t.router({
       });
 
       return member;
+    },
+  })
+  .mutation("removeMemberFromProject", {
+    input: z.object({
+      projectId: z.string(),
+      userId: z.string(),
     }),
-  removeMemberFromProject: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        userId: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const member = await ctx.prisma.projectMember.delete({
         where: {
           projectId_userId: {
@@ -342,16 +344,15 @@ export const customerRouter = t.router({
       });
 
       return member;
+    },
+  })
+  .mutation("updateMemberRole", {
+    input: z.object({
+      projectId: z.string(),
+      userId: z.string(),
+      role: z.enum(["ADMIN", "VIEWER"]),
     }),
-  updateMemberRole: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        userId: z.string(),
-        role: z.enum(["ADMIN", "VIEWER"]),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const member = await ctx.prisma.projectMember.update({
         where: {
           projectId_userId: {
@@ -365,15 +366,14 @@ export const customerRouter = t.router({
       });
 
       return member;
+    },
+  })
+  .mutation("removePendingMember", {
+    input: z.object({
+      projectId: z.string(),
+      email: z.string(),
     }),
-  removePendingMember: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        email: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const member = await ctx.prisma.pendingProjectMember.delete({
         where: {
           projectId_email: {
@@ -384,16 +384,15 @@ export const customerRouter = t.router({
       });
 
       return member;
+    },
+  })
+  .mutation("updatePendingMemberRole", {
+    input: z.object({
+      projectId: z.string(),
+      email: z.string(),
+      role: z.enum(["ADMIN", "VIEWER"]),
     }),
-  updatePendingMemberRole: t.procedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        email: z.string(),
-        role: z.enum(["ADMIN", "VIEWER"]),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
+    resolve: async ({ ctx, input }) => {
       const member = await ctx.prisma.pendingProjectMember.update({
         where: {
           projectId_email: {
@@ -407,5 +406,5 @@ export const customerRouter = t.router({
       });
 
       return member;
-    }),
-});
+    },
+  });
