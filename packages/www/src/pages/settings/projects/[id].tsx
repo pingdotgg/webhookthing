@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Avatar } from "../../../components/common/avatar";
-import { trpc } from "../../../utils/trpc";
+import { api } from "../../../utils/api";
 import { Modal } from "../../../components/common/modal";
 import { useRequireAuth } from "../../../utils/use-require-auth";
 import type { Source, Destination } from "@prisma/client";
@@ -18,31 +18,31 @@ export default function ProjectSettings() {
   useRequireAuth();
 
   const id = useRouter().asPath.split("/").pop() as string;
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const { data: session, status } = useSession();
 
-  const { data: project } = trpc.customer.projectById.useQuery({ id });
+  const { data: project } = api.customer.projectById.useQuery({ id });
 
   // mutations
-  const { mutate: deleteSource } = trpc.customer.deleteSource.useMutation({
+  const { mutate: deleteSource } = api.customer.deleteSource.useMutation({
     onSuccess: () => {
       utils.customer.projectById.invalidate({ id });
     },
   });
   const { mutate: deleteDestination } =
-    trpc.customer.deleteDestination.useMutation({
+    api.customer.deleteDestination.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id });
       },
     });
-  const { mutate: deleteListener } = trpc.customer.deleteListener.useMutation({
+  const { mutate: deleteListener } = api.customer.deleteListener.useMutation({
     onSuccess: () => {
       utils.customer.projectById.invalidate({ id });
     },
   });
 
-  const { mutate: addMember } = trpc.customer.addMemberToProject.useMutation({
+  const { mutate: addMember } = api.customer.addMemberToProject.useMutation({
     onSuccess: () => {
       utils.customer.projectById.invalidate({ id });
       setAddMemberRole("VIEWER");
@@ -51,21 +51,21 @@ export default function ProjectSettings() {
   });
 
   const { mutate: removePendingMember } =
-    trpc.customer.removePendingMember.useMutation({
+    api.customer.removePendingMember.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id });
       },
     });
 
   const { mutate: updateMemberRole } =
-    trpc.customer.updateMemberRole.useMutation({
+    api.customer.updateMemberRole.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id });
       },
     });
 
   const { mutate: updatePendingMemberRole } =
-    trpc.customer.updatePendingMemberRole.useMutation({
+    api.customer.updatePendingMemberRole.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id });
       },
@@ -519,12 +519,12 @@ const CreateSourceModal: React.FC<{
   projectId: string;
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
 }> = ({ openState, projectId }) => {
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const [sourceName, setSourceName] = useState("");
   const [domain, setDomain] = useState("");
 
-  const { mutate: createSource } = trpc.customer.createSource.useMutation({
+  const { mutate: createSource } = api.customer.createSource.useMutation({
     onSuccess: () => {
       utils.customer.projectById.invalidate({ id: projectId });
       setSourceName("");
@@ -604,12 +604,12 @@ const EditSourceModal: React.FC<{
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
   selectedSource: { name: string; domain: string; id: string } | null;
 }> = ({ openState, projectId, selectedSource }) => {
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const [sourceName, setSourceName] = useState(selectedSource?.name);
   const [domain, setDomain] = useState(selectedSource?.domain);
 
-  const { mutate: updateSource } = trpc.customer.updateSource.useMutation({
+  const { mutate: updateSource } = api.customer.updateSource.useMutation({
     onSuccess: () => {
       utils.customer.projectById.invalidate({ id: projectId });
       openState[1](false);
@@ -694,13 +694,13 @@ const CreateDestinationModal: React.FC<{
   projectId: string;
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
 }> = ({ openState, projectId }) => {
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const [destinationName, setDestinationName] = useState("");
   const [url, setUrl] = useState("");
 
   const { mutate: createDestination } =
-    trpc.customer.createDestination.useMutation({
+    api.customer.createDestination.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id: projectId });
         setDestinationName("");
@@ -784,7 +784,7 @@ const EditDestinationModal: React.FC<{
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
   selectedDestination: { name: string; url: string; id: string } | null;
 }> = ({ openState, projectId, selectedDestination }) => {
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const [destinationName, setDestinationName] = useState(
     selectedDestination?.name
@@ -792,7 +792,7 @@ const EditDestinationModal: React.FC<{
   const [url, setUrl] = useState(selectedDestination?.url);
 
   const { mutate: updateDestination } =
-    trpc.customer.updateDestination.useMutation({
+    api.customer.updateDestination.useMutation({
       onSuccess: () => {
         utils.customer.projectById.invalidate({ id: projectId });
         openState[1](false);

@@ -6,7 +6,7 @@ import type { Session } from "next-auth";
 import type { AppProps } from "next/app";
 import type { NextPage } from "next/types";
 
-import { trpc } from "../utils/trpc";
+import { api } from "../utils/api";
 import { ModalContainer } from "../components/common/modal";
 import { getAppLayout, LayoutFn } from "../components/layout/app-layout";
 
@@ -34,4 +34,4 @@ function AppWrapper(props: AppPropsWithLayout) {
   );
 }
 
-export default trpc.withTRPC(AppWrapper);
+export default api.withTRPC(AppWrapper);

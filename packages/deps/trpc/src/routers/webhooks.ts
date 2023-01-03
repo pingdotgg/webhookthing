@@ -1,9 +1,8 @@
-import { t } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
-import { JSONObject } from "superjson/dist/types";
 
-export const webhookRouter = t.router({
-  replay: t.procedure
+export const webhookRouter = createTRPCRouter({
+  replay: publicProcedure
     .input(
       z.object({ id: z.string(), destinations: z.array(z.string()).optional() })
     )

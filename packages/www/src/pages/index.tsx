@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
 
-import { trpc } from "../utils/trpc";
+import { api } from "../utils/api";
 import { useRequireAuth } from "../utils/use-require-auth";
 import SplitButtonDropdown from "../components/common/button";
 
@@ -26,8 +26,8 @@ const Home: NextPage = () => {
   useRequireAuth();
 
   const { data: session, status } = useSession();
-  const { data: requests } = trpc.customer.allWebRequests.useQuery();
-  const { data: destinations } = trpc.customer.allDestinations.useQuery();
+  const { data: requests } = api.customer.allWebRequests.useQuery();
+  const { data: destinations } = api.customer.allDestinations.useQuery();
 
   const [selectedRequest, setSelectedRequest] = useState("");
 
@@ -141,7 +141,7 @@ const RequestInfo: React.FC<{
     );
   }
 
-  const { mutate: replay } = trpc.webhook.replay.useMutation({});
+  const { mutate: replay } = api.webhook.replay.useMutation({});
 
   return (
     <div className="overflow-hidden bg-white shadow sm:rounded-lg">

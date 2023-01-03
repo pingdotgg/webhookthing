@@ -1,8 +1,8 @@
-import { t } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import { z } from "zod";
 
-export const customerRouter = t.router({
-  allWebRequests: t.procedure.query(({ ctx }) => {
+export const customerRouter = createTRPCRouter({
+  allWebRequests: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.requestObject.findMany({
       where: {
         project: {
@@ -16,7 +16,7 @@ export const customerRouter = t.router({
       orderBy: { timestamp: "desc" },
     });
   }),
-  allProjects: t.procedure.query(({ ctx }) => {
+  allProjects: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.project.findMany({
       where: {
         Members: {
@@ -37,7 +37,7 @@ export const customerRouter = t.router({
       },
     });
   }),
-  allDestinations: t.procedure.query(({ ctx }) => {
+  allDestinations: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.destination.findMany({
       where: {
         project: {
@@ -50,7 +50,7 @@ export const customerRouter = t.router({
       },
     });
   }),
-  projectById: t.procedure
+  projectById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       return ctx.prisma.project.findUnique({
@@ -71,7 +71,7 @@ export const customerRouter = t.router({
         },
       });
     }),
-  createProject: t.procedure
+  createProject: publicProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const project = await ctx.prisma.project.create({
@@ -92,7 +92,7 @@ export const customerRouter = t.router({
 
       return project;
     }),
-  deleteProjects: t.procedure
+  deleteProjects: publicProcedure
     .input(z.object({ idsToDelete: z.array(z.string()) }))
     .mutation(async ({ ctx, input }) => {
       // Delete everything associated with the project first
@@ -149,7 +149,7 @@ export const customerRouter = t.router({
 
       return true;
     }),
-  getSourceById: t.procedure
+  getSourceById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.source.findUnique({
@@ -158,7 +158,7 @@ export const customerRouter = t.router({
         },
       });
     }),
-  createSource: t.procedure
+  createSource: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -181,7 +181,7 @@ export const customerRouter = t.router({
 
       return source;
     }),
-  updateSource: t.procedure
+  updateSource: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -200,7 +200,7 @@ export const customerRouter = t.router({
         },
       });
     }),
-  deleteSource: t.procedure
+  deleteSource: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const source = await ctx.prisma.source.delete({
@@ -209,7 +209,7 @@ export const customerRouter = t.router({
         },
       });
     }),
-  createDestination: t.procedure
+  createDestination: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -232,7 +232,7 @@ export const customerRouter = t.router({
 
       return destination;
     }),
-  updateDestination: t.procedure
+  updateDestination: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -252,7 +252,7 @@ export const customerRouter = t.router({
       });
     }),
 
-  deleteDestination: t.procedure
+  deleteDestination: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const destination = await ctx.prisma.destination.delete({
@@ -261,7 +261,7 @@ export const customerRouter = t.router({
         },
       });
     }),
-  deleteListener: t.procedure
+  deleteListener: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const listener = await ctx.prisma.localListener.delete({
@@ -271,7 +271,7 @@ export const customerRouter = t.router({
       });
     }),
 
-  addMemberToProject: t.procedure
+  addMemberToProject: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -324,7 +324,7 @@ export const customerRouter = t.router({
 
       return member;
     }),
-  removeMemberFromProject: t.procedure
+  removeMemberFromProject: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -343,7 +343,7 @@ export const customerRouter = t.router({
 
       return member;
     }),
-  updateMemberRole: t.procedure
+  updateMemberRole: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -366,7 +366,7 @@ export const customerRouter = t.router({
 
       return member;
     }),
-  removePendingMember: t.procedure
+  removePendingMember: publicProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -385,7 +385,7 @@ export const customerRouter = t.router({
 
       return member;
     }),
-  updatePendingMemberRole: t.procedure
+  updatePendingMemberRole: publicProcedure
     .input(
       z.object({
         projectId: z.string(),

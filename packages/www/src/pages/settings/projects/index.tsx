@@ -5,18 +5,18 @@ import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Modal, useConfirmationModal } from "../../../components/common/modal";
 import { AutoAnimate } from "../../../components/util/autoanimate";
-import { trpc } from "../../../utils/trpc";
+import { api } from "../../../utils/api";
 import { useRequireAuth } from "../../../utils/use-require-auth";
 
 const ProjectsSettings: NextPage = () => {
   useRequireAuth();
 
   const { data: session, status } = useSession();
-  const tCtx = trpc.useContext();
+  const tCtx = api.useContext();
 
-  const { data: projects } = trpc.customer.allProjects.useQuery();
+  const { data: projects } = api.customer.allProjects.useQuery();
 
-  const { mutate: deleteProjects } = trpc.customer.deleteProjects.useMutation({
+  const { mutate: deleteProjects } = api.customer.deleteProjects.useMutation({
     onSuccess: () => {
       tCtx.customer.allProjects.invalidate();
     },
@@ -190,11 +190,11 @@ export default ProjectsSettings;
 const CreateProjectModal: React.FC<{
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
 }> = ({ openState }) => {
-  const utils = trpc.useContext();
+  const utils = api.useContext();
 
   const [projectName, setProjectName] = useState("");
 
-  const { mutate: createProject } = trpc.customer.createProject.useMutation({
+  const { mutate: createProject } = api.customer.createProject.useMutation({
     onSuccess: () => {
       utils.customer.allProjects.invalidate();
       setProjectName("");
