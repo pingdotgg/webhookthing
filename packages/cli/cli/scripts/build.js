@@ -1,3 +1,5 @@
+// This file is heavily based on the following example
+// https://github.com/styfle/ncc-bug-stack/blob/master/build.js#L7
 const { readFile, writeFile } = require("fs/promises");
 const { resolve } = require("path");
 
@@ -13,6 +15,7 @@ const ENTRY_DIR = resolve(__dirname, "../src/index.ts");
 const WEB_DIR = resolve(__dirname, "../../cli-web/dist/web");
 
 async function main() {
+  // Assert that we actually have a built cli-web app to bundle
   try {
     const indexHtml = await readFile(join(WEB_DIR, "index.html"), "utf8");
   } catch (e) {
@@ -23,13 +26,20 @@ async function main() {
     process.exit(1);
   }
 
+  // THIS IS WHERE THE CLI-WEB APP GETS BUNDLED
   fse.copySync(WEB_DIR, join(DIST_DIR, "web"));
 
-  const input = "./index.js";
+  // Build and bundle CLI using ncc
   const opts = { sourceMap: true, sourceMapRegister: true };
   const { code, map, assets } = await ncc(ENTRY_DIR, opts);
-  await writeFile(join(DIST_DIR, input), code);
-  await writeFile(join(DIST_DIR, `${input}.map`), map);
+
+  // Write files to dist dir
+  // THIS IS WHERE THE CLI GETS BUNDLED
+  await writeFile(join(DIST_DIR, "./index.js"), code);
+  await writeFile(join(DIST_DIR, "./index.js.map"), map);
+
+  // There's a bunch of "asset" files (js files from other shit)
+  // Most of them come from Fastify I think?
   for (var [assetName, assetCode] of Object.entries(assets)) {
     await writeFile(
       join(DIST_DIR, assetName),
