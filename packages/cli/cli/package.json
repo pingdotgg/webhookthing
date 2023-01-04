@@ -20,7 +20,7 @@
     "format:check": "prettier --check --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
-    "@captain/cli-api": "*",
+    "@captain/cli-core": "*",
     "@fastify/cors": "^8.2.0",
     "@fastify/static": "^6.6.0",
     "chalk": "5.0.1",

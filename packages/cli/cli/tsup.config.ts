@@ -17,5 +17,5 @@ export default defineConfig({
 
   shims: true,
 
-  noExternal: ["@captain/cli-api"],
+  noExternal: ["@captain/cli-core"],
 });

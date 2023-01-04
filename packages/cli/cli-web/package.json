@@ -15,7 +15,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@captain/cli-api": "*",
+    "@captain/cli-core": "*",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react": "^3.0.0",

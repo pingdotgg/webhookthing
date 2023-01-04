@@ -1,5 +1,5 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import type { CliApiRouter } from "@captain/cli-api";
+import type { CliApiRouter } from "@captain/cli-core";
 import superjson from "superjson";
 
 export const cliApiClient = createTRPCProxyClient<CliApiRouter>({
