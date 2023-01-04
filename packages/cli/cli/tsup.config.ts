@@ -11,7 +11,7 @@ export default defineConfig({
   sourcemap: true,
   target: "esnext",
   outDir: "devbuild",
-  onSuccess: isDev ? "node dist/index.js" : undefined,
+  onSuccess: isDev ? "node devbuild/index.mjs" : undefined,
 
   publicDir: "../cli-web/dist",
 

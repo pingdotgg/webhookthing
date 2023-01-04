@@ -5,7 +5,7 @@ import { logger } from "./utils/logger";
 import { renderTitle } from "./utils/renderTitle";
 
 const main = async () => {
-  // renderTitle();
+  renderTitle();
 
   startServer();
   await runCli();
