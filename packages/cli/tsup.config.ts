@@ -10,7 +10,7 @@ export default defineConfig({
   metafile: !isDev,
   sourcemap: true,
   target: "esnext",
-  outDir: "dist",
+  outDir: "devbuild",
   onSuccess: isDev ? "node dist/index.js" : undefined,
 
   publicDir: "../cli-web/dist",

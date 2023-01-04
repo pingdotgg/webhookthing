@@ -1,4 +1,12 @@
 {
   "extends": "../../tsconfig.json",
+
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+
   "include": ["src", ".eslintrc.cjs"]
 }
