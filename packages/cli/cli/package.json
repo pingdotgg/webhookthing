@@ -12,7 +12,7 @@
   },
   "scripts": {
     "typecheck": "tsc",
-    "build": "ncc build src/index.ts -o dist",
+    "build": "node scripts/build.js",
     "dev-cli": "tsup --watch --env.NODE_ENV development",
     "clean": "rm -rf dist .turbo node_modules",
     "lint": "eslint",
