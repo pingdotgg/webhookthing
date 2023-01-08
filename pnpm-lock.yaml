@@ -28,7 +28,6 @@ importers:
       '@types/inquirer': ^9.0.2
       '@types/node': ^18.8.0
       '@vercel/ncc': ^0.36.0
-      bytes: ^3.1.2
       chalk: 5.0.1
       commander: ^9.4.1
       execa: ^6.1.0
@@ -36,7 +35,6 @@ importers:
       fs-extra: ^11.1.0
       graceful-fs: ^4.2.10
       gradient-string: ^2.0.2
-      mkdirp: ^0.5.1
       prettier: ^2.7.1
       prettier-plugin-tailwindcss: ^0.1.13
       tsup: ^6.5.0
@@ -61,8 +59,6 @@ importers:
       '@types/inquirer': 9.0.2
       '@types/node': 18.8.0
       '@vercel/ncc': 0.36.0
-      bytes: 3.1.2
-      mkdirp: 0.5.6
       prettier: 2.7.1
       prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
       tsup: 6.5.0_typescript@4.9.4
@@ -1636,11 +1632,6 @@ packages:
     dependencies:
       esbuild: 0.15.13
       load-tsconfig: 0.2.3
-    dev: true
-
-  /bytes/3.1.2:
-    resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
-    engines: {node: '>= 0.8'}
     dev: true
 
   /cac/6.7.14:
@@ -3429,13 +3420,6 @@ packages:
 
   /minimist/1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
-
-  /mkdirp/0.5.6:
-    resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
-    hasBin: true
-    dependencies:
-      minimist: 1.2.6
-    dev: true
 
   /mnemonist/0.39.5:
     resolution: {integrity: sha512-FPUtkhtJ0efmEFGpU14x7jGbTB+s18LrzRL2KgoWz9YvcY3cPomz8tih01GbHwnGk/OmkOKfqd/RAQoc8Lm7DQ==}
