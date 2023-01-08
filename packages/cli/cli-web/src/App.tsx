@@ -1,25 +1,25 @@
-import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import "./App.css";
-import { ApiTRPCProvider } from "./utils/api-wrapper";
 import { JsonBlobs } from "./components/jsonblobs";
+
+const TopNav = () => {
+  return (
+    <div className="flex h-16 w-full items-center justify-between bg-slate-800 px-4">
+      <div className="flex items-center">
+        <img src={reactLogo} />
+        <h1 className="ml-2 text-2xl font-bold">Captain CLI</h1>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   return (
-    <ApiTRPCProvider>
-      <div className="App">
-        <div>
-          <a href="https://vitejs.dev" target="_blank">
-            <img src="/vite.svg" className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://reactjs.org" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
+    <div className="flex h-full w-full flex-col">
+      <TopNav />
+      <div className="p-4">
         <JsonBlobs />
       </div>
-    </ApiTRPCProvider>
+    </div>
   );
 }
 
