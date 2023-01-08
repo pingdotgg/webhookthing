@@ -1,6 +1,8 @@
 packages:
-  - packages/www
-  - packages/deps/auth
-  - packages/deps/trpc
-  - packages/deps/db
-  - packages/cli
+  - packages/cli/cli
+  - packages/cli/cli-web
+  - packages/cli/cli-core
+  - packages/hosted/www
+  - packages/hosted/deps/auth
+  - packages/hosted/deps/trpc
+  - packages/hosted/deps/db
