@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.7.2",
+    "@trpc/client": "10.0.0-proxy-beta.25",
+    "@trpc/react-query": "10.0.0-proxy-beta.25",
+    "@trpc/server": "10.0.0-proxy-beta.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "superjson": "^1.12.1",

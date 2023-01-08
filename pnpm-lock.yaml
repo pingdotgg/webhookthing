@@ -87,6 +87,10 @@ importers:
   packages/cli/cli-web:
     specifiers:
       '@captain/cli-core': '*'
+      '@tanstack/react-query': ^4.7.2
+      '@trpc/client': 10.0.0-proxy-beta.25
+      '@trpc/react-query': 10.0.0-proxy-beta.25
+      '@trpc/server': 10.0.0-proxy-beta.25
       '@types/react': ^18.0.26
       '@types/react-dom': ^18.0.9
       '@vitejs/plugin-react': ^3.0.0
@@ -97,6 +101,10 @@ importers:
       vite: ^4.0.0
       zod: ^3.19.1
     dependencies:
+      '@tanstack/react-query': 4.9.0_biqbaboplfbrettd7655fr4n2y
+      '@trpc/client': 10.0.0-proxy-beta.25_ndhcfffzalmz7qevgejzwgh3fi
+      '@trpc/react-query': 10.0.0-proxy-beta.25_vb6uwfdyxu3x3dg5fknejsgoum
+      '@trpc/server': 10.0.0-proxy-beta.25
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       superjson: 1.12.1
