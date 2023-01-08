@@ -17,7 +17,7 @@ export const JsonBlobs = () => {
             <div className="text-xl">{blob}</div>
             <button
               onClick={() => {
-                mutate({ file: blob, url: "localhost:3000" });
+                mutate({ file: blob, url: "http://localhost:2033" });
               }}
               className="rounded bg-slate-600/80 p-2 px-3 hover:bg-slate-500"
             >
