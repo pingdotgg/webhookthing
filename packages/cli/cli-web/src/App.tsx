@@ -1,39 +1,24 @@
-import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import "./App.css";
-import { cliApiClient } from "./utils/api";
+import { JsonBlobs } from "./components/jsonblobs";
+
+const TopNav = () => {
+  return (
+    <div className="flex h-16 w-full items-center justify-between bg-slate-800 px-4">
+      <div className="flex items-center">
+        <img src={reactLogo} />
+        <h1 className="ml-2 text-2xl font-bold">Captain CLI</h1>
+      </div>
+    </div>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex h-full w-full flex-col">
+      <TopNav />
+      <div className="p-4">
+        <JsonBlobs />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          onClick={async () => {
-            const res = await cliApiClient.getBlobs.query();
-            console.log(res);
-            setCount((count) => count + 1);
-          }}
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   );
 }
