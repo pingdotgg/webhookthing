@@ -69,7 +69,7 @@ export const JsonBlobs = () => {
               </div>
             </div>
             {expanded.includes(i) && (
-              <pre className="w-full rounded-md bg-gray-200 p-4">
+              <pre className="max-h-96 w-full overflow-auto rounded-md bg-gray-200 p-4">
                 <code>{JSON.stringify(blob.content, null, 2)}</code>
               </pre>
             )}
