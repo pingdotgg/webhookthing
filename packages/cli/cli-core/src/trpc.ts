@@ -16,6 +16,7 @@ export const t = initTRPC.create({
 });
 export const cliApiRouter = t.router({
   getBlobs: t.procedure.query(async () => {
+    console.log(process.cwd());
     return await fs.readdir(process.cwd() + "/.captain/hooks");
   }),
 

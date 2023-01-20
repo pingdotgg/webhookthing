@@ -1,0 +1,12 @@
+{
+  "from": "theo",
+  "contents": {
+    "text": "Hello world",
+    "attachments": [
+      {
+        "type": "image",
+        "url": "http://www.example.com/image.jpg"
+      }
+    ]
+  }
+}
