@@ -1,4 +1,4 @@
-import { EyeIcon, PlayIcon } from "@heroicons/react/20/solid";
+import { EyeIcon, EyeSlashIcon, PlayIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 
 import { cliApi } from "../utils/api";
@@ -48,7 +48,11 @@ export const JsonBlobs = () => {
                     );
                   }}
                 >
-                  <EyeIcon className="h-4" />
+                  {expanded.includes(i) ? (
+                    <EyeSlashIcon className="h-4" />
+                  ) : (
+                    <EyeIcon className="h-4" />
+                  )}
                 </button>
                 <button
                   onClick={() => {
