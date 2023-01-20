@@ -34,17 +34,17 @@ server.get("/api", async (request, reply) => {
 });
 
 export const startServer = () => {
-  if (process.env.NODE_ENV === "development") {
-    console.log(
-      `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
-    );
-  } else {
-    server.listen({ port: 2033 }, (err, address) => {
-      if (err) {
-        console.error(err);
-        process.exit(1);
-      }
+  server.listen({ port: 2033 }, (err, address) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
+      );
+    } else {
       console.log(`Server listening at ${address}`);
-    });
-  }
+    }
+  });
 };
