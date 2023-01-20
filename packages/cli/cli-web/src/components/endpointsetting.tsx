@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { classNames } from "../utils/classnames";
+import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 export const EndpointSetting = () => {
-  const [endpoint, setEndpoint] = useState<string>();
-  const [changed, setChanged] = useState<boolean>(false);
+  const [storedEndpoint, setStoredEndpoint] = useCurrentUrl();
+  const [endpoint, setEndpoint] = useState<string>(storedEndpoint);
+
+  const changed = storedEndpoint !== endpoint;
 
   return (
     <div className="flex flex-col gap-2">
@@ -27,7 +30,6 @@ export const EndpointSetting = () => {
           value={endpoint}
           onChange={(e) => {
             setEndpoint(e.target.value);
-            setChanged(true);
           }}
         />
       </div>
@@ -38,6 +40,7 @@ export const EndpointSetting = () => {
             "flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
             changed ? "" : "invisible"
           )}
+          onClick={() => setStoredEndpoint(endpoint)}
         >
           Save Changes
         </button>
