@@ -2,6 +2,7 @@ import { EyeIcon, EyeSlashIcon, PlayIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 
 import { cliApi } from "../utils/api";
+import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 export const JsonBlobs = () => {
   const { data } = cliApi.getBlobs.useQuery();
@@ -11,6 +12,8 @@ export const JsonBlobs = () => {
   const { mutate: openFolder } = cliApi.openFolder.useMutation();
 
   const [expanded, setExpanded] = useState<number[]>([]);
+
+  const [storedEndpoint] = useCurrentUrl();
 
   return (
     <div className="flex flex-col gap-2 pt-4">
@@ -58,7 +61,7 @@ export const JsonBlobs = () => {
                 </button>
                 <button
                   onClick={() => {
-                    runFile({ file: blob.name, url: "http://localhost:2033" });
+                    runFile({ file: blob.name, url: storedEndpoint });
                   }}
                 >
                   <PlayIcon className="h-4" />

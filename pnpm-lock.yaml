@@ -99,6 +99,7 @@ importers:
       '@types/react-dom': ^18.0.9
       '@vitejs/plugin-react': ^3.0.0
       autoprefixer: ^10.4.7
+      jotai: ^1.13.1
       postcss: ^8.4.14
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -113,6 +114,7 @@ importers:
       '@trpc/client': 10.0.0-proxy-beta.25_ndhcfffzalmz7qevgejzwgh3fi
       '@trpc/react-query': 10.0.0-proxy-beta.25_vb6uwfdyxu3x3dg5fknejsgoum
       '@trpc/server': 10.0.0-proxy-beta.25
+      jotai: 1.13.1_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       superjson: 1.12.1
@@ -125,7 +127,7 @@ importers:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       autoprefixer: 10.4.12_postcss@8.4.20
       postcss: 8.4.20
-      tailwindcss: 3.1.8_postcss@8.4.20
+      tailwindcss: 3.1.8
       typescript: 4.9.4
       vite: 4.0.3
 
@@ -1090,7 +1092,7 @@ packages:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.1.8_postcss@8.4.20
+      tailwindcss: 3.1.8
     dev: true
 
   /@tanstack/query-core/4.9.0:
@@ -3219,6 +3221,49 @@ packages:
   /jose/4.10.3:
     resolution: {integrity: sha512-3S4wQnaoJKSAx9uHSoyf8B/lxjs1qCntHWL6wNFszJazo+FtWe+qD0zVfY0BlqJ5HHK4jcnM98k3BQzVLbzE4g==}
 
+  /jotai/1.13.1_react@18.2.0:
+    resolution: {integrity: sha512-RUmH1S4vLsG3V6fbGlKzGJnLrDcC/HNb5gH2AeA9DzuJknoVxSGvvg8OBB7lke+gDc4oXmdVsaKn/xDUhWZ0vw==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      '@babel/template': '*'
+      jotai-devtools: '*'
+      jotai-immer: '*'
+      jotai-optics: '*'
+      jotai-redux: '*'
+      jotai-tanstack-query: '*'
+      jotai-urql: '*'
+      jotai-valtio: '*'
+      jotai-xstate: '*'
+      jotai-zustand: '*'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      jotai-devtools:
+        optional: true
+      jotai-immer:
+        optional: true
+      jotai-optics:
+        optional: true
+      jotai-redux:
+        optional: true
+      jotai-tanstack-query:
+        optional: true
+      jotai-urql:
+        optional: true
+      jotai-valtio:
+        optional: true
+      jotai-xstate:
+        optional: true
+      jotai-zustand:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /joycon/3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
@@ -4549,6 +4594,37 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: true
+
+  /tailwindcss/3.1.8:
+    resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
+    engines: {node: '>=12.13.0'}
+    hasBin: true
+    dependencies:
+      arg: 5.0.2
+      chokidar: 3.5.3
+      color-name: 1.1.4
+      detective: 5.2.1
+      didyoumean: 1.2.2
+      dlv: 1.1.3
+      fast-glob: 3.2.12
+      glob-parent: 6.0.2
+      is-glob: 4.0.3
+      lilconfig: 2.0.6
+      normalize-path: 3.0.0
+      object-hash: 3.0.0
+      picocolors: 1.0.0
+      postcss: 8.4.20
+      postcss-import: 14.1.0_postcss@8.4.20
+      postcss-js: 4.0.0_postcss@8.4.20
+      postcss-load-config: 3.1.4_postcss@8.4.20
+      postcss-nested: 5.0.6_postcss@8.4.20
+      postcss-selector-parser: 6.0.10
+      postcss-value-parser: 4.2.0
+      quick-lru: 5.1.1
+      resolve: 1.22.1
+    transitivePeerDependencies:
+      - ts-node
     dev: true
 
   /tailwindcss/3.1.8_postcss@8.4.20:
