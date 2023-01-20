@@ -32,11 +32,11 @@ export const JsonBlobs = () => {
       <ul role="list" className="space-y-3">
         {data?.map((blob, i) => (
           <li
-            key={blob}
+            key={blob.name}
             className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow"
           >
             <div className="flex w-full flex-row items-center justify-between">
-              <div className="text-xl">{blob}</div>
+              <div className="text-xl">{blob.name}</div>
               <div className=" flex flex-row items-center gap-x-4 ">
                 <button
                   className="invisible group-hover:visible"
@@ -52,7 +52,7 @@ export const JsonBlobs = () => {
                 </button>
                 <button
                   onClick={() => {
-                    mutate({ file: blob, url: "http://localhost:2033" });
+                    mutate({ file: blob.name, url: "http://localhost:2033" });
                   }}
                 >
                   <PlayIcon className="h-4" />
@@ -61,13 +61,7 @@ export const JsonBlobs = () => {
             </div>
             {expanded.includes(i) && (
               <pre className="w-full rounded-md bg-gray-200 p-4">
-                <code>
-                  {JSON.stringify(
-                    { name: "hello", url: "http://localhost:2033" },
-                    null,
-                    2
-                  )}
-                </code>
+                <code>{JSON.stringify(blob.content, null, 2)}</code>
               </pre>
             )}
           </li>
