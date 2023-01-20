@@ -4,6 +4,7 @@ import { z } from "zod";
 import fetch from "node-fetch";
 
 import fs from "fs/promises";
+import { openInExplorer } from "./open-folder";
 
 type User = {
   id: string;
@@ -32,6 +33,12 @@ export const cliApiRouter = t.router({
 
     return Promise.all(res);
   }),
+
+  openFolder: t.procedure
+    .input(z.object({ path: z.string() }))
+    .mutation(async ({ input }) => {
+      openInExplorer(process.cwd() + "/.captain/hooks/" + input.path);
+    }),
 
   runFile: t.procedure
     .input(

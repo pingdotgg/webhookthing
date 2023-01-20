@@ -6,7 +6,9 @@ import { cliApi } from "../utils/api";
 export const JsonBlobs = () => {
   const { data } = cliApi.getBlobs.useQuery();
 
-  const { mutate } = cliApi.runFile.useMutation();
+  const { mutate: runFile } = cliApi.runFile.useMutation();
+
+  const { mutate: openFolder } = cliApi.openFolder.useMutation();
 
   const [expanded, setExpanded] = useState<number[]>([]);
 
@@ -23,7 +25,7 @@ export const JsonBlobs = () => {
         </div>
         <button
           className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          onClick={() => alert("TODO: Open folder")}
+          onClick={() => openFolder({ path: "" })}
         >
           Open .captain Folder
         </button>
@@ -56,7 +58,7 @@ export const JsonBlobs = () => {
                 </button>
                 <button
                   onClick={() => {
-                    mutate({ file: blob.name, url: "http://localhost:2033" });
+                    runFile({ file: blob.name, url: "http://localhost:2033" });
                   }}
                 >
                   <PlayIcon className="h-4" />
