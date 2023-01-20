@@ -12,7 +12,7 @@ export const JsonBlobs = () => {
 
   return (
     <div className="flex flex-col gap-2 pt-4">
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row items-center justify-between">
         <div>
           <h3 className="text-lg font-medium leading-6 text-gray-900">
             Your Webhooks
