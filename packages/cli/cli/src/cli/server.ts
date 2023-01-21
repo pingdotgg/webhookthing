@@ -20,18 +20,19 @@ server.register(fastifyTRPCPlugin, {
 import { fastifyStatic } from "@fastify/static";
 import path from "path";
 
-const webPath = path.join(__dirname, "web");
-console.log(webPath);
+const devMode = process.env.NODE_ENV === "development";
 
-// serve static assets
-// TODO: Make this dynamic in dev
-server.register(fastifyStatic, {
-  root: webPath,
-});
-
-server.get("/api", async (request, reply) => {
-  return "pongin";
-});
+if (!devMode) {
+  const webPath = path.join(__dirname, "web");
+  server.register(fastifyStatic, {
+    root: webPath,
+  });
+} else {
+  // in dev mode, serve a redirect to vite server
+  server.get("/", async (req, res) => {
+    res.redirect("http://localhost:5173");
+  });
+}
 
 export const startServer = () => {
   server.listen({ port: 2033 }, (err, address) => {
