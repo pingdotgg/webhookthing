@@ -1,6 +1,7 @@
 import childProcess from "child_process";
 import { promisify } from "util";
 import os from "os";
+import fs from "fs";
 
 const promisifiedExecFile = promisify(childProcess.execFile);
 
@@ -23,5 +24,14 @@ export async function openInExplorer(path: string) {
       cmd = `open`;
       break;
   }
+
+  // Create the directory if it doesn't exist
+  if (!fs.existsSync(path)) {
+    console.log(
+      `\x1b[33m[Info] Could not find .captain directory, creating it now!\x1b[0m`
+    );
+    fs.mkdirSync(path, { recursive: true });
+  }
+
   let p = await promisifiedExecFile(cmd, [path]);
 }
