@@ -20,15 +20,18 @@ export const JsonBlobs = () => {
 
   const { mutate: openFolder } = cliApi.openFolder.useMutation();
 
-  const { mutate: getSampleHooks } = cliApi.getSampleHooks.useMutation({
-    onSuccess: () => {
-      refetchBlobs();
-    },
-  });
+  const { mutate: getSampleHooks, isLoading } =
+    cliApi.getSampleHooks.useMutation({
+      onSuccess: () => {
+        refetchBlobs();
+      },
+    });
 
   const [expanded, setExpanded] = useState<number[]>([]);
 
   const [storedEndpoint] = useCurrentUrl();
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col gap-2 pt-4">
