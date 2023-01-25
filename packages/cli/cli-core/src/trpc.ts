@@ -56,10 +56,9 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
-      console.log("reading file", file, "and calling url", url);
+      console.log(`[INFO] Reading file ${file}, and POST-ing to ${url}`);
       const data = await fs.readFile(process.cwd() + "/.captain/hooks/" + file);
       const parsedJson = JSON.parse(data.toString());
-      console.log("parsed? aaa", parsedJson);
 
       try {
         const fetchedResult = await fetch(url, {
@@ -67,7 +66,9 @@ export const cliApiRouter = t.router({
           body: JSON.stringify(parsedJson),
         });
 
-        console.log("result?", fetchedResult);
+        console.log(
+          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`
+        );
         return fetchedResult;
       } catch (e) {
         console.error(e);
