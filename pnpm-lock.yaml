@@ -105,8 +105,8 @@ importers:
       '@trpc/client': 10.0.0-proxy-beta.25
       '@trpc/react-query': 10.0.0-proxy-beta.25
       '@trpc/server': 10.0.0-proxy-beta.25
-      '@types/react': ^18.0.26
-      '@types/react-dom': ^18.0.9
+      '@types/react': ^18.0.27
+      '@types/react-dom': ^18.0.10
       '@vitejs/plugin-react': ^3.0.0
       autoprefixer: ^10.4.7
       jotai: ^1.13.1
@@ -132,7 +132,7 @@ importers:
     devDependencies:
       '@captain/cli-core': link:../cli-core
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
-      '@types/react': 18.0.26
+      '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       autoprefixer: 10.4.12_postcss@8.4.20
@@ -201,8 +201,8 @@ importers:
       '@trpc/react-query': 10.0.0-proxy-beta.25
       '@trpc/server': 10.0.0-proxy-beta.25
       '@types/node': ^18.8.0
-      '@types/react': ^18.0.21
-      '@types/react-dom': ^18.0.6
+      '@types/react': ^18.0.27
+      '@types/react-dom': ^18.0.10
       '@typescript-eslint/eslint-plugin': ^5.33.0
       '@typescript-eslint/parser': ^5.33.0
       autoprefixer: ^10.4.7
@@ -216,8 +216,8 @@ importers:
       postcss: ^8.4.14
       prettier: ^2.7.1
       prettier-plugin-tailwindcss: ^0.1.13
-      react: 18.2.0
-      react-dom: 18.2.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
       tailwindcss: ^3.1.8
       typescript: ^4.9.4
       zod: ^3.19.1
@@ -245,7 +245,7 @@ importers:
       '@planetscale/database': 1.4.0
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
       '@types/node': 18.8.0
-      '@types/react': 18.0.26
+      '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
       '@typescript-eslint/eslint-plugin': 5.39.0_tlqucjfefgozwwfrms73zz4ouu
       '@typescript-eslint/parser': 5.39.0_v5bglvupnukcksncywgdzapdrq
@@ -1230,11 +1230,11 @@ packages:
   /@types/react-dom/18.0.10:
     resolution: {integrity: sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==}
     dependencies:
-      '@types/react': 18.0.26
+      '@types/react': 18.0.27
     dev: true
 
-  /@types/react/18.0.26:
-    resolution: {integrity: sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug==}
+  /@types/react/18.0.27:
+    resolution: {integrity: sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
