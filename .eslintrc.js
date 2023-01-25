@@ -1,11 +1,11 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
-  extends: ["prettier", "eslint:recommended"],
+  extends: ["next", "prettier", "eslint:recommended"],
   overrides: [
     {
       extends: [
-        "next",
         "plugin:@typescript-eslint/recommended",
+        'plugin:@next/next/recommended',
       ],
       files: ["**/*.ts", "**/*.tsx"],
       parserOptions: {
