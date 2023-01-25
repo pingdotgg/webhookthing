@@ -5,7 +5,6 @@ const config = {
     {
       extends: [
         "plugin:@typescript-eslint/recommended",
-        'plugin:@next/next/recommended',
       ],
       files: ["**/*.ts", "**/*.tsx"],
       parserOptions: {

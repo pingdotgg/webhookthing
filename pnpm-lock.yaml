@@ -49,7 +49,7 @@ importers:
       prettier-plugin-tailwindcss: ^0.1.13
       tsup: ^6.5.0
       type-fest: ^3.0.0
-      typescript: ^4.8.3
+      typescript: ^4.9.4
     dependencies:
       '@captain/cli-core': link:../cli-core
       '@fastify/cors': 8.2.0
@@ -82,8 +82,8 @@ importers:
       '@trpc/client': 10.0.0-proxy-beta.25
       '@trpc/server': 10.0.0-proxy-beta.25
       node-fetch: ^3.3.0
-      superjson: ^1.10.1
-      typescript: ^4.8.3
+      superjson: ^1.12.1
+      typescript: ^4.9.4
       zod: ^3.19.1
     dependencies:
       '@captain/auth': link:../../hosted/deps/auth
@@ -100,7 +100,7 @@ importers:
     specifiers:
       '@captain/cli-core': '*'
       '@heroicons/react': ^2.0.12
-      '@tailwindcss/forms': 0.5.3
+      '@tailwindcss/forms': ^0.5.3
       '@tanstack/react-query': ^4.7.2
       '@trpc/client': 10.0.0-proxy-beta.25
       '@trpc/react-query': 10.0.0-proxy-beta.25
@@ -115,7 +115,7 @@ importers:
       react-dom: ^18.2.0
       superjson: ^1.12.1
       tailwindcss: ^3.1.8
-      typescript: ^4.9.3
+      typescript: ^4.9.4
       vite: ^4.0.0
       zod: ^3.19.1
     dependencies:
@@ -146,7 +146,7 @@ importers:
       '@captain/db': '*'
       '@next-auth/prisma-adapter': 1.0.5
       next-auth: ^4.14.0
-      typescript: ^4.8.3
+      typescript: ^4.9.4
     dependencies:
       '@captain/db': link:../db
       '@next-auth/prisma-adapter': 1.0.5_next-auth@4.14.0
@@ -158,7 +158,7 @@ importers:
     specifiers:
       '@prisma/client': ^4.5.0
       prisma: ^4.5.0
-      typescript: ^4.8.3
+      typescript: ^4.9.4
     dependencies:
       '@prisma/client': 4.5.0_prisma@4.5.0
     devDependencies:
@@ -171,8 +171,8 @@ importers:
       '@captain/db': '*'
       '@trpc/client': 10.0.0-proxy-beta.25
       '@trpc/server': 10.0.0-proxy-beta.25
-      superjson: ^1.10.1
-      typescript: ^4.8.3
+      superjson: ^1.12.1
+      typescript: ^4.9.4
       zod: ^3.19.1
     dependencies:
       '@captain/auth': link:../auth
@@ -219,7 +219,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0
       tailwindcss: ^3.1.8
-      typescript: ^4.8.3
+      typescript: ^4.9.4
       zod: ^3.19.1
       zustand: ^4.1.4
     dependencies:
