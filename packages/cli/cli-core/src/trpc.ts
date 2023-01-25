@@ -44,7 +44,7 @@ export const cliApiRouter = t.router({
     }),
 
   getSampleHooks: t.procedure.mutation(async () => {
-    return await getSampleHooks();
+    getSampleHooks();
   }),
 
   runFile: t.procedure

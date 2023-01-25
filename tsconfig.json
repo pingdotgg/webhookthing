@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -16,5 +16,5 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "exclude": ["node_modules"]
+  "include": [".eslintrc.js"]
 }
