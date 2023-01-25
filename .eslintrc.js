@@ -4,6 +4,7 @@ const config = {
   overrides: [
     {
       extends: [
+        "next",
         "plugin:@typescript-eslint/recommended",
       ],
       files: ["**/*.ts", "**/*.tsx"],
