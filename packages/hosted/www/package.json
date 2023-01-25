@@ -30,6 +30,7 @@
     "zustand": "^4.1.4"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^13.1.5",
     "@planetscale/database": "^1.4.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^18.8.0",

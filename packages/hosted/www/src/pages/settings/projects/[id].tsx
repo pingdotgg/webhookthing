@@ -26,25 +26,25 @@ export default function ProjectSettings() {
 
   // mutations
   const { mutate: deleteSource } = trpc.customer.deleteSource.useMutation({
-    onSuccess: () => {
-      utils.customer.projectById.invalidate({ id });
+    onSuccess: async () => {
+      await utils.customer.projectById.invalidate({ id });
     },
   });
   const { mutate: deleteDestination } =
     trpc.customer.deleteDestination.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id });
       },
     });
   const { mutate: deleteListener } = trpc.customer.deleteListener.useMutation({
-    onSuccess: () => {
-      utils.customer.projectById.invalidate({ id });
+    onSuccess: async () => {
+      await utils.customer.projectById.invalidate({ id });
     },
   });
 
   const { mutate: addMember } = trpc.customer.addMemberToProject.useMutation({
-    onSuccess: () => {
-      utils.customer.projectById.invalidate({ id });
+    onSuccess: async () => {
+      await utils.customer.projectById.invalidate({ id });
       setAddMemberRole("VIEWER");
       setAddMemberEmail("");
     },
@@ -52,22 +52,22 @@ export default function ProjectSettings() {
 
   const { mutate: removePendingMember } =
     trpc.customer.removePendingMember.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id });
       },
     });
 
   const { mutate: updateMemberRole } =
     trpc.customer.updateMemberRole.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id });
       },
     });
 
   const { mutate: updatePendingMemberRole } =
     trpc.customer.updatePendingMemberRole.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id });
       },
     });
 
@@ -525,8 +525,8 @@ const CreateSourceModal: React.FC<{
   const [domain, setDomain] = useState("");
 
   const { mutate: createSource } = trpc.customer.createSource.useMutation({
-    onSuccess: () => {
-      utils.customer.projectById.invalidate({ id: projectId });
+    onSuccess: async () => {
+      await utils.customer.projectById.invalidate({ id: projectId });
       setSourceName("");
       setDomain("");
       openState[1](false);
@@ -610,8 +610,8 @@ const EditSourceModal: React.FC<{
   const [domain, setDomain] = useState(selectedSource?.domain);
 
   const { mutate: updateSource } = trpc.customer.updateSource.useMutation({
-    onSuccess: () => {
-      utils.customer.projectById.invalidate({ id: projectId });
+    onSuccess: async () => {
+      await utils.customer.projectById.invalidate({ id: projectId });
       openState[1](false);
     },
   });
@@ -701,8 +701,8 @@ const CreateDestinationModal: React.FC<{
 
   const { mutate: createDestination } =
     trpc.customer.createDestination.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id: projectId });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id: projectId });
         setDestinationName("");
         setUrl("");
         openState[1](false);
@@ -793,8 +793,8 @@ const EditDestinationModal: React.FC<{
 
   const { mutate: updateDestination } =
     trpc.customer.updateDestination.useMutation({
-      onSuccess: () => {
-        utils.customer.projectById.invalidate({ id: projectId });
+      onSuccess: async () => {
+        await utils.customer.projectById.invalidate({ id: projectId });
         openState[1](false);
       },
     });

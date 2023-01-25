@@ -9,7 +9,7 @@ export const useRequireAuth = (skip?: boolean) => {
   useEffect(() => {
     if (skip) return;
     if (status === "unauthenticated") {
-      push({ pathname: "/signin", query: { redirect: route } });
+      void push({ pathname: "/signin", query: { redirect: route } });
     }
   }, [status, push, route, skip]);
 };

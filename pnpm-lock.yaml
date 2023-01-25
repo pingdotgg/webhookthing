@@ -137,7 +137,7 @@ importers:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       autoprefixer: 10.4.12_postcss@8.4.20
       postcss: 8.4.20
-      tailwindcss: 3.1.8
+      tailwindcss: 3.1.8_postcss@8.4.20
       typescript: 4.9.4
       vite: 4.0.3
 
@@ -192,6 +192,7 @@ importers:
       '@formkit/auto-animate': ^1.0.0-beta.3
       '@headlessui/react': ^1.7.4
       '@heroicons/react': ^2.0.12
+      '@next/eslint-plugin-next': ^13.1.5
       '@planetscale/database': ^1.4.0
       '@tailwindcss/forms': ^0.5.3
       '@tanstack/react-query': ^4.7.2
@@ -240,6 +241,7 @@ importers:
       zod: 3.19.1
       zustand: 4.1.4_react@18.2.0
     devDependencies:
+      '@next/eslint-plugin-next': 13.1.5
       '@planetscale/database': 1.4.0
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.1.8
       '@types/node': 18.8.0
@@ -256,7 +258,7 @@ importers:
       postcss: 8.4.20
       prettier: 2.7.1
       prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
-      tailwindcss: 3.1.8
+      tailwindcss: 3.1.8_postcss@8.4.20
       typescript: 4.9.4
 
 packages:
@@ -923,6 +925,12 @@ packages:
       glob: 7.1.7
     dev: true
 
+  /@next/eslint-plugin-next/13.1.5:
+    resolution: {integrity: sha512-3kvLTX35bOWOCKU8KY74Ygczc55Qk/kB2TQy0tH7Rti6hzZ6Aij7WQ8zHdIVjmnlD0n/zXWXrIf5y56RKcLQkQ==}
+    dependencies:
+      glob: 7.1.7
+    dev: true
+
   /@next/swc-android-arm-eabi/12.3.1:
     resolution: {integrity: sha512-i+BvKA8tB//srVPPQxIQN5lvfROcfv4OB23/L1nXznP+N/TyKL8lql3l7oo2LNhnH66zWhfoemg3Q4VJZSruzQ==}
     engines: {node: '>= 10'}
@@ -1102,7 +1110,7 @@ packages:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.1.8
+      tailwindcss: 3.1.8_postcss@8.4.20
     dev: true
 
   /@tanstack/query-core/4.9.0:
@@ -4603,10 +4611,12 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.1.8:
+  /tailwindcss/3.1.8_postcss@8.4.20:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
