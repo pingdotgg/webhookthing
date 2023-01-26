@@ -3,19 +3,25 @@ import { useState } from "react";
 
 import type { NextPage } from "next";
 
+import { api } from "../utils/api";
+
 const Home: NextPage = () => {
   const [showEmail, setShowEmail] = useState(false);
 
-  const [endpoint, setEndpoint] = useState("");
-  const [email, setEmail] = useState("");
+  const [endpoint, setEndpoint] = useState(undefined);
+  const [email, setEmail] = useState(undefined);
 
   const [bottomText, setBottomText] = useState("");
 
+  const { mutate: submit } = api.example.submitWaitlist.useMutation();
   const handleSubmit = () => {
     if (!email) {
       setShowEmail(true);
       setBottomText("ok... so we actually do want your email");
+      return;
     }
+
+    submit({ endpoint: endpoint === "" ? undefined : endpoint, email });
   };
 
   return (
