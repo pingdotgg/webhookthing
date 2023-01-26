@@ -22,6 +22,9 @@
     "dev-cli": {
       "cache": false
     },
+    "dev-marketing": {
+      "cache": false
+    },
     "db-push": {
       "cache": false
     },
