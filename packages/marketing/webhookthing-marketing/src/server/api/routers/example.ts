@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { db } from "../../../utils/db";
 
 export const exampleRouter = createTRPCRouter({
   submitWaitlist: publicProcedure
@@ -10,9 +11,7 @@ export const exampleRouter = createTRPCRouter({
         email: z.string().email(),
       })
     )
-    .mutation(({ input }) => {
-      // TODO: write the input to a database
-
+    .mutation(async ({ input }) => {
       console.log(
         `[INFO]: Waitlist submission received\n${JSON.stringify(
           input,
@@ -20,6 +19,13 @@ export const exampleRouter = createTRPCRouter({
           2
         )}\n`
       );
+
+      await db
+        .insertInto("waitlist")
+        .ignore() // ignore duplicates
+        .values(input)
+        .execute();
+
       return {
         success: true,
       };

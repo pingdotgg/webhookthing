@@ -7,6 +7,11 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
+  DB_HOST: z.string(),
+  DB_PORT: z.number(),
+  DB_NAME: z.string(),
+  DB_USER: z.string(),
+  DB_PASS: z.string(),
 });
 
 /**
@@ -16,6 +21,11 @@ export const serverSchema = z.object({
  */
 export const serverEnv = {
   NODE_ENV: process.env.NODE_ENV,
+  DB_HOST: process.env.DB_HOST,
+  DB_PORT: +(process.env.DB_PORT ?? 3306),
+  DB_NAME: process.env.DB_NAME,
+  DB_USER: process.env.DB_USER,
+  DB_PASS: process.env.DB_PASS,
 };
 
 /**
