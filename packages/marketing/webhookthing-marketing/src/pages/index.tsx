@@ -8,8 +8,8 @@ import { api } from "../utils/api";
 const Home: NextPage = () => {
   const [showEmail, setShowEmail] = useState(false);
 
-  const [endpoint, setEndpoint] = useState(undefined);
-  const [email, setEmail] = useState(undefined);
+  const [endpoint, setEndpoint] = useState<string>();
+  const [email, setEmail] = useState<string>();
 
   const [bottomText, setBottomText] = useState("");
 
