@@ -1,10 +1,10 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { ForwardIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import { Avatar } from "../common/avatar";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+
+import { Avatar } from "../common/avatar";
 import { LogoMark } from "../common/logo";
 
 export default function TopNav() {
@@ -60,8 +60,8 @@ export default function TopNav() {
                       <Menu.Item>
                         {({ active }) => (
                           <div
-                            onClick={() => {
-                              signOut();
+                            onClick={async () => {
+                              await signOut();
                               window.location.href = "/signin";
                             }}
                             className={classNames(

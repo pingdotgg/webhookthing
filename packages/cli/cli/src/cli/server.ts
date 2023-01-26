@@ -40,6 +40,12 @@ export const startServer = () => {
       console.error(err);
       process.exit(1);
     }
-    console.log(`Server listening at ${address}`);
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
+      );
+    } else {
+      console.log(`Server listening at ${address}`);
+    }
   });
 };

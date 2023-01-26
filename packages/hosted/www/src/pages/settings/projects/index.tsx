@@ -17,8 +17,8 @@ const ProjectsSettings: NextPage = () => {
   const { data: projects } = trpc.customer.allProjects.useQuery();
 
   const { mutate: deleteProjects } = trpc.customer.deleteProjects.useMutation({
-    onSuccess: () => {
-      tCtx.customer.allProjects.invalidate();
+    onSuccess: async () => {
+      await tCtx.customer.allProjects.invalidate();
     },
   });
 
@@ -195,8 +195,8 @@ const CreateProjectModal: React.FC<{
   const [projectName, setProjectName] = useState("");
 
   const { mutate: createProject } = trpc.customer.createProject.useMutation({
-    onSuccess: () => {
-      utils.customer.allProjects.invalidate();
+    onSuccess: async () => {
+      await utils.customer.allProjects.invalidate();
       setProjectName("");
     },
   });

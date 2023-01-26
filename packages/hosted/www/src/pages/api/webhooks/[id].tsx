@@ -31,7 +31,7 @@ const webhooks = async (req: NextApiRequest, res: NextApiResponse) => {
   await prisma.requestObject.create({ data });
 
   const fwdHost = FORWARDING_URL.match(
-    /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im
+    /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?=]+)/im
   )?.[1] as string;
 
   const fwdRes = await fetch(FORWARDING_URL, {

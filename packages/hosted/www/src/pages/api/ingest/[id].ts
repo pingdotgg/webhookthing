@@ -85,7 +85,7 @@ const injest = async (req: NextRequest) => {
       const url = dest.url;
 
       const fwdHost = url.match(
-        /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n\?\=]+)/im
+        /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?=]+)/im
       )?.[1] as string;
 
       const options = ["GET", "HEAD"].includes(data.method)
