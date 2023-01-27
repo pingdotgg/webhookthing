@@ -22,6 +22,7 @@
   "dependencies": {
     "@captain/cli-core": "*",
     "@fastify/cors": "^8.2.0",
+    "@fastify/http-proxy": "^8.4.0",
     "@fastify/static": "^6.6.0",
     "@trpc/server": "10.0.0-proxy-beta.25",
     "chalk": "5.0.1",
@@ -30,7 +31,8 @@
     "fastify": "^4.11.0",
     "fs-extra": "^11.1.0",
     "graceful-fs": "^4.2.10",
-    "gradient-string": "^2.0.2"
+    "gradient-string": "^2.0.2",
+    "open": "^8.4.0"
   },
   "devDependencies": {
     "@captain/cli-web": "*",
