@@ -31,7 +31,8 @@
     "fastify": "^4.11.0",
     "fs-extra": "^11.1.0",
     "graceful-fs": "^4.2.10",
-    "gradient-string": "^2.0.2"
+    "gradient-string": "^2.0.2",
+    "open": "^8.4.0"
   },
   "devDependencies": {
     "@captain/cli-web": "*",

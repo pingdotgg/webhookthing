@@ -41,8 +41,9 @@ if (!devMode) {
   });
 }
 
+import open from "open";
 export const startServer = () => {
-  server.listen({ port: 2033 }, (err, address) => {
+  server.listen({ port: 2033 }, async (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -52,7 +53,8 @@ export const startServer = () => {
         `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`,
       );
     } else {
-      console.log(`Server listening at ${address}`);
+      console.log(`Opening webhookthing at address: ${address}`);
+      await open(address);
     }
   });
 };
