@@ -53,7 +53,7 @@ export const startServer = () => {
         `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`,
       );
     } else {
-      console.log(`Opening webhookthing at address: ${address}`);
+      console.log(`[INFO] Opening webhookthing at address: ${address}`);
       await open(address);
     }
   });
