@@ -7,3 +7,4 @@ packages:
   - packages/hosted/deps/trpc
   - packages/hosted/deps/db
   - packages/marketing/webhookthing-marketing
+  - packages/marketing/docs
