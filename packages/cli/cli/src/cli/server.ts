@@ -8,6 +8,13 @@ export const server = fastify({
 import cors from "@fastify/cors";
 server.register(cors, { origin: "*" });
 
+// Configure proxy for Plausible
+import proxy from "@fastify/http-proxy";
+server.register(proxy, {
+  upstream: "https://plausible.io/api/event",
+  prefix: "/api/event",
+});
+
 // Configure tRPC
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { cliApiRouter } from "@captain/cli-core";

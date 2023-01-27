@@ -31,6 +31,7 @@ importers:
       '@captain/cli-core': '*'
       '@captain/cli-web': '*'
       '@fastify/cors': ^8.2.0
+      '@fastify/http-proxy': ^8.4.0
       '@fastify/static': ^6.6.0
       '@trpc/server': 10.0.0-proxy-beta.25
       '@types/fs-extra': ^9.0.13
@@ -53,6 +54,7 @@ importers:
     dependencies:
       '@captain/cli-core': link:../cli-core
       '@fastify/cors': 8.2.0
+      '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.6.0
       '@trpc/server': 10.0.0-proxy-beta.25
       chalk: 5.0.1
@@ -137,7 +139,7 @@ importers:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       autoprefixer: 10.4.12_postcss@8.4.20
       postcss: 8.4.20
-      tailwindcss: 3.1.8_postcss@8.4.20
+      tailwindcss: 3.1.8
       typescript: 4.9.4
       vite: 4.0.3
 
@@ -258,7 +260,7 @@ importers:
       postcss: 8.4.20
       prettier: 2.7.1
       prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
-      tailwindcss: 3.1.8_postcss@8.4.20
+      tailwindcss: 3.1.8
       typescript: 4.9.4
 
 packages:
@@ -774,6 +776,28 @@ packages:
       fast-json-stringify: 5.5.0
     dev: false
 
+  /@fastify/http-proxy/8.4.0:
+    resolution: {integrity: sha512-H8nwsmawFtKKRE6uhh1BtF1gQi/l147SmLsDGxB0HdYTHzjXz6uSQO3lEVmY7unKMzbArRjdoJQkEGpScszdSw==}
+    dependencies:
+      '@fastify/reply-from': 8.3.1
+      ws: 8.12.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@fastify/reply-from/8.3.1:
+    resolution: {integrity: sha512-fRByAvTMXuBuYIimcinukOB3YdmqtYPeoybXIBNY0aPVgetHkmCVffBo/M4pEOib9Pes8wuoYL4VawI65aHl4w==}
+    dependencies:
+      '@fastify/error': 3.2.0
+      end-of-stream: 1.4.4
+      fast-querystring: 1.0.0
+      fastify-plugin: 4.4.0
+      pump: 3.0.0
+      tiny-lru: 10.0.1
+      undici: 5.16.0
+    dev: false
+
   /@fastify/static/6.6.0:
     resolution: {integrity: sha512-UiYSN2dUmDZ48M40xdIwY1dPwSSYD7c+wtoIQP8y7wyxCwcUtf1YT5/Q4n1uJsBF1fySvuo9njQZKlHeiKy4HQ==}
     dependencies:
@@ -1110,7 +1134,7 @@ packages:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 3.1.8_postcss@8.4.20
+      tailwindcss: 3.1.8
     dev: true
 
   /@tanstack/query-core/4.9.0:
@@ -1664,6 +1688,13 @@ packages:
       esbuild: 0.15.13
       load-tsconfig: 0.2.3
     dev: true
+
+  /busboy/1.6.0:
+    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
+    engines: {node: '>=10.16.0'}
+    dependencies:
+      streamsearch: 1.1.0
+    dev: false
 
   /cac/6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -4501,6 +4532,11 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
+  /streamsearch/1.1.0:
+    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /string.prototype.matchall/4.0.7:
     resolution: {integrity: sha512-f48okCX7JiwVi1NXCVWcFnZgADDC/n2vePlQ/KUCNqCikLLilQvwjMO8+BHVKvgzH0JB0J9LEPgxOGT02RoETg==}
     dependencies:
@@ -4611,12 +4647,10 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /tailwindcss/3.1.8_postcss@8.4.20:
+  /tailwindcss/3.1.8:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
-    peerDependencies:
-      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -4873,6 +4907,13 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
+  /undici/5.16.0:
+    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
+    engines: {node: '>=12.18'}
+    dependencies:
+      busboy: 1.6.0
+    dev: false
+
   /universalify/0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
@@ -5007,6 +5048,19 @@ packages:
 
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  /ws/8.12.0:
+    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
 
   /xtend/4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
