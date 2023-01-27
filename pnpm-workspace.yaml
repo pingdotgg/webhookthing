@@ -8,3 +8,4 @@ packages:
   - packages/hosted/deps/db
   - packages/marketing/webhookthing-marketing
   - packages/marketing/docs
+  - packages/config/*
