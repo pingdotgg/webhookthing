@@ -102,7 +102,7 @@ export const useConfirmationModal = (options: ConfirmationModalOptions) => {
         }}
         onCancel={() => setContent(undefined)}
         {...rest}
-      />
+      />,
     );
   };
   return trigger;
@@ -145,7 +145,7 @@ const ConfirmationModal: React.FC<
               {
                 "border-gray-700 bg-gray-600": variant === "primary",
                 "border-red-700 bg-red-600": variant === "danger",
-              }
+              },
             )}
           >
             <div
@@ -174,7 +174,7 @@ const ConfirmationModal: React.FC<
                 variant === "danger",
               "border-indigo-700 bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500":
                 variant === "primary",
-            }
+            },
           )}
           onClick={onConfirm}
         >
