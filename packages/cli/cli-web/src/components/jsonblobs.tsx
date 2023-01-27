@@ -12,7 +12,7 @@ import { useState } from "react";
 import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 
-const HOOKS_FOLDER = ".captain/hooks";
+const HOOKS_FOLDER = ".thing/hooks";
 
 export const JsonBlobs = () => {
   const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
@@ -67,7 +67,7 @@ export const JsonBlobs = () => {
                       setExpanded((prev) =>
                         prev.includes(i)
                           ? prev.filter((x) => x !== i)
-                          : [...prev, i]
+                          : [...prev, i],
                       );
                     }}
                   >

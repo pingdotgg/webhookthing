@@ -12,14 +12,14 @@ export const t = initTRPC.create({
 });
 export const cliApiRouter = t.router({
   getBlobs: t.procedure.query(async () => {
-    const hooks = await fs.readdir(process.cwd() + "/.captain/hooks");
+    const hooks = await fs.readdir(process.cwd() + "/.thing/hooks");
 
     const res = hooks
       .filter((hookFile) => hookFile.includes(".json"))
       .map(async (hook) => {
         const content = await fs.readFile(
-          process.cwd() + "/.captain/hooks/" + hook,
-          "utf-8"
+          process.cwd() + "/.thing/hooks/" + hook,
+          "utf-8",
         );
 
         return {
@@ -34,7 +34,7 @@ export const cliApiRouter = t.router({
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
     .mutation(async ({ input }) => {
-      await openInExplorer(process.cwd() + "/.captain/hooks/" + input.path);
+      await openInExplorer(process.cwd() + "/.thing/hooks/" + input.path);
     }),
 
   getSampleHooks: t.procedure.mutation(async () => {
@@ -46,12 +46,12 @@ export const cliApiRouter = t.router({
       z.object({
         file: z.string(),
         url: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
       console.log(`[INFO] Reading file ${file}, and POST-ing to ${url}`);
-      const data = await fs.readFile(process.cwd() + "/.captain/hooks/" + file);
+      const data = await fs.readFile(process.cwd() + "/.thing/hooks/" + file);
       const parsedJson = JSON.parse(data.toString());
 
       try {
@@ -61,7 +61,7 @@ export const cliApiRouter = t.router({
         });
 
         console.log(
-          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`
+          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`,
         );
         return fetchedResult;
       } catch (e) {
