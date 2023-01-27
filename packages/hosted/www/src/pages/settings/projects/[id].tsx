@@ -787,7 +787,7 @@ const EditDestinationModal: React.FC<{
   const utils = trpc.useContext();
 
   const [destinationName, setDestinationName] = useState(
-    selectedDestination?.name
+    selectedDestination?.name,
   );
   const [url, setUrl] = useState(selectedDestination?.url);
 

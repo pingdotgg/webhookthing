@@ -83,7 +83,7 @@ const ProjectsSettings: NextPage = () => {
                             setSelectedProjects(
                               e.target.checked
                                 ? (projects ?? []).map((p) => p.id)
-                                : []
+                                : [],
                             );
                           }}
                         />
@@ -134,7 +134,7 @@ const ProjectsSettings: NextPage = () => {
                               setSelectedProjects(
                                 e.target.checked
                                   ? [...selectedProjects, p.id]
-                                  : selectedProjects.filter((p) => p !== p)
+                                  : selectedProjects.filter((p) => p !== p),
                               )
                             }
                           />
@@ -144,7 +144,7 @@ const ProjectsSettings: NextPage = () => {
                             "whitespace-nowrap py-4 pr-3 text-sm font-medium",
                             selectedProjects.includes(p.id)
                               ? "text-indigo-600"
-                              : "text-gray-900"
+                              : "text-gray-900",
                           )}
                         >
                           {p.name}

@@ -1,6 +1,6 @@
 {
   "name": "@captain/cli",
-  "version": "0.0.1",
+  "version": "0.1.4",
   "main": "./src/index.ts",
   "exports": "./dist/index.js",
   "type": "commonjs",
