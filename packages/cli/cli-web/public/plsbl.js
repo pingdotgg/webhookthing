@@ -9,6 +9,11 @@
   }
   function t(t, e) {
     if (
+      /^localhost$|^127(\.[0-9]+){0,2}\.[0-9]+$|^\[::1?\]$/.test(s.hostname) ||
+      ("file:" === s.protocol && !s.hostname.includes("localhost:2033"))
+    )
+      return l("localhost");
+    if (
       !(
         window._phantom ||
         window.__nightmare ||
