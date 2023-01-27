@@ -9,8 +9,9 @@
   }
   function t(t, e) {
     if (
-      /^localhost$|^127(\.[0-9]+){0,2}\.[0-9]+$|^\[::1?\]$/.test(s.hostname) ||
-      ("file:" === s.protocol && !s.hostname.includes("localhost:2033"))
+      !s.host.includes("localhost:2033") &&
+      (/^localhost$|^127(\.[0-9]+){0,2}\.[0-9]+$|^\[::1?\]$/.test(s.hostname) ||
+        "file:" === s.protocol)
     )
       return l("localhost");
     if (
