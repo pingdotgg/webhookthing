@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1080 1080" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;">
+    <g transform="matrix(-1.59612,1.50805,-1.50805,-1.59612,539.272,682.644)">
+        <g>
+            <path d="M-130.808,-154.62C-170.895,-143.678 -229.558,-86.779 -228.09,-61.98C-227.291,-48.485 -216.156,-15.112 -223.745,14.895C-228.917,35.344 -255.724,47.391 -257.617,65.413C-259.466,83.027 -226.98,212.82 -190.44,219.93C-153.87,227.07 -72.63,139.56 -20.28,131.31C32.07,123.03 86.82,181.77 123.63,170.34C148.873,162.488 190.225,91.564 197.867,42.938C199.847,30.342 188.368,-30.984 151.871,-59.754C123.632,-82.015 40.477,-101.772 -4.069,-111.642C-41.115,-119.85 -93.476,-164.811 -130.808,-154.62Z" style="fill-rule:nonzero;stroke:black;stroke-width:12px;"/>
+        </g>
+    </g><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: invert(100%); } }
+</style>
+</svg>
