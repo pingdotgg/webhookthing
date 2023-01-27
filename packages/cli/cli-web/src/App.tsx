@@ -19,8 +19,7 @@ export default function Example() {
                         <div className="flex flex-shrink-0 items-center text-gray-50">
                           <LogoMark className="block h-8 w-auto" />
                           <h1 className="ml-2 text-2xl font-bold">
-                            Webhook Thing (by <a href="https://ping.gg">Ping</a>
-                            )
+                            webhookthing (by <a href="https://ping.gg">Ping</a>)
                           </h1>
                         </div>
                       </div>
