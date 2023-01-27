@@ -28,7 +28,7 @@ export async function openInExplorer(path: string) {
   // Create the directory if it doesn't exist
   if (!fs.existsSync(path)) {
     console.log(
-      `\x1b[33m[WARNING] Could not find .captain directory, creating it now!\x1b[0m`
+      `\x1b[33m[WARNING] Could not find .thing directory, creating it now!\x1b[0m`,
     );
     fs.mkdirSync(path, { recursive: true });
   }
