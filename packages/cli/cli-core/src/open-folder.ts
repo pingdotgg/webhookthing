@@ -7,7 +7,7 @@ const promisifiedExecFile = promisify(childProcess.execFile);
 
 // Ripped from https://www.npmjs.com/package/open-file-explorer
 export async function openInExplorer(path: string) {
-  var cmd = ``;
+  let cmd = ``;
   switch (
     os.platform().toLowerCase().replace(/[0-9]/g, ``).replace(`darwin`, `macos`)
   ) {
@@ -33,5 +33,5 @@ export async function openInExplorer(path: string) {
     fs.mkdirSync(path, { recursive: true });
   }
 
-  let p = await promisifiedExecFile(cmd, [path]);
+  const p = await promisifiedExecFile(cmd, [path]);
 }
