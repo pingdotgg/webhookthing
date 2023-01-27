@@ -6,21 +6,17 @@ on:
   push:
     branches: ["main"]
 
-# You can leverage Vercel Remote Caching with Turbo to speed up your builds
-# @link https://turborepo.org/docs/core-concepts/remote-caching#remote-caching-on-vercel-builds
-# env:
-#   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-#   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-
 jobs:
   build-lint-and-typecheck:
     env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       DATABASE_URL: file:./db.sqlite
-      DB_HOST: ""
-      DB_PORT: ""
-      DB_NAME: ""
-      DB_USER: ""
-      DB_PASS: ""
+      DB_HOST: ${{ secrets.FAKE_SECRET }}
+      DB_PORT: ${{ secrets.FAKE_SECRET }}
+      DB_NAME: ${{ secrets.FAKE_SECRET }}
+      DB_USER: ${{ secrets.FAKE_SECRET }}
+      DB_PASS: ${{ secrets.FAKE_SECRET }}
 
     runs-on: ubuntu-latest
 
