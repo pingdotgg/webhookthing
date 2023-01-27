@@ -1,4 +1,4 @@
-import { Kysely, MysqlDialect, Generated, ColumnType } from "kysely";
+import { Kysely, MysqlDialect, Generated } from "kysely";
 
 import { createPool } from "mysql2";
 import { env } from "../env/server.mjs";
