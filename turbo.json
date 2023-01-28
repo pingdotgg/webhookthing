@@ -3,7 +3,16 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
-      "env": ["VERCEL_URL", "PORT", "NODE_ENV"],
+      "env": [
+        "VERCEL_URL",
+        "PORT",
+        "NODE_ENV",
+        "DB_HOST",
+        "DB_PORT",
+        "DB_NAME",
+        "DB_USER",
+        "DB_PASS"
+      ],
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
