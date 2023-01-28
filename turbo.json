@@ -1,40 +1,17 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
   "pipeline": {
-    "db-studio": {
-      "cache": false
-    },
-    "db-generate": {
-      "cache": true
-    },
     "build": {
-      "dependsOn": ["^build", "^db-generate"],
-      "outputs": [".next/**", "dist/**"],
-      "env": ["DATABASE_HOST", "DATABASE_USERNAME", "DATABASE_PASSWORD"]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
     },
-    "lint": {
-      "outputs": []
-    },
+    "lint": {},
     "dev": {
-      "dependsOn": ["^db-generate"],
-      "cache": false
-    },
-    "dev-cli": {
-      "cache": false
-    },
-    "dev-marketing": {
-      "cache": false
-    },
-    "db-push": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "clean": {
-      "cache": false
-    },
-    "//#clean": {
-      "cache": false
-    },
-    "typecheck": {
       "cache": false
     }
   }
