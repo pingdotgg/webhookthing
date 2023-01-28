@@ -57,8 +57,9 @@ const Home: NextPage = () => {
 "
       >
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-[3.5rem] font-extrabold tracking-tight text-white sm:text-[5rem]">
-            webhook<span className="text-indigo-600">thing</span>
+          <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
+            webhook
+            <span className="font-extrabold text-indigo-600 ">thing</span>
           </h1>
           <div className="flex w-96 max-w-sm flex-col gap-4 rounded-xl bg-white/10 p-6 text-white">
             {!submitted ? (
