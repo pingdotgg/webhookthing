@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@captain/cli-web": "*",
+    "@captain/tsconfig": "workspace:*",
     "@types/fs-extra": "^9.0.13",
     "@types/gradient-string": "^1.1.2",
     "@types/inquirer": "^9.0.2",

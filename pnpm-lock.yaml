@@ -20,6 +20,7 @@ importers:
     specifiers:
       '@captain/cli-core': '*'
       '@captain/cli-web': '*'
+      '@captain/tsconfig': workspace:*
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': ^8.4.0
       '@fastify/static': ^6.6.0
@@ -58,6 +59,7 @@ importers:
       open: 8.4.0
     devDependencies:
       '@captain/cli-web': link:../cli-web
+      '@captain/tsconfig': link:../../../packages/tsconfig
       '@types/fs-extra': 9.0.13
       '@types/gradient-string': 1.1.2
       '@types/inquirer': 9.0.3
@@ -71,6 +73,7 @@ importers:
 
   apps/cli/cli-core:
     specifiers:
+      '@captain/tsconfig': workspace:*
       '@trpc/client': 10.0.0-proxy-beta.25
       '@trpc/server': 10.0.0-proxy-beta.25
       node-fetch: ^3.3.0
@@ -84,12 +87,14 @@ importers:
       superjson: 1.12.2
       zod: 3.20.2
     devDependencies:
+      '@captain/tsconfig': link:../../../packages/tsconfig
       typescript: 4.9.4
 
   apps/cli/cli-web:
     specifiers:
       '@captain/cli-core': '*'
       '@captain/tailwind-config': '*'
+      '@captain/tsconfig': workspace:*
       '@headlessui/react': ^1.7.8
       '@heroicons/react': ^2.0.12
       '@tailwindcss/forms': ^0.5.3
@@ -125,6 +130,7 @@ importers:
       zod: 3.20.2
     devDependencies:
       '@captain/cli-core': link:../cli-core
+      '@captain/tsconfig': link:../../../packages/tsconfig
       '@tailwindcss/forms': 0.5.3_tailwindcss@3.2.4
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
@@ -163,6 +169,7 @@ importers:
   apps/marketing:
     specifiers:
       '@captain/tailwind-config': '*'
+      '@captain/tsconfig': workspace:*
       '@tanstack/react-query': ^4.20.0
       '@trpc/client': ^10.8.1
       '@trpc/next': ^10.8.1
@@ -204,6 +211,7 @@ importers:
       superjson: 1.9.1
       zod: 3.20.2
     devDependencies:
+      '@captain/tsconfig': link:../../packages/tsconfig
       '@types/node': 18.11.18
       '@types/prettier': 2.7.2
       '@types/react': 18.0.27

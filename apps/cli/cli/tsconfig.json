@@ -1,12 +1,5 @@
 {
-  "extends": "../../../tsconfig.json",
-
-  "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true
-  },
-
-  "include": ["src", ".eslintrc.cjs"]
+  "extends": "@captain/tsconfig/base.json",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
