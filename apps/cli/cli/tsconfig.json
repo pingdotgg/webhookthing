@@ -1,0 +1,5 @@
+{
+  "extends": "@captain/tsconfig/cli.json",
+
+  "include": ["src", ".eslintrc.cjs"]
+}

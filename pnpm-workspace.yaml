@@ -1,11 +1,4 @@
 packages:
-  - packages/cli/cli
-  - packages/cli/cli-web
-  - packages/cli/cli-core
-  - packages/hosted/www
-  - packages/hosted/deps/auth
-  - packages/hosted/deps/trpc
-  - packages/hosted/deps/db
-  - packages/marketing/webhookthing-marketing
-  - packages/marketing/docs
-  - packages/config/*
+  - "apps/*"
+  - "apps/cli/*"
+  - "packages/*"

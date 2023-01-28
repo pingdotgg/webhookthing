@@ -1,29 +1,21 @@
 {
   "name": "captain",
   "private": true,
-  "packageManager": "pnpm@7.13.0",
+  "packageManager": "pnpm@7.15.0",
   "scripts": {
-    "db-push": "pnpm --filter @captain/db db-push",
-    "build": "turbo build",
-    "dev": "turbo dev --parallel",
-    "dev-cli": "turbo dev-cli",
-    "dev-marketing": "turbo dev-marketing",
-    "cleen": "turbo clean",
-    "clean": "rm -rf node_modules",
-    "lint": "turbo lint && manypkg check",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:cli": "turbo run dev --filter @captain/cli --filter @captain/cli-web",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "typecheck": "turbo typecheck"
   },
-  "dependencies": {
-    "@manypkg/cli": "^0.19.2",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
-    "eslint": "^8.26.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-config-turbo": "^0.0.4",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
     "prettier": "^2.7.1",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "turbo": "^1.7.0",
-    "typescript": "^4.9.4"
+    "prettier-plugin-tailwindcss": "^0.1.11",
+    "turbo": "^1.7.0"
   }
 }

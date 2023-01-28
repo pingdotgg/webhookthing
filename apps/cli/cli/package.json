@@ -1,0 +1,51 @@
+{
+  "name": "@captain/cli",
+  "version": "0.1.4",
+  "main": "./src/index.ts",
+  "exports": "./dist/index.js",
+  "type": "commonjs",
+  "bin": {
+    "captain": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=14.16"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "build": "node scripts/build.js",
+    "dev": "tsup --watch '../cli-core/src/*.ts' --env.NODE_ENV development",
+    "clean": "rm -rf dist .turbo node_modules",
+    "lint": "eslint",
+    "format": "prettier --write --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore",
+    "format:check": "prettier --check --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
+  },
+  "dependencies": {
+    "@captain/cli-core": "*",
+    "@fastify/cors": "^8.2.0",
+    "@fastify/http-proxy": "^8.4.0",
+    "@fastify/static": "^6.6.0",
+    "@trpc/server": "10.0.0-proxy-beta.25",
+    "chalk": "5.0.1",
+    "commander": "^9.4.1",
+    "execa": "^6.1.0",
+    "fastify": "^4.11.0",
+    "fs-extra": "^11.1.0",
+    "graceful-fs": "^4.2.10",
+    "gradient-string": "^2.0.2",
+    "open": "^8.4.0"
+  },
+  "devDependencies": {
+    "@captain/cli-web": "*",
+    "@captain/tsconfig": "workspace:*",
+    "@types/fs-extra": "^9.0.13",
+    "@types/gradient-string": "^1.1.2",
+    "@types/inquirer": "^9.0.2",
+    "@types/node": "^18.8.0",
+    "@vercel/ncc": "^0.36.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "tsup": "^6.5.0",
+    "type-fest": "^3.0.0",
+    "typescript": "^4.9.4"
+  }
+}
