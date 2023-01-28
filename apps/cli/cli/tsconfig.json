@@ -1,21 +1,5 @@
 {
-  "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "noUncheckedIndexedAccess": true,
-    "target": "es2018",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true
-  },
+  "extends": "@captain/tsconfig/cli.json",
 
   "include": ["src", ".eslintrc.cjs"]
 }
