@@ -19,7 +19,7 @@ export const cliApiRouter = t.router({
       .map(async (hook) => {
         const content = await fs.readFile(
           process.cwd() + "/.thing/hooks/" + hook,
-          "utf-8",
+          "utf-8"
         );
 
         return {
@@ -46,7 +46,7 @@ export const cliApiRouter = t.router({
       z.object({
         file: z.string(),
         url: z.string(),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
@@ -61,7 +61,7 @@ export const cliApiRouter = t.router({
         });
 
         console.log(
-          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`,
+          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`
         );
         return fetchedResult;
       } catch (e) {

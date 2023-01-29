@@ -6,7 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore",
+    "format:check": "prettier --check --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
     "@captain/tailwind-config": "*",

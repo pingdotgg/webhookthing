@@ -50,7 +50,7 @@ export const startServer = () => {
     }
     if (process.env.NODE_ENV === "development") {
       console.log(
-        `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`,
+        `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
       );
     } else {
       console.log(`[INFO] Opening webhookthing at address: ${address}`);
