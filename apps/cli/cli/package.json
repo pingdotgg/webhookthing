@@ -15,7 +15,8 @@
     "build": "node scripts/build.js",
     "dev": "tsup --watch '../cli-core/src/*.ts' --env.NODE_ENV development",
     "clean": "rm -rf dist .turbo node_modules",
-    "lint": "eslint",
+    "lint": "eslint --ext .ts,tsx --ignore-path .gitignore src",
+    "lint:fix": "eslint --ext .ts,tsx --ignore-path .gitignore --fix src",
     "format": "prettier --write --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore",
     "format:check": "prettier --check --plugin-search-dir=. **/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },

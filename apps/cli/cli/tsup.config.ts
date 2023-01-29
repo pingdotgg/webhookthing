@@ -1,5 +1,6 @@
 import { defineConfig } from "tsup";
 
+// eslint-disable-next-line
 const isDev = process.env.npm_lifecycle_event === "dev";
 
 export default defineConfig({

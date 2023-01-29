@@ -30,7 +30,7 @@ async function main() {
   fse.copySync(WEB_DIR, join(DIST_DIR, "web"));
 
   // Build and bundle CLI using ncc
-  const opts = { sourceMap: true, sourceMapRegister: true };
+  const opts = { sourceMap: true, sourceMapRegister: true, minify: true };
   const { code, map, assets } = await ncc(ENTRY_DIR, opts);
 
   // Write files to dist dir
@@ -41,12 +41,15 @@ async function main() {
   // There's a bunch of "asset" files (js files from other shit)
   // Most of them come from Fastify I think?
   for (var [assetName, assetCode] of Object.entries(assets)) {
+    if (assetName.includes(".json")) continue;
+
+    console.log("[INFO] NCC writing file: ", assetName);
     await writeFile(
       join(DIST_DIR, assetName),
       assetCode.source.toString("utf8")
     );
   }
-  return "success";
+  return "[INFO] Build was successful.";
 }
 
 main().then(console.log).catch(console.error);

@@ -67,7 +67,7 @@ export const JsonBlobs = () => {
                       setExpanded((prev) =>
                         prev.includes(i)
                           ? prev.filter((x) => x !== i)
-                          : [...prev, i],
+                          : [...prev, i]
                       );
                     }}
                   >
