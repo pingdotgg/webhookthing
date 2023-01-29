@@ -43,13 +43,13 @@ async function main() {
   for (var [assetName, assetCode] of Object.entries(assets)) {
     if (assetName.includes(".json")) continue;
 
-    console.log("NCC writing file: ", assetName);
+    console.log("[INFO] NCC writing file: ", assetName);
     await writeFile(
       join(DIST_DIR, assetName),
       assetCode.source.toString("utf8")
     );
   }
-  return "success";
+  return "[INFO] Build was successful.";
 }
 
 main().then(console.log).catch(console.error);
