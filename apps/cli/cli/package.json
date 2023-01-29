@@ -1,11 +1,14 @@
 {
-  "name": "@captain/cli",
-  "version": "0.1.4",
+  "name": "webhookthing",
+  "version": "0.2.0",
   "main": "./src/index.ts",
   "exports": "./dist/index.js",
   "type": "commonjs",
   "bin": {
-    "captain": "./dist/index.js"
+    "webhookthing": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=14.16"
