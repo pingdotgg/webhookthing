@@ -8,7 +8,8 @@
     "webhookthing": "./dist/index.js"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "directory": "dist"
   },
   "engines": {
     "node": ">=14.16"
