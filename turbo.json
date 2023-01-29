@@ -17,6 +17,9 @@
       "outputs": ["dist/**", ".next/**"]
     },
     "lint": {},
+    "lint:fix": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
