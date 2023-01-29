@@ -7,6 +7,8 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "typecheck": "tsc",
+    "lint": "eslint --ext .ts,tsx --ignore-path .gitignore src",
+    "lint:fix": "eslint --ext .ts,tsx --ignore-path .gitignore --fix src",
     "format": "prettier --write --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore",
     "format:check": "prettier --check --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
@@ -19,6 +21,8 @@
   },
   "devDependencies": {
     "@captain/tsconfig": "workspace:*",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
     "typescript": "^4.9.4"
   }
 }
