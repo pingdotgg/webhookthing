@@ -21,7 +21,6 @@ const generatePackageJson = () => {
     main,
     exports,
     type,
-    bin,
     engines,
   } = require("../package.json");
 
@@ -32,8 +31,10 @@ const generatePackageJson = () => {
       main,
       exports,
       type,
-      bin,
       engines,
+      bin: {
+        webhookthing: "./index.js",
+      },
     },
     null,
     2

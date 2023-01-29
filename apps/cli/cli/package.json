@@ -1,6 +1,6 @@
 {
   "name": "webhookthing",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "./src/index.ts",
   "exports": "./dist/index.js",
   "type": "commonjs",
