@@ -40,6 +40,10 @@ const config: DocsThemeConfig = {
       <link rel="icon" type="image/png" href="/favicon.png" />
     </>
   ),
+
+  footer: {
+    text: "© 2023 ping.gg",
+  },
 };
 
 export default config;
