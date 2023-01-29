@@ -1,6 +1,6 @@
 // This file is heavily based on the following example
 // https://github.com/styfle/ncc-bug-stack/blob/master/build.js#L7
-const { readFile, writeFile } = require("fs/promises");
+const { readFile, writeFile, rmdir, mkdir } = require("fs/promises");
 const { resolve } = require("path");
 
 const fse = require("fs-extra");
@@ -25,15 +25,19 @@ const generatePackageJson = () => {
     engines,
   } = require("../package.json");
 
-  return JSON.stringify({
-    name,
-    version,
-    main,
-    exports,
-    type,
-    bin,
-    engines,
-  });
+  return JSON.stringify(
+    {
+      name,
+      version,
+      main,
+      exports,
+      type,
+      bin,
+      engines,
+    },
+    null,
+    2
+  );
 };
 
 async function runBuild() {
@@ -47,6 +51,9 @@ async function runBuild() {
     console.error(e);
     process.exit(1);
   }
+
+  await rmdir(DIST_DIR, { recursive: true });
+  await mkdir(DIST_DIR);
 
   // THIS IS WHERE THE CLI-WEB APP GETS BUNDLED
   fse.copySync(WEB_DIR, join(DIST_DIR, "web"));
