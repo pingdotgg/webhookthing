@@ -1,0 +1,9 @@
+{
+  "index": { "title": "Quick Start", "theme": { "breadcrumb": false } },
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "https://twitter.com/t3dotgg",
+    "newWindow": true
+  }
+}
