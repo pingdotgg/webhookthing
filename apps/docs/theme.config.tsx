@@ -42,7 +42,7 @@ const config: DocsThemeConfig = {
   ),
 
   footer: {
-    text: "© 2023 ping.gg",
+    component: null,
   },
 };
 
