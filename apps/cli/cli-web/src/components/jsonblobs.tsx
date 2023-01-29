@@ -8,6 +8,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
@@ -17,14 +18,25 @@ const HOOKS_FOLDER = ".thing/hooks";
 export const JsonBlobs = () => {
   const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
 
-  const { mutate: runFile } = cliApi.runFile.useMutation();
+  const { mutate: runFile } = cliApi.runFile.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
-  const { mutate: openFolder } = cliApi.openFolder.useMutation();
+  const { mutate: openFolder } = cliApi.openFolder.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   const { mutate: getSampleHooks, isLoading } =
     cliApi.getSampleHooks.useMutation({
       onSuccess: () => {
-        refetchBlobs();
+        setTimeout(() => refetchBlobs(), 150);
+      },
+      onError: (err) => {
+        toast.error(err.message);
       },
     });
 

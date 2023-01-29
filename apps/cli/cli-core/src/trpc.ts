@@ -65,7 +65,13 @@ export const cliApiRouter = t.router({
         );
         return fetchedResult;
       } catch (e) {
-        console.error(e);
+        console.log("[ERROR] FAILED TO SEND");
+        if ((e as any).code === "ECONNREFUSED") {
+          console.log("[ERROR] Connection refused. Is the server running?")
+        } else {
+          console.log("[ERROR] Unknown error", e)
+        }
+        throw new Error("Connection refused. Is the server running?");
       }
     }),
 });

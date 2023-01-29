@@ -3,9 +3,12 @@ import { EndpointSetting } from "./components/endpointsetting";
 
 import { Disclosure } from "@headlessui/react";
 
+import { Toaster } from "react-hot-toast";
+
 export default function Example() {
   return (
     <>
+      <Toaster />
       <div className="min-h-full">
         <div className="bg-gray-800 bg-gradient-to-r from-indigo-800/40 pb-32">
           <Disclosure as="nav" className="">
