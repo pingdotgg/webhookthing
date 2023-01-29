@@ -45,3 +45,6 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# don't bundle .thing for us pls
+.thing
