@@ -7,7 +7,7 @@ const config: DocsThemeConfig = {
     };
   },
 
-  logoLink: "https://webhooktool.com",
+  logoLink: "https://webhookthing.com",
   logo: (
     <img
       src="/img/logo.svg"

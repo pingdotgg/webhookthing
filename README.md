@@ -1,28 +1,23 @@
 # Captain
 
-A monorepo for managing Ping's webhook tool.
+Monorepo for [webhookthing](https://webhookthing.com)
+
+[![NPM version][npm-image]][npm-url]
+[![Downloads][downloads-image]][npm-url]
 
 ## Getting Started
 
-For main project (NextJS app/server):
-
 ```bash
 pnpm install
-
 pnpm dev
 ```
 
-For local CLI dev:
+### For just cli
 
 ```bash
 pnpm dev-cli
 ```
 
-## TODO
-
-### CLI
-
-- [ ] Fix asset serving in dev (or don't but remove public dir)
-- [ ] Bundle-ify
-- [ ] Build ux for reading json blobs
-- [ ] Build ux for calling json blobs
+[downloads-image]: https://img.shields.io/npm/dm/webhookthing?color=364fc7&logoColor=364fc7
+[npm-url]: https://www.npmjs.com/package/webhookthing
+[npm-image]: https://img.shields.io/npm/v/webhookthing?color=0b7285&logoColor=0b7285
