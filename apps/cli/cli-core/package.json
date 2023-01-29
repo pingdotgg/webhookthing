@@ -13,8 +13,8 @@
     "format:check": "prettier --check --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
-    "@trpc/client": "10.0.0-proxy-beta.25",
-    "@trpc/server": "10.0.0-proxy-beta.25",
+    "@trpc/client": "10.9.0",
+    "@trpc/server": "10.9.0",
     "node-fetch": "^3.3.0",
     "superjson": "^1.12.1",
     "zod": "^3.19.1"
