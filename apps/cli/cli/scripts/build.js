@@ -14,7 +14,29 @@ const ENTRY_DIR = resolve(__dirname, "../src/index.ts");
 
 const WEB_DIR = resolve(__dirname, "../../cli-web/dist/web");
 
-async function main() {
+const generatePackageJson = () => {
+  const {
+    name,
+    version,
+    main,
+    exports,
+    type,
+    bin,
+    engines,
+  } = require("../package.json");
+
+  return JSON.stringify({
+    name,
+    version,
+    main,
+    exports,
+    type,
+    bin,
+    engines,
+  });
+};
+
+async function runBuild() {
   // Assert that we actually have a built cli-web app to bundle
   try {
     const indexHtml = await readFile(join(WEB_DIR, "index.html"), "utf8");
@@ -38,6 +60,9 @@ async function main() {
   await writeFile(join(DIST_DIR, "./index.js"), code);
   await writeFile(join(DIST_DIR, "./index.js.map"), map);
 
+  // Custom package.json
+  await writeFile(join(DIST_DIR, "./package.json"), generatePackageJson());
+
   // There's a bunch of "asset" files (js files from other shit)
   // Most of them come from Fastify I think?
   for (var [assetName, assetCode] of Object.entries(assets)) {
@@ -52,4 +77,4 @@ async function main() {
   return "[INFO] Build was successful.";
 }
 
-main().then(console.log).catch(console.error);
+runBuild().then(console.log).catch(console.error);
