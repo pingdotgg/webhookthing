@@ -1,6 +1,6 @@
 // This file is heavily based on the following example
 // https://github.com/styfle/ncc-bug-stack/blob/master/build.js#L7
-const { readFile, writeFile } = require("fs/promises");
+const { readFile, writeFile, rmdir, mkdir } = require("fs/promises");
 const { resolve } = require("path");
 
 const fse = require("fs-extra");
@@ -14,7 +14,34 @@ const ENTRY_DIR = resolve(__dirname, "../src/index.ts");
 
 const WEB_DIR = resolve(__dirname, "../../cli-web/dist/web");
 
-async function main() {
+const generatePackageJson = () => {
+  const {
+    name,
+    version,
+    main,
+    exports,
+    type,
+    engines,
+  } = require("../package.json");
+
+  return JSON.stringify(
+    {
+      name,
+      version,
+      main,
+      exports,
+      type,
+      engines,
+      bin: {
+        webhookthing: "./index.js",
+      },
+    },
+    null,
+    2
+  );
+};
+
+async function runBuild() {
   // Assert that we actually have a built cli-web app to bundle
   try {
     const indexHtml = await readFile(join(WEB_DIR, "index.html"), "utf8");
@@ -25,6 +52,9 @@ async function main() {
     console.error(e);
     process.exit(1);
   }
+
+  await rmdir(DIST_DIR, { recursive: true });
+  await mkdir(DIST_DIR);
 
   // THIS IS WHERE THE CLI-WEB APP GETS BUNDLED
   fse.copySync(WEB_DIR, join(DIST_DIR, "web"));
@@ -37,6 +67,9 @@ async function main() {
   // THIS IS WHERE THE CLI GETS BUNDLED
   await writeFile(join(DIST_DIR, "./index.js"), code);
   await writeFile(join(DIST_DIR, "./index.js.map"), map);
+
+  // Custom package.json
+  await writeFile(join(DIST_DIR, "./package.json"), generatePackageJson());
 
   // There's a bunch of "asset" files (js files from other shit)
   // Most of them come from Fastify I think?
@@ -52,4 +85,4 @@ async function main() {
   return "[INFO] Build was successful.";
 }
 
-main().then(console.log).catch(console.error);
+runBuild().then(console.log).catch(console.error);

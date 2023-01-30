@@ -21,3 +21,17 @@ pnpm dev-cli
 [downloads-image]: https://img.shields.io/npm/dm/webhookthing?color=364fc7&logoColor=364fc7
 [npm-url]: https://www.npmjs.com/package/webhookthing
 [npm-image]: https://img.shields.io/npm/v/webhookthing?color=0b7285&logoColor=0b7285
+
+## Publishing Instructions
+
+First, add changes with changesets:
+
+```bash
+npx changeset add
+```
+
+Then, make a new version & publish
+
+```bash
+pnpm publish-cli
+```
