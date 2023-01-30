@@ -1,7 +1,8 @@
 {
   "name": "@captain/docs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Nextra docs template",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
