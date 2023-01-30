@@ -1,5 +1,13 @@
 # webhookthing
 
+## 0.2.4
+
+### Patch Changes
+
+- Fix hook paths
+- Updated dependencies
+  - @captain/cli-core@0.2.2
+
 ## 0.2.3
 
 ### Patch Changes
