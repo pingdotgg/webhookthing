@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@captain/tailwind-config": "*",
+    "@heroicons/react": "^2.0.14",
     "@tanstack/react-query": "^4.20.0",
     "@trpc/client": "^10.8.1",
     "@trpc/next": "^10.8.1",
