@@ -7,6 +7,7 @@ import {
   EyeSlashIcon,
   PlayIcon,
   PlusIcon,
+  TrashIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { useState } from "react";
@@ -209,7 +210,12 @@ export const JsonBlobs = () => {
   );
 };
 
+const classNames = (...classes: string[]) => {
+  return classes.filter(Boolean).join(" ");
+};
+
 const AddWebhookForm = () => {
+  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
   return (
     <div className="mt-4 flex flex-col gap-2">
       <div id="name-input">
@@ -252,36 +258,81 @@ const AddWebhookForm = () => {
             Headers
           </legend>
           <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
-            <div className="flex -space-x-px">
-              <div className="w-1/2 min-w-0 flex-1">
-                <label htmlFor="headerkey" className="sr-only">
-                  Header Key
-                </label>
-                <input
-                  type="text"
-                  name="headerkey"
-                  id="headerkey"
-                  className="relative block w-full rounded-none rounded-tl-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="x-My-Header"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <label htmlFor="header-value" className="sr-only">
-                  Header Value
-                </label>
-                <input
-                  type="text"
-                  name="header-value"
-                  id="header-value"
-                  className="relative block w-full rounded-none rounded-tr-md border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="Bearer 1234567890"
-                />
-              </div>
+            <div className="flex flex-col -space-y-px">
+              {Object.keys(headers).map((key, i) => (
+                <div className="flex -space-x-px" id={`header${i}`}>
+                  <div className="w-1/2 min-w-0 flex-1">
+                    <label htmlFor={`headerkey${i}`} className="sr-only">
+                      Header Key
+                    </label>
+                    <input
+                      type="text"
+                      name="headerkey"
+                      id={`headerkey${i}`}
+                      className={classNames(
+                        "relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                        i === 0 ? "rounded-tl-md" : ""
+                      )}
+                      placeholder="x-My-Header"
+                      value={key}
+                      onChange={(e) => {
+                        const newHeaders = { ...headers };
+                        delete newHeaders[key];
+                        newHeaders[e.target.value] = headers[key];
+                        setHeaders(newHeaders);
+                      }}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <label htmlFor={`headerval${i}`} className="sr-only">
+                      Header Value
+                    </label>
+                    <input
+                      type="text"
+                      name={`headerval${i}`}
+                      id={`headerval${i}`}
+                      className="relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      placeholder="somevaluehere"
+                      value={headers[key]}
+                      onChange={(e) => {
+                        const newHeaders = { ...headers };
+                        newHeaders[key] = e.target.value;
+                        setHeaders(newHeaders);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className={classNames(
+                        "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
+                        i === 0 ? "rounded-tr-md" : ""
+                      )}
+                      onClick={() => {
+                        const newHeaders = { ...headers };
+                        delete newHeaders[key];
+                        setHeaders(newHeaders);
+                      }}
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
+
             <div>
               <button
                 type="button"
-                className="flex w-full flex-row items-center gap-1 rounded-b-md border border-gray-300 bg-white px-4 py-2 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className={classNames(
+                  "flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-2 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                  Object.keys(headers).length !== 0
+                    ? "rounded-b-md"
+                    : "rounded-md"
+                )}
+                onClick={() => {
+                  setHeaders({ ...headers, "": "" });
+                }}
               >
                 <PlusIcon className="h-4 w-4" />
                 <span>Add a Header</span>
