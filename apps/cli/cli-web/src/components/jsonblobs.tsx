@@ -53,7 +53,7 @@ export const JsonBlobs = () => {
   return (
     <>
       <Modal openState={addModalState}>
-        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
           <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
             <button
               type="button"
@@ -71,7 +71,7 @@ export const JsonBlobs = () => {
                 aria-hidden="true"
               />
             </div>
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <div className="mt-3 text-left sm:mt-0 sm:ml-4">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
                 Add a new webhook
               </h3>
@@ -214,10 +214,24 @@ const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
 };
 
+const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
+  return arr.reduce((acc: { [k: string]: string }, curr) => {
+    if (curr.key) {
+      acc[curr.key] = curr.value;
+    }
+    return acc;
+  }, {});
+};
+
 const AddWebhookForm = () => {
-  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
+  const [name, setName] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([]);
+  const [query, setQuery] = useState<{ key: string; value: string }[]>([]);
+  const [body, setBody] = useState<string>("");
+
   return (
-    <div className="mt-4 flex flex-col gap-2">
+    <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
       <div id="name-input">
         <label
           htmlFor="name"
@@ -232,6 +246,8 @@ const AddWebhookForm = () => {
             id="name"
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             placeholder="My Webhook"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
       </div>
@@ -249,98 +265,22 @@ const AddWebhookForm = () => {
             id="url"
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             placeholder="https://example.com/webhook"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
           />
         </div>
       </div>
-      <div id="headers-input">
-        <fieldset>
-          <legend className="block text-sm font-medium text-gray-700">
-            Headers
-          </legend>
-          <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
-            <div className="flex flex-col -space-y-px">
-              {Object.keys(headers).map((key, i) => (
-                <div className="flex -space-x-px" id={`header${i}`}>
-                  <div className="w-1/2 min-w-0 flex-1">
-                    <label htmlFor={`headerkey${i}`} className="sr-only">
-                      Header Key
-                    </label>
-                    <input
-                      type="text"
-                      name="headerkey"
-                      id={`headerkey${i}`}
-                      className={classNames(
-                        "relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                        i === 0 ? "rounded-tl-md" : ""
-                      )}
-                      placeholder="x-My-Header"
-                      value={key}
-                      onChange={(e) => {
-                        const newHeaders = { ...headers };
-                        delete newHeaders[key];
-                        newHeaders[e.target.value] = headers[key];
-                        setHeaders(newHeaders);
-                      }}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <label htmlFor={`headerval${i}`} className="sr-only">
-                      Header Value
-                    </label>
-                    <input
-                      type="text"
-                      name={`headerval${i}`}
-                      id={`headerval${i}`}
-                      className="relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="somevaluehere"
-                      value={headers[key]}
-                      onChange={(e) => {
-                        const newHeaders = { ...headers };
-                        newHeaders[key] = e.target.value;
-                        setHeaders(newHeaders);
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    <button
-                      type="button"
-                      className={classNames(
-                        "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
-                        i === 0 ? "rounded-tr-md" : ""
-                      )}
-                      onClick={() => {
-                        const newHeaders = { ...headers };
-                        delete newHeaders[key];
-                        setHeaders(newHeaders);
-                      }}
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <button
-                type="button"
-                className={classNames(
-                  "flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-2 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
-                  Object.keys(headers).length !== 0
-                    ? "rounded-b-md"
-                    : "rounded-md"
-                )}
-                onClick={() => {
-                  setHeaders({ ...headers, "": "" });
-                }}
-              >
-                <PlusIcon className="h-4 w-4" />
-                <span>Add a Header</span>
-              </button>
-            </div>
-          </div>
-        </fieldset>
+      <div id="query-input">
+        <KeyValueInput
+          label="Query Parameter"
+          values={query}
+          setValues={setQuery}
+        />
       </div>
+      <div id="headers-input">
+        <KeyValueInput label="Header" values={headers} setValues={setHeaders} />
+      </div>
+
       <div id="body-input">
         <label
           htmlFor="body"
@@ -353,12 +293,120 @@ const AddWebhookForm = () => {
             id="body"
             name="body"
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="mt-1 block w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             placeholder="{}"
-            defaultValue={""}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
           />
         </div>
       </div>
     </div>
+  );
+};
+
+const KeyValueInput = ({
+  label,
+  values,
+  setValues,
+}: {
+  label: string;
+  values: { key: string; value: string }[];
+  setValues: (values: { key: string; value: string }[]) => void;
+}) => {
+  return (
+    <fieldset>
+      <legend className="block text-sm font-medium text-gray-700">
+        {label}s
+      </legend>
+      <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
+        <div className="flex flex-col -space-y-px">
+          {values.map((kv, i) => (
+            <div className="flex -space-x-px" id={`${label.toLowerCase()}${i}`}>
+              <div className="w-1/4 min-w-0 flex-1">
+                <label
+                  htmlFor={`${label.toLowerCase()}key${i}`}
+                  className="sr-only"
+                >
+                  {label} Key
+                </label>
+                <input
+                  type="text"
+                  name={`${label.toLowerCase()}key${i}`}
+                  id={`${label.toLowerCase()}key${i}`}
+                  className={classNames(
+                    "relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                    i === 0 ? "rounded-tl-md" : "",
+                    values.filter((h) => h.key == kv.key).length > 1 && kv.key
+                      ? "text-red-500"
+                      : ""
+                  )}
+                  placeholder="somekeyhere"
+                  value={kv.key}
+                  onChange={(e) => {
+                    const newValues = [...values];
+                    newValues[i].key = e.target.value;
+                    setValues(newValues);
+                  }}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <label
+                  htmlFor={`${label.toLowerCase()}val${i}`}
+                  className="sr-only"
+                >
+                  {label} Value
+                </label>
+                <input
+                  type="text"
+                  name={`${label.toLowerCase()}val${i}`}
+                  id={`${label.toLowerCase()}val${i}`}
+                  className="relative block w-full rounded-none border-gray-300 bg-transparent focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="somevaluehere"
+                  value={kv.value}
+                  onChange={(e) => {
+                    const newValues = [...values];
+                    newValues[i].value = e.target.value;
+                    setValues(newValues);
+                  }}
+                />
+              </div>
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  className={classNames(
+                    "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
+                    i === 0 ? "rounded-tr-md" : ""
+                  )}
+                  onClick={() => {
+                    const newValues = [...values];
+                    newValues.splice(i, 1);
+                    setValues(newValues);
+                  }}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <button
+            type="button"
+            className={classNames(
+              "flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-2 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+              Object.keys(values).length !== 0 ? "rounded-b-md" : "rounded-md"
+            )}
+            onClick={() => {
+              const newValues = [...values, { key: "", value: "" }];
+              setValues(newValues);
+            }}
+          >
+            <PlusIcon className="h-4 w-4" />
+            <span>Add a {label}</span>
+          </button>
+        </div>
+      </div>
+    </fieldset>
   );
 };
