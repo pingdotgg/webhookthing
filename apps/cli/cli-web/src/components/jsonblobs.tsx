@@ -72,7 +72,7 @@ export const JsonBlobs = () => {
               />
             </div>
             <div className="mt-3 text-left sm:mt-0 sm:ml-4">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
+              <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
                 Add a new webhook
               </h3>
               <div className="mt-2">
