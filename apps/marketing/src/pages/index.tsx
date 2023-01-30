@@ -25,6 +25,9 @@ const Home: NextPage = () => {
     if (!email) {
       setShowEmail(true);
       setBottomText("ok... so we actually do want your email");
+      if (endpoint && !z.string().url().safeParse(endpoint).success) {
+        setInvalidEndpoint(true);
+      }
       return;
     }
 
@@ -119,7 +122,10 @@ const Home: NextPage = () => {
                           placeholder="jdoe@example.com"
                           onChange={(e) => {
                             setEmail(e.target.value);
-                            setInvalidEmail(false);
+                            setInvalidEmail(
+                              !z.string().email().safeParse(e.target.value)
+                                .success
+                            );
                           }}
                           value={email}
                         />
@@ -132,8 +138,10 @@ const Home: NextPage = () => {
                   <button
                     className="mt-4 w-full rounded-lg bg-indigo-600/80 px-4 py-2 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-600/80"
                     disabled={
-                      (endpoint == undefined || endpoint == "") &&
-                      (email == undefined || email == "")
+                      !endpoint ||
+                      (showEmail && !email) ||
+                      invalidEndpoint ||
+                      invalidEmail
                     }
                     onClick={handleSubmit}
                   >
