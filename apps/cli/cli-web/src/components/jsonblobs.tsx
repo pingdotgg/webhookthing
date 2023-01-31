@@ -80,7 +80,11 @@ export const JsonBlobs = () => {
                   Use the form below to specify the details of your webhook. You
                   can also drag a properly formatted JSON file into the window
                   to fill out the form.{" "}
-                  <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                  <a
+                    href="/sample-hook.json"
+                    download
+                    className="text-indigo-600 hover:text-indigo-500"
+                  >
                     Download Sample JSON
                   </a>
                 </p>
