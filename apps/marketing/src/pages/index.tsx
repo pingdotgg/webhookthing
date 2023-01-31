@@ -52,11 +52,8 @@ const Home: NextPage = () => {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
-      <main
-        className="flex min-h-screen flex-col items-center justify-center bg-gray-800 bg-gradient-to-br from-indigo-800/40
-"
-      >
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-800/40">
+        <div className="container flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16">
           <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
             webhook
             <span className="font-extrabold text-indigo-600 ">thing</span>
