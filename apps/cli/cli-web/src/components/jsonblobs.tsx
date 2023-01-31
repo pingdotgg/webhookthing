@@ -233,15 +233,17 @@ const AddWebhookForm = () => {
   const updateUrl = (url: string) => {
     setUrl(url);
     const queryParams = new URLSearchParams(url.split("?")[1]);
-    const query = Array.from(queryParams.entries()).map(([key, value]) => ({
+    const newQuery = Array.from(queryParams.entries()).map(([key, value]) => ({
       key,
       value,
     }));
-    setQuery(query);
+    setQuery(newQuery);
   };
 
   const updateQuery = (query: { key: string; value: string }[]) => {
     setQuery(query);
+    if (!url) return;
+
     const parsedUrl = new URL(url.includes("http") ? url : `http://${url}`);
     query.forEach(({ key, value }) => {
       parsedUrl.searchParams.set(key, value);
