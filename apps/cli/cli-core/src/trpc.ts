@@ -64,11 +64,13 @@ export const cliApiRouter = t.router({
         );
         return fetchedResult;
       } catch (e) {
-        console.log("[ERROR] FAILED TO SEND");
+        console.log("\x1b[31m[ERROR] FAILED TO SEND");
         if ((e as any).code === "ECONNREFUSED") {
-          console.log("[ERROR] Connection refused. Is the server running?");
+          console.log(
+            "\x1b[31m[ERROR] Connection refused. Is the server running?"
+          );
         } else {
-          console.log("[ERROR] Unknown error", e);
+          console.log("\x1b[31m[ERROR] Unknown error", e);
         }
         throw new Error("Connection refused. Is the server running?");
       }
