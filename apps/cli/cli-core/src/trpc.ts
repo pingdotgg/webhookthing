@@ -2,7 +2,8 @@ import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
 import fetch from "node-fetch";
-import fs from "fs/promises";
+import fsPromises from "fs/promises";
+import fs from "fs";
 import path from "path";
 
 import { openInExplorer } from "./open-folder";
@@ -14,12 +15,19 @@ export const t = initTRPC.create({
 });
 export const cliApiRouter = t.router({
   getBlobs: t.procedure.query(async () => {
-    const hooks = await fs.readdir(HOOK_PATH);
+    if (!fs.existsSync(HOOK_PATH)) {
+      return [];
+    }
+
+    const hooks = await fsPromises.readdir(HOOK_PATH);
 
     const res = hooks
       .filter((hookFile) => hookFile.includes(".json"))
       .map(async (hook) => {
-        const content = await fs.readFile(path.join(HOOK_PATH, hook), "utf-8");
+        const content = await fsPromises.readFile(
+          path.join(HOOK_PATH, hook),
+          "utf-8"
+        );
 
         return {
           name: hook,
@@ -50,7 +58,7 @@ export const cliApiRouter = t.router({
     .mutation(async ({ input }) => {
       const { file, url } = input;
       console.log(`[INFO] Reading file ${file}, and POST-ing to ${url}`);
-      const data = await fs.readFile(path.join(HOOK_PATH, file));
+      const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
       const parsedJson = JSON.parse(data.toString());
 
       try {
