@@ -10,8 +10,8 @@ export default function Example() {
     <>
       <Toaster />
       <div className="min-h-full">
-        <div className="bg-gray-800 bg-gradient-to-r from-indigo-800/40 pb-32">
-          <Disclosure as="nav" className="">
+        <div className="pattern pb-32">
+          <Disclosure as="nav">
             {({ open }) => (
               <>
                 <div className="mx-auto max-w-5xl sm:px-6 lg:px-8">
