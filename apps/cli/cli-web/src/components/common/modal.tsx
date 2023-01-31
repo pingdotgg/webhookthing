@@ -6,11 +6,17 @@ export const Modal: React.FC<{
   children: React.ReactNode | React.ReactNode[];
   openState: [boolean, Dispatch<SetStateAction<boolean>>];
   initialFocus?: MutableRefObject<null>;
+  onClose?: () => void;
 }> & {
   Title: typeof Dialog.Title;
   Description: typeof Dialog.Description;
-} = ({ openState, initialFocus, children }) => {
+} = ({ openState, initialFocus, children, onClose }) => {
   const [open, setOpen] = openState;
+
+  const handleClose = () => {
+    setOpen(false);
+    onClose && onClose();
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -18,7 +24,7 @@ export const Modal: React.FC<{
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
         initialFocus={initialFocus}
-        onClose={setOpen}
+        onClose={handleClose}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child

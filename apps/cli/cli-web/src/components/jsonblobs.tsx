@@ -1,6 +1,7 @@
 import {
   ArrowPathIcon,
   CloudArrowDownIcon,
+  CogIcon,
   DocumentDuplicateIcon,
   EyeIcon,
   EyeSlashIcon,
@@ -45,85 +46,24 @@ export const JsonBlobs = () => {
       },
     });
 
-  const { mutate: createHook } = cliApi.createHook.useMutation({
-    onSuccess: () => {
-      setTimeout(() => refetchBlobs(), 150);
-    },
-  });
-
   const [expanded, setExpanded] = useState<number[]>([]);
 
   const [storedEndpoint] = useCurrentUrl();
 
   const addModalState = useState(false);
 
-  const [newHook, setNewHook] = useState<{
-    name: string;
-    body: string;
-    config?: ConfigValidatorType;
-  }>();
+  const [selectedHook, setSelectedHook] = useState<string>("");
+
+  const editorModalState = useState(false);
 
   return (
     <>
-      <Modal openState={addModalState}>
-        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
-          <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-            <button
-              type="button"
-              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={() => addModalState[1](false)}
-            >
-              <span className="sr-only">Close</span>
-              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="sm:flex sm:items-start">
-            <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
-              <PlusIcon
-                className="h-6 w-6 text-indigo-600"
-                aria-hidden="true"
-              />
-            </div>
-            <div className="mt-3 text-left sm:mt-0 sm:ml-4">
-              <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
-                Add a new webhook
-              </h3>
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">
-                  Give your webhook a name and paste the body contents below.
-                </p>
-              </div>
-              <AddWebhookForm setNewHook={setNewHook} />
-            </div>
-          </div>
-          <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
-              disabled={!newHook?.name || !newHook?.body}
-              onClick={() => {
-                if (!newHook?.name || !newHook?.body) return;
-                createHook({
-                  name: newHook.name,
-                  body: newHook.body,
-                  config: newHook.config,
-                });
-                setNewHook(undefined);
-                addModalState[1](false);
-              }}
-            >
-              Create
-            </button>
-            <button
-              type="button"
-              className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
-              onClick={() => addModalState[1](false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </Modal>
+      <AddModal openState={addModalState} />
+      <EditModal
+        openState={editorModalState}
+        hook={selectedHook}
+        onClose={() => setSelectedHook("")}
+      />
 
       <div className="flex flex-col gap-2 pt-4">
         <div className="flex flex-row items-center justify-between">
@@ -174,7 +114,7 @@ export const JsonBlobs = () => {
                       {expanded.includes(i) ? (
                         <EyeSlashIcon className="h-4" />
                       ) : (
-                        <EyeIcon className="h-4" />
+                        <EyeIcon className="h-4 hover:text-indigo-600" />
                       )}
                     </button>
                     <button
@@ -182,7 +122,15 @@ export const JsonBlobs = () => {
                         runFile({ file: blob.name, url: storedEndpoint });
                       }}
                     >
-                      <PlayIcon className="h-4" />
+                      <PlayIcon className="h-4 hover:text-indigo-600" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedHook(blob.name);
+                        editorModalState[1](true);
+                      }}
+                    >
+                      <CogIcon className="h-4 hover:text-indigo-600" />
                     </button>
                   </div>
                 </div>
@@ -228,6 +176,179 @@ export const JsonBlobs = () => {
   );
 };
 
+const AddModal: React.FC<{
+  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+}> = ({ openState }) => {
+  const [newHook, setNewHook] = useState<{
+    name: string;
+    body: string;
+    config?: ConfigValidatorType;
+  }>();
+
+  const { mutate: createHook } = cliApi.createHook.useMutation({
+    onSuccess: () => {
+      setTimeout(() => cliApi.getBlobs.useQuery().refetch(), 150);
+    },
+  });
+
+  return (
+    <Modal openState={openState}>
+      <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
+        <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+          <button
+            type="button"
+            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            onClick={() => openState[1](false)}
+          >
+            <span className="sr-only">Close</span>
+            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+        <div className="sm:flex sm:items-start">
+          <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+            <PlusIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+          </div>
+          <div className="mt-3 text-left sm:mt-0 sm:ml-4">
+            <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
+              Add a new webhook
+            </h3>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                Give your webhook a name and paste the body contents below.
+              </p>
+            </div>
+            <WebhookForm setNewHook={setNewHook} />
+          </div>
+        </div>
+        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+          <button
+            type="button"
+            className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
+            disabled={!newHook?.name || !newHook?.body}
+            onClick={() => {
+              if (!newHook?.name || !newHook?.body) return;
+              createHook({
+                name: newHook.name,
+                body: newHook.body,
+                config: newHook.config,
+              });
+              setNewHook(undefined);
+              openState[1](false);
+            }}
+          >
+            Create
+          </button>
+          <button
+            type="button"
+            className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+            onClick={() => openState[1](false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const EditModal: React.FC<{
+  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  hook: string;
+  onClose: () => void;
+}> = ({ openState, hook, onClose }) => {
+  const [newHook, setNewHook] = useState<{
+    name: string;
+    body: string;
+    config?: ConfigValidatorType;
+  }>();
+
+  const { data: hookData, isLoading } = cliApi.getHook.useQuery(
+    {
+      name: hook.split(".")[0],
+    },
+    { enabled: !!hook }
+  );
+
+  const { mutate: updateHook } = cliApi.updateHook.useMutation();
+
+  useEffect(() => {
+    if (hookData) {
+      setNewHook({
+        name: hookData.name,
+        body: hookData.body,
+        config: hookData.config,
+      });
+    }
+  }, [hookData]);
+
+  if (isLoading)
+    return (
+      <Modal openState={openState} onClose={onClose}>
+        <ArrowPathIcon className="h-32 w-32 animate-spin text-white" />
+      </Modal>
+    );
+
+  return (
+    <Modal openState={openState} onClose={onClose}>
+      <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
+        <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+          <button
+            type="button"
+            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            onClick={() => openState[1](false)}
+          >
+            <span className="sr-only">Close</span>
+            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+        <div className="sm:flex sm:items-start">
+          <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+            <PlusIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+          </div>
+          <div className="mt-3 text-left sm:mt-0 sm:ml-4">
+            <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
+              Settings: {hook}
+            </h3>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                Update your webhook&apos;s settings below.
+              </p>
+            </div>
+            <WebhookForm data={newHook} setNewHook={setNewHook} />
+          </div>
+        </div>
+        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+          <button
+            type="button"
+            className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
+            disabled={!newHook?.name || !newHook?.body}
+            onClick={() => {
+              if (!newHook?.name || !newHook?.body) return;
+              updateHook({
+                name: newHook.name,
+                body: newHook.body,
+                config: newHook.config,
+              });
+              openState[1](false);
+            }}
+          >
+            Update
+          </button>
+          <button
+            type="button"
+            className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+            onClick={() => {
+              openState[1](false);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 const classNames = (...classes: string[]) => {
   return classes.filter(Boolean).join(" ");
 };
@@ -239,6 +360,10 @@ const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
     }
     return acc;
   }, {});
+};
+
+const convertObjectStateToArray = (obj: { [k: string]: string }) => {
+  return Object.entries(obj).map(([key, value]) => ({ key, value }));
 };
 
 type HookSetter = React.Dispatch<
@@ -266,16 +391,33 @@ type HookSetter = React.Dispatch<
   >
 >;
 
-const AddWebhookForm: React.FC<{ setNewHook: HookSetter }> = ({
-  setNewHook,
-}) => {
-  const [name, setName] = useState<string>("");
-  const [body, setBody] = useState<string>("");
+const WebhookForm: React.FC<{
+  setNewHook: HookSetter;
+  data?: {
+    name: string;
+    body: string;
+    config?: {
+      query?: {
+        [key: string]: string;
+      };
+      headers?: {
+        [key: string]: string;
+      };
+      url: string;
+    };
+  };
+}> = ({ setNewHook, data }) => {
+  const [name, setName] = useState<string>(data?.name ?? "");
+  const [body, setBody] = useState<string>(data?.body ?? "");
 
   const [showAddlOpts, setShowAddlOpts] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>("");
-  const [query, setQuery] = useState<{ key: string; value: string }[]>([]);
-  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([]);
+  const [url, setUrl] = useState<string>(data?.config?.url ?? "");
+  const [query, setQuery] = useState<{ key: string; value: string }[]>(
+    data?.config?.query ? convertObjectStateToArray(data.config.query) : []
+  );
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
+    data?.config?.headers ? convertObjectStateToArray(data.config.headers) : []
+  );
 
   const updateUrl = (url: string) => {
     setUrl(url);
