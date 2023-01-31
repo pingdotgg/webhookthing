@@ -10,7 +10,7 @@ import {
   TrashIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { cliApi } from "../utils/api";
@@ -230,6 +230,31 @@ const AddWebhookForm = () => {
   const [query, setQuery] = useState<{ key: string; value: string }[]>([]);
   const [body, setBody] = useState<string>("");
 
+  const updateUrl = (url: string) => {
+    setUrl(url);
+    const queryParams = new URLSearchParams(url.split("?")[1]);
+    const query = Array.from(queryParams.entries()).map(([key, value]) => ({
+      key,
+      value,
+    }));
+    setQuery(query);
+  };
+
+  const updateQuery = (query: { key: string; value: string }[]) => {
+    setQuery(query);
+    const parsedUrl = new URL(url.includes("http") ? url : `http://${url}`);
+    query.forEach(({ key, value }) => {
+      parsedUrl.searchParams.set(key, value);
+    });
+    //delete any params that do not appear in the query
+    Array.from(parsedUrl.searchParams.keys()).forEach((key) => {
+      if (!query.find((q) => q.key === key)) {
+        parsedUrl.searchParams.delete(key);
+      }
+    });
+    setUrl(parsedUrl.toString());
+  };
+
   return (
     <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
       <div id="name-input">
@@ -266,7 +291,7 @@ const AddWebhookForm = () => {
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             placeholder="https://example.com/webhook"
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={(e) => updateUrl(e.target.value)}
           />
         </div>
       </div>
@@ -274,7 +299,7 @@ const AddWebhookForm = () => {
         <KeyValueInput
           label="Query Parameter"
           values={query}
-          setValues={setQuery}
+          setValues={updateQuery}
         />
       </div>
       <div id="headers-input">
