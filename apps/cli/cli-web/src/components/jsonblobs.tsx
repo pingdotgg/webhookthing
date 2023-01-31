@@ -2,7 +2,6 @@ import {
   ArrowPathIcon,
   CloudArrowDownIcon,
   DocumentDuplicateIcon,
-  ExclamationTriangleIcon,
   EyeIcon,
   EyeSlashIcon,
   PlayIcon,
@@ -16,6 +15,8 @@ import { toast } from "react-hot-toast";
 import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { Modal } from "./common/modal";
+
+import type { ConfigValidatorType } from "../../../cli-core/src/trpc";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -44,11 +45,23 @@ export const JsonBlobs = () => {
       },
     });
 
+  const { mutate: createHook } = cliApi.createHook.useMutation({
+    onSuccess: () => {
+      setTimeout(() => refetchBlobs(), 150);
+    },
+  });
+
   const [expanded, setExpanded] = useState<number[]>([]);
 
   const [storedEndpoint] = useCurrentUrl();
 
   const addModalState = useState(false);
+
+  const [newHook, setNewHook] = useState<{
+    name: string;
+    body: string;
+    config?: ConfigValidatorType;
+  }>();
 
   return (
     <>
@@ -77,26 +90,27 @@ export const JsonBlobs = () => {
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  Use the form below to specify the details of your webhook. You
-                  can also drag a properly formatted JSON file into the window
-                  to fill out the form.{" "}
-                  <a
-                    href="/sample-hook.json"
-                    download
-                    className="text-indigo-600 hover:text-indigo-500"
-                  >
-                    Download Sample JSON
-                  </a>
+                  Give your webhook a name and paste the body contents below.
                 </p>
               </div>
-              <AddWebhookForm />
+              <AddWebhookForm setNewHook={setNewHook} />
             </div>
           </div>
           <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
             <button
               type="button"
-              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={() => addModalState[1](false)}
+              className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
+              disabled={!newHook?.name || !newHook?.body}
+              onClick={() => {
+                if (!newHook?.name || !newHook?.body) return;
+                createHook({
+                  name: newHook.name,
+                  body: newHook.body,
+                  config: newHook.config,
+                });
+                setNewHook(undefined);
+                addModalState[1](false);
+              }}
             >
               Create
             </button>
@@ -227,12 +241,41 @@ const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
   }, {});
 };
 
-const AddWebhookForm = () => {
+type HookSetter = React.Dispatch<
+  React.SetStateAction<
+    | {
+        name: string;
+        body: string;
+        config?:
+          | {
+              query?:
+                | {
+                    [key: string]: string;
+                  }
+                | undefined;
+              headers?:
+                | {
+                    [key: string]: string;
+                  }
+                | undefined;
+              url: string;
+            }
+          | undefined;
+      }
+    | undefined
+  >
+>;
+
+const AddWebhookForm: React.FC<{ setNewHook: HookSetter }> = ({
+  setNewHook,
+}) => {
   const [name, setName] = useState<string>("");
-  const [url, setUrl] = useState<string>("");
-  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([]);
-  const [query, setQuery] = useState<{ key: string; value: string }[]>([]);
   const [body, setBody] = useState<string>("");
+
+  const [showAddlOpts, setShowAddlOpts] = useState<boolean>(false);
+  const [url, setUrl] = useState<string>("");
+  const [query, setQuery] = useState<{ key: string; value: string }[]>([]);
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([]);
 
   const updateUrl = (url: string) => {
     setUrl(url);
@@ -261,6 +304,21 @@ const AddWebhookForm = () => {
     setUrl(parsedUrl.toString());
   };
 
+  useEffect(() => {
+    setNewHook({
+      name,
+      body,
+      config:
+        url || query.length || headers.length
+          ? {
+              url,
+              query: query.length ? convertArrayStateToObject(query) : {},
+              headers: headers.length ? convertArrayStateToObject(headers) : {},
+            }
+          : undefined,
+    });
+  }, [name, body, url, query, headers, setNewHook]);
+
   return (
     <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
       <div id="name-input">
@@ -282,36 +340,6 @@ const AddWebhookForm = () => {
           />
         </div>
       </div>
-      <div id="url-input">
-        <label
-          htmlFor="url"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Endpoint URL
-        </label>
-        <div className="mt-1">
-          <input
-            type="text"
-            name="url"
-            id="url"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="https://example.com/webhook"
-            value={url}
-            onChange={(e) => updateUrl(e.target.value)}
-          />
-        </div>
-      </div>
-      <div id="query-input">
-        <KeyValueInput
-          label="Query Parameter"
-          values={query}
-          setValues={updateQuery}
-        />
-      </div>
-      <div id="headers-input">
-        <KeyValueInput label="Header" values={headers} setValues={setHeaders} />
-      </div>
-
       <div id="body-input">
         <label
           htmlFor="body"
@@ -331,6 +359,59 @@ const AddWebhookForm = () => {
           />
         </div>
       </div>
+
+      {!showAddlOpts ? (
+        <button
+          type="button"
+          className="text-sm text-indigo-600"
+          onClick={() => setShowAddlOpts(true)}
+        >
+          Show Additional Options
+        </button>
+      ) : (
+        <>
+          <div id="url-input">
+            <label
+              htmlFor="url"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Endpoint URL
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                name="url"
+                id="url"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="https://example.com/webhook"
+                value={url}
+                onChange={(e) => updateUrl(e.target.value)}
+              />
+            </div>
+          </div>
+          <div id="query-input">
+            <KeyValueInput
+              label="Query Parameter"
+              values={query}
+              setValues={updateQuery}
+            />
+          </div>
+          <div id="headers-input">
+            <KeyValueInput
+              label="Header"
+              values={headers}
+              setValues={setHeaders}
+            />
+          </div>
+          <button
+            type="button"
+            className="text-sm text-indigo-600"
+            onClick={() => setShowAddlOpts(false)}
+          >
+            Hide Additional Options
+          </button>
+        </>
+      )}
     </div>
   );
 };
