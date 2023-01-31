@@ -20,17 +20,17 @@ export const renderVersionWarning = (npmVersion: string) => {
 
   if (currentVersion.includes("beta")) {
     console.log(
-      "\x1b[33m[WARNING] You are using a beta version of create-t3-app."
+      "\x1b[33m[WARNING] You are using a beta version of webhookthing."
     );
     console.log("\x1b[33m[WARNING] Please report any bugs you encounter.");
   } else if (currentVersion.includes("next")) {
     console.log(
-      "\x1b[33m[WARNING] You are running create-t3-app with the @next tag which is no longer maintained."
+      "\x1b[33m[WARNING] You are running webhookthing with the @next tag which is no longer maintained."
     );
     console.log("\x1b[33m[WARNING] Please run the CLI with @latest instead.");
   } else if (currentVersion !== npmVersion) {
     console.log(
-      "\x1b[33m[WARNING] You are using an outdated version of create-t3-app."
+      "\x1b[33m[WARNING] You are using an outdated version of webhookthing."
     );
     console.log(
       "\x1b[33m[WARNING] Your version:",
