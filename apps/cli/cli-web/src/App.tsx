@@ -50,7 +50,7 @@ export default function Example() {
         </main>
 
         <footer className="bottom-0 bg-gray-800 bg-gradient-to-r from-indigo-800/40">
-          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
             <div className="text-center text-base text-gray-400">
               <p>
                 <a
