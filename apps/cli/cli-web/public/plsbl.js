@@ -8,12 +8,7 @@
     console.warn("Ignoring Event: " + t);
   }
   function t(t, e) {
-    if (
-      !s.host.includes("localhost:2033") &&
-      (/^localhost$|^127(\.[0-9]+){0,2}\.[0-9]+$|^\[::1?\]$/.test(s.hostname) ||
-        "file:" === s.protocol)
-    )
-      return l("localhost");
+    if (s.host.includes("localhost:5173")) return l("localhost");
     if (
       !(
         window._phantom ||
