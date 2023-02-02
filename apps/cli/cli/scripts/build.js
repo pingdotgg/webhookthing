@@ -13,6 +13,7 @@ const DIST_DIR = resolve(__dirname, "../dist");
 const ENTRY_DIR = resolve(__dirname, "../src/index.ts");
 
 const WEB_DIR = resolve(__dirname, "../../cli-web/dist/web");
+const README_PATH = resolve(__dirname, "../../cli/README.md");
 
 const generatePackageJson = () => {
   const {
@@ -70,6 +71,9 @@ async function runBuild() {
 
   // Custom package.json
   await writeFile(join(DIST_DIR, "./package.json"), generatePackageJson());
+
+  // Include readme.md
+  await writeFile(join(DIST_DIR, "./README.md"), await readFile(README_PATH));
 
   // There's a bunch of "asset" files (js files from other shit)
   // Most of them come from Fastify I think?

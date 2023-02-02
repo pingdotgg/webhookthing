@@ -5,6 +5,8 @@
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
+import { withPlausibleProxy } from "next-plausible";
+
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -14,7 +16,7 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  typescript: {ignoreBuildErrors: true},
-  eslint: {ignoreDuringBuilds: true}
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
 };
-export default config;
+export default withPlausibleProxy()(config);

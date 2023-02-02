@@ -1,3 +1,4 @@
+import PlausibleProvider from "next-plausible";
 import { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
@@ -6,6 +7,8 @@ const config: DocsThemeConfig = {
       titleTemplate: "%s - webhookthing docs",
     };
   },
+
+  darkMode: false,
 
   logoLink: "https://webhookthing.com",
   logo: (
@@ -42,7 +45,7 @@ const config: DocsThemeConfig = {
   ),
 
   footer: {
-    component: null,
+    component: <PlausibleProvider domain="docs.webhookthing.com" enabled />,
   },
 };
 
