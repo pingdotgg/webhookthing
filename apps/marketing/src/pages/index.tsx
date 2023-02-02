@@ -1,10 +1,11 @@
+import { EnvelopeIcon, GlobeAltIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
 import { useState } from "react";
+import { z } from "zod";
 
 import type { NextPage } from "next";
 
 import { api } from "../utils/api";
-import { z } from "zod";
 
 const Home: NextPage = () => {
   const [showEmail, setShowEmail] = useState(false);
@@ -24,6 +25,9 @@ const Home: NextPage = () => {
     if (!email) {
       setShowEmail(true);
       setBottomText("ok... so we actually do want your email");
+      if (endpoint && !z.string().url().safeParse(endpoint).success) {
+        setInvalidEndpoint(true);
+      }
       return;
     }
 
@@ -63,38 +67,79 @@ const Home: NextPage = () => {
               <>
                 <h3 className="text-2xl font-bold">join the waitlist</h3>
                 <div className="flex flex-col gap-2">
-                  <input
-                    className="w-full rounded-lg bg-white/10 px-4 py-2 text-white"
-                    type="text"
-                    placeholder="endpoint url"
-                    onChange={(e) => {
-                      setEndpoint(e.target.value);
-                      setInvalidEndpoint(false);
-                    }}
-                    value={endpoint}
-                  />
+                  <label
+                    htmlFor="endpoint"
+                    className="sr-only block text-sm font-medium"
+                  >
+                    Endpoint
+                  </label>
+                  <div className="relative mt-1 rounded-md shadow-sm">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <GlobeAltIcon
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <input
+                      type="url"
+                      name="endpoint"
+                      id="endpoint"
+                      className="block w-full rounded-md border-gray-300 bg-white/10 p-2 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      placeholder="https://example.com/hooks"
+                      onChange={(e) => {
+                        setEndpoint(e.target.value);
+                        setInvalidEndpoint(false);
+                      }}
+                      value={endpoint}
+                    />
+                  </div>
                   {invalidEndpoint && (
                     <p className="text-sm text-red-500">invalid endpoint url</p>
                   )}
                   {showEmail && (
                     <>
-                      <input
-                        className="w-full rounded-lg bg-white/10 px-4 py-2 text-white"
-                        type="email"
-                        placeholder="email"
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          setInvalidEmail(false);
-                        }}
-                        value={email}
-                      />
+                      <label
+                        htmlFor="email"
+                        className="sr-only block text-sm font-medium"
+                      >
+                        Email
+                      </label>
+                      <div className="relative mt-1 rounded-md shadow-sm">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                          <EnvelopeIcon
+                            className="h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <input
+                          type="email"
+                          name="email"
+                          id="email"
+                          className="block w-full rounded-md border-gray-300 bg-white/10 p-2 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          placeholder="jdoe@example.com"
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            setInvalidEmail(
+                              !z.string().email().safeParse(e.target.value)
+                                .success
+                            );
+                          }}
+                          value={email}
+                        />
+                      </div>
                       {invalidEmail && (
                         <p className="text-sm text-red-500">invalid email</p>
                       )}
                     </>
                   )}
                   <button
-                    className="w-full rounded-lg bg-white/10 px-4 py-2 text-white"
+                    className="mt-4 w-full rounded-lg bg-indigo-600/80 px-4 py-2 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-600/80"
+                    disabled={
+                      !endpoint ||
+                      (showEmail && !email) ||
+                      invalidEndpoint ||
+                      invalidEmail
+                    }
                     onClick={handleSubmit}
                   >
                     submit
