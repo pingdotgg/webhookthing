@@ -12,7 +12,7 @@ const config: DocsThemeConfig = {
     <img
       src="/img/logo.svg"
       alt="webhookthing logo"
-      style={{ height: "2rem" }}
+      style={{ height: "3rem" }}
     />
   ),
   chat: {
