@@ -1,4 +1,3 @@
-import { JsonBlobs } from "./../../cli-web/src/components/jsonblobs";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
