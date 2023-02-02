@@ -171,6 +171,7 @@ importers:
     specifiers:
       '@captain/tailwind-config': '*'
       '@captain/tsconfig': workspace:*
+      '@heroicons/react': ^2.0.14
       '@tanstack/react-query': ^4.20.0
       '@trpc/client': ^10.8.1
       '@trpc/next': ^10.8.1
@@ -196,6 +197,7 @@ importers:
       zod: ^3.20.2
     dependencies:
       '@captain/tailwind-config': link:../../packages/tailwind-config
+      '@heroicons/react': 2.0.14_react@18.2.0
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
       '@trpc/next': 10.9.0_agcdofckp5bsojf5gpkxjg6zzq
