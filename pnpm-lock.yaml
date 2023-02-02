@@ -152,6 +152,7 @@ importers:
     specifiers:
       '@types/node': 18.11.10
       next: ^13.0.6
+      next-plausible: ^3.7.1
       nextra: 2.0.1
       nextra-theme-docs: 2.0.1
       react: ^18.2.0
@@ -159,6 +160,7 @@ importers:
       typescript: ^4.9.3
     dependencies:
       next: 13.1.5_biqbaboplfbrettd7655fr4n2y
+      next-plausible: 3.7.1_s6zlkfvllybxhmcq5pkr2zsuza
       nextra: 2.0.1_s6zlkfvllybxhmcq5pkr2zsuza
       nextra-theme-docs: 2.0.1_s6zlkfvllybxhmcq5pkr2zsuza
       react: 18.2.0
@@ -5242,6 +5244,18 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       next: 13.1.2_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /next-plausible/3.7.1_s6zlkfvllybxhmcq5pkr2zsuza:
+    resolution: {integrity: sha512-I4WjbuXPfQ3ijbzOC1lv1GNx6TTV0ZevR6YYs5vGZIyMz0z4LuN68x08a+ag2XNb1yy9dA1NkwV2hPzbfx8Gtw==}
+    peerDependencies:
+      next: ^11.1.0 || ^12.0.0 || ^13.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      next: 13.1.5_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

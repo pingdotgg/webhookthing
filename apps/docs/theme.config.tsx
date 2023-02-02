@@ -1,3 +1,4 @@
+import PlausibleProvider from "next-plausible";
 import { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
@@ -38,6 +39,7 @@ const config: DocsThemeConfig = {
       />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       <link rel="icon" type="image/png" href="/favicon.png" />
+      <PlausibleProvider domain="docs.webhookthing.com" />
     </>
   ),
 
