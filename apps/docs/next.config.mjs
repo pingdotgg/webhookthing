@@ -4,4 +4,4 @@ const withNextra = require("nextra")({
 });
 
 const { withPlausibleProxy } = require("next-plausible");
-module.exports = withPlausibleProxy()(withNextra());
+export default withPlausibleProxy()(withNextra());
