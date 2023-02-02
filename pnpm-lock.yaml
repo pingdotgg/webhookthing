@@ -186,6 +186,7 @@ importers:
       kysely: ^0.23.4
       mysql2: ^3.0.1
       next: 13.1.2
+      next-plausible: ^3.7.1
       postcss: ^8.4.14
       prettier: ^2.8.1
       prettier-plugin-tailwindcss: ^0.2.1
@@ -206,6 +207,7 @@ importers:
       kysely: 0.23.4
       mysql2: 3.0.1
       next: 13.1.2_biqbaboplfbrettd7655fr4n2y
+      next-plausible: 3.7.1_7jnwqgtpcnwg4nzft4b6xlzlfi
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       superjson: 1.9.1
@@ -5231,6 +5233,18 @@ packages:
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
+
+  /next-plausible/3.7.1_7jnwqgtpcnwg4nzft4b6xlzlfi:
+    resolution: {integrity: sha512-I4WjbuXPfQ3ijbzOC1lv1GNx6TTV0ZevR6YYs5vGZIyMz0z4LuN68x08a+ag2XNb1yy9dA1NkwV2hPzbfx8Gtw==}
+    peerDependencies:
+      next: ^11.1.0 || ^12.0.0 || ^13.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      next: 13.1.2_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /next-seo/5.15.0_s6zlkfvllybxhmcq5pkr2zsuza:
     resolution: {integrity: sha512-LGbcY91yDKGMb7YI+28n3g+RuChUkt6pXNpa8FkfKkEmNiJkeRDEXTnnjVtwT9FmMhG6NH8qwHTelGrlYm9rgg==}
