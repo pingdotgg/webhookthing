@@ -98,18 +98,47 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
-      console.log(`[INFO] Reading file ${file}, and POST-ing to ${url}`);
+      console.log(`[INFO] Reading file ${file}`);
+
+      let config = {
+        url,
+        query: undefined,
+        headers: undefined,
+        method: "POST",
+      };
+
+      if (
+        fs.existsSync(path.join(HOOK_PATH, file.split(".")[0] + ".config.json"))
+      ) {
+        console.log(
+          `[INFO] Found ${file.split(".")[0]}.config.json, reading it`
+        );
+        const configFileContents = await fsPromises.readFile(
+          path.join(HOOK_PATH, file.split(".")[0] + ".config.json")
+        );
+        config = { ...config, ...JSON.parse(configFileContents.toString()) };
+      }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
       const parsedJson = JSON.parse(data.toString());
 
       try {
-        const fetchedResult = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify(parsedJson),
+        console.log(
+          `[INFO] Sending to ${config.url} with config: \n\n${JSON.stringify(
+            config,
+            null,
+            2
+          )}\n`
+        );
+
+        const fetchedResult = await fetch(config.url, {
+          method: config.method,
+          headers: config.headers,
+          body:
+            config.method !== "GET" ? JSON.stringify(parsedJson) : undefined,
         });
 
         console.log(
-          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}`
+          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}\n`
         );
         return fetchedResult;
       } catch (e) {
