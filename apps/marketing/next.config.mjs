@@ -5,7 +5,7 @@
  */
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
-const { withPlausibleProxy } = require("next-plausible");
+import { withPlausibleProxy } from "next-plausible";
 
 /** @type {import("next").NextConfig} */
 const config = {

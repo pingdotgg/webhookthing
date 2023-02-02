@@ -8,6 +8,8 @@ const config: DocsThemeConfig = {
     };
   },
 
+  darkMode: false,
+
   logoLink: "https://webhookthing.com",
   logo: (
     <img
