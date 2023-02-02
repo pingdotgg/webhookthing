@@ -41,12 +41,11 @@ const config: DocsThemeConfig = {
       />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       <link rel="icon" type="image/png" href="/favicon.png" />
-      <PlausibleProvider domain="docs.webhookthing.com" />
     </>
   ),
 
   footer: {
-    component: null,
+    component: <PlausibleProvider domain="docs.webhookthing.com" enabled />,
   },
 };
 
