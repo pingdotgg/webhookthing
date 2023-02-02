@@ -1,7 +1,9 @@
-const withNextra = require("nextra")({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
-});
+import withNextra from "nextra";
 
-const { withPlausibleProxy } = require("next-plausible");
-export default withPlausibleProxy()(withNextra());
+import { withPlausibleProxy } from "next-plausible";
+export default withPlausibleProxy()(
+  withNextra({
+    theme: "nextra-theme-docs",
+    themeConfig: "./theme.config.tsx",
+  })()
+);

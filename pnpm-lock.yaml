@@ -150,6 +150,7 @@ importers:
 
   apps/docs:
     specifiers:
+      '@captain/tsconfig': workspace:*
       '@types/node': 18.11.10
       next: ^13.0.6
       next-plausible: ^3.7.1
@@ -166,6 +167,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     devDependencies:
+      '@captain/tsconfig': link:../../packages/tsconfig
       '@types/node': 18.11.10
       typescript: 4.9.4
 
