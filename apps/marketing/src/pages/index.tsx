@@ -41,6 +41,25 @@ const Home: NextPage = () => {
       return;
     }
 
+    const bannedEndpoints = [
+      "webhookthing.com",
+      "hookthing.com",
+      "example.com",
+      "foo.bar",
+      "localhost",
+      "example/",
+      "examplecom/",
+      "asdf.com",
+      "ping.gg",
+    ];
+
+    bannedEndpoints.forEach((bannedEndpoint) => {
+      if (endpoint?.includes(bannedEndpoint)) {
+        setInvalidEndpoint(true);
+        return;
+      }
+    });
+
     submit({ endpoint: endpoint === "" ? undefined : endpoint, email });
     setSubmitted(true);
   };
@@ -97,7 +116,9 @@ const Home: NextPage = () => {
                     />
                   </div>
                   {invalidEndpoint && (
-                    <p className="text-sm text-red-500">invalid endpoint url</p>
+                    <p className="text-sm text-red-500">
+                      invalid endpoint url.
+                    </p>
                   )}
                   {showEmail && (
                     <>
