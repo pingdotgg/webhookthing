@@ -7,6 +7,20 @@ import type { NextPage } from "next";
 
 import { api } from "../utils/api";
 
+const bannedEndpoints = [
+  "webhookthing.com",
+  "hookthing.com",
+  "example.com",
+  "foo.bar",
+  "localhost",
+  "example/",
+  "examplecom/",
+  "asdf.com",
+  "ping.gg",
+  "test.com",
+  "google.com",
+];
+
 const Home: NextPage = () => {
   const [showEmail, setShowEmail] = useState(false);
 
@@ -88,13 +102,18 @@ const Home: NextPage = () => {
                       placeholder="https://example.com/hooks"
                       onChange={(e) => {
                         setEndpoint(e.target.value);
-                        setInvalidEndpoint(false);
+                        const banned = bannedEndpoints.some((banned) =>
+                          e.target.value.includes(banned)
+                        );
+                        setInvalidEndpoint(banned);
                       }}
                       value={endpoint}
                     />
                   </div>
                   {invalidEndpoint && (
-                    <p className="text-sm text-red-500">invalid endpoint url</p>
+                    <p className="text-sm text-red-500">
+                      invalid endpoint url.
+                    </p>
                   )}
                   {showEmail && (
                     <>
@@ -135,7 +154,7 @@ const Home: NextPage = () => {
                   <button
                     className="mt-4 w-full rounded-lg bg-indigo-600/80 px-4 py-2 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-600/80"
                     disabled={
-                      !endpoint ||
+                      (!endpoint && !email) ||
                       (showEmail && !email) ||
                       invalidEndpoint ||
                       invalidEmail
