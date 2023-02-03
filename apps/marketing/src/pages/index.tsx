@@ -18,6 +18,7 @@ const bannedEndpoints = [
   "asdf.com",
   "ping.gg",
   "test.com",
+  "google.com",
 ];
 
 const Home: NextPage = () => {
