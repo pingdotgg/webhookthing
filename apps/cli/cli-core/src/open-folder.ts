@@ -13,7 +13,7 @@ export async function openInExplorer(path: string) {
   ) {
     case `win`:
       path = path || "=";
-      cmd = `explorer`;
+      cmd = `start`;
       break;
     case `linux`:
       path = path || "/";
