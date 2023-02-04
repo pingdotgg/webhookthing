@@ -144,7 +144,7 @@ export const JsonBlobs = () => {
                   </div>
                 </div>
                 {expanded.includes(i) && (
-                  <pre className="max-h-96 w-full overflow-auto rounded-md bg-gray-200 p-4">
+                  <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
                     <code>{blob.body}</code>
                   </pre>
                 )}
@@ -260,7 +260,7 @@ const FormModal: React.FC<{
 
   return (
     <Modal openState={openState} onClose={onClose}>
-      <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
+      <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 sm:pr-20">
         <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
           <button
             type="button"
@@ -271,7 +271,7 @@ const FormModal: React.FC<{
             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <div className="sm:flex sm:items-start">
+        <div className="min-h-0 w-full grow overflow-y-scroll px-4 sm:flex sm:items-start">
           <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
             {type === "edit" ? (
               <CogIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
@@ -282,7 +282,7 @@ const FormModal: React.FC<{
               />
             )}
           </div>
-          <div className="mt-3 text-left sm:mt-0 sm:ml-4">
+          <div className="h-full w-full grow pt-3 text-left sm:ml-4 sm:pt-0">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
               {type === "edit" ? (
                 <>Settings: {prefill?.name}</>
@@ -301,7 +301,7 @@ const FormModal: React.FC<{
                 )}
               </p>
             </div>
-            <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
+            <div className="mt-4 flex flex-col gap-2 overflow-y-scroll">
               <div id="name-input">
                 <label
                   htmlFor="name"
@@ -333,7 +333,7 @@ const FormModal: React.FC<{
                     id="body"
                     name="body"
                     rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="{}"
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
@@ -396,7 +396,7 @@ const FormModal: React.FC<{
             </div>
           </div>
         </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+        <div className="mt-5 px-4 sm:mt-4 sm:flex sm:flex-row-reverse">
           <button
             type="button"
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
