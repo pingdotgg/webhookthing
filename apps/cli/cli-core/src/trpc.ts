@@ -11,6 +11,8 @@ import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
 import { configValidator, updateConfig } from "./update-config";
 
+export type { ConfigValidatorType } from "./update-config";
+
 export const t = initTRPC.create({
   transformer: superjson,
 });

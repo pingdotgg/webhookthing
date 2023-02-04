@@ -5,7 +5,7 @@ import path from "path";
 import { HOOK_PATH } from "./constants";
 
 export const configValidator = z.object({
-  url: z.string(),
+  url: z.string().optional(),
   query: z.record(z.string()).optional(),
   headers: z.record(z.string()).optional(),
 });
