@@ -17,7 +17,7 @@ import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { Modal } from "./common/modal";
 
-import type { ConfigValidatorType } from "../../../cli-core/src/trpc";
+import { ConfigValidatorType } from "@captain/cli-core/src/trpc";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
