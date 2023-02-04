@@ -26,7 +26,7 @@ export const Modal: React.FC<{
         initialFocus={initialFocus}
         onClose={handleClose}
       >
-        <div className="flex h-full min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex h-full min-h-screen items-center justify-center px-4 pt-4 text-center sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -46,6 +46,7 @@ export const Modal: React.FC<{
           >
             &#8203;
           </span>
+
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
