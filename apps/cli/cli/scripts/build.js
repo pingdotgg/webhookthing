@@ -61,7 +61,12 @@ async function runBuild() {
   fse.copySync(WEB_DIR, join(DIST_DIR, "web"));
 
   // Build and bundle CLI using ncc
-  const opts = { sourceMap: true, sourceMapRegister: true, minify: true };
+  const opts = {
+    sourceMap: true,
+    sourceMapRegister: true,
+    minify: true,
+    transpileOnly: true,
+  };
   const { code, map, assets } = await ncc(ENTRY_DIR, opts);
 
   // Write files to dist dir

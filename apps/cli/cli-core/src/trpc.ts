@@ -162,6 +162,8 @@ export const cliApiRouter = t.router({
       const { body, config } = input;
       const name = input.name.split(".json")[0];
 
+      if (!name) throw new Error("No name");
+
       console.log(`[INFO] updating ${name}.json`);
 
       const existingBody = await fsPromises.readFile(
