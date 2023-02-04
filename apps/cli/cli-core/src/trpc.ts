@@ -59,7 +59,14 @@ export const cliApiRouter = t.router({
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
     .mutation(async ({ input }) => {
-      await openInExplorer(path.join(HOOK_PATH, input.path));
+      try {
+        await openInExplorer(path.join(HOOK_PATH, input.path));
+      } catch (e) {
+        console.log(
+          "[ERROR] Failed to open folder (unless you're on Windows, then this just happens)",
+          e
+        );
+      }
     }),
 
   getSampleHooks: t.procedure.mutation(async () => {

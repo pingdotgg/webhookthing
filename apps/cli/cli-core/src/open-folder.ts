@@ -5,26 +5,22 @@ import fs from "fs";
 
 const promisifiedExecFile = promisify(childProcess.execFile);
 
+const getCommand = () => {
+  const plat = os
+    .platform()
+    .toLowerCase()
+    .replace(/[0-9]/g, ``)
+    .replace(`darwin`, `macos`);
+
+  if (plat === "win") return "explorer.exe";
+  if (plat === "linux") return "xdg-open";
+  if (plat === "macos") return "open";
+
+  throw new Error("Idk what os this is");
+};
+
 // Ripped from https://www.npmjs.com/package/open-file-explorer
 export async function openInExplorer(path: string) {
-  let cmd = ``;
-  switch (
-    os.platform().toLowerCase().replace(/[0-9]/g, ``).replace(`darwin`, `macos`)
-  ) {
-    case `win`:
-      path = path || "=";
-      cmd = `start`;
-      break;
-    case `linux`:
-      path = path || "/";
-      cmd = `xdg-open`;
-      break;
-    case `macos`:
-      path = path || "/";
-      cmd = `open`;
-      break;
-  }
-
   // Create the directory if it doesn't exist
   if (!fs.existsSync(path)) {
     console.log(
@@ -33,5 +29,5 @@ export async function openInExplorer(path: string) {
     fs.mkdirSync(path, { recursive: true });
   }
 
-  const p = await promisifiedExecFile(cmd, [path]);
+  return await promisifiedExecFile(getCommand(), [path]);
 }
