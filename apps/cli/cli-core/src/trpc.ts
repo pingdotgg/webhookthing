@@ -31,48 +31,30 @@ export const cliApiRouter = t.router({
           hookFile.includes(".json") && !hookFile.includes(".config.json")
       )
       .map(async (hook) => {
-        const content = await fsPromises.readFile(
+        const bodyPromise = fsPromises.readFile(
           path.join(HOOK_PATH, hook),
           "utf-8"
         );
 
+        const configPath = hook.replace(".json", "") + ".config.json";
+
+        let config;
+        if (fs.existsSync(path.join(HOOK_PATH, configPath))) {
+          config = await fsPromises.readFile(
+            path.join(HOOK_PATH, configPath),
+            "utf-8"
+          );
+        }
+
         return {
           name: hook,
-          content: JSON.parse(content),
+          body: await bodyPromise,
+          config: config ? JSON.parse(config) : undefined,
         };
       });
 
     return Promise.all(res);
   }),
-
-  getHook: t.procedure
-    .input(z.object({ name: z.string() }))
-    .query(async ({ input }) => {
-      const { name } = input;
-
-      if (!fs.existsSync(path.join(HOOK_PATH, `${name}.json`))) {
-        console.log(`\u001b[31m[ERROR] ${name}.json does not exist`);
-      }
-
-      const body = await fsPromises.readFile(
-        path.join(HOOK_PATH, `${name}.json`),
-        "utf-8"
-      );
-
-      let config;
-      if (fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))) {
-        config = await fsPromises.readFile(
-          path.join(HOOK_PATH, `${name}.config.json`),
-          "utf-8"
-        );
-      }
-
-      return {
-        name,
-        body,
-        config: config ? JSON.parse(config) : undefined,
-      };
-    }),
 
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))

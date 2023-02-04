@@ -52,18 +52,22 @@ export const JsonBlobs = () => {
 
   const addModalState = useState(false);
 
-  const [selectedHook, setSelectedHook] = useState<string>("");
+  const [selectedHookName, setSelectedHook] = useState<string>("");
+
+  const selectedHook = data?.find((x) => x.name === selectedHookName);
 
   const editorModalState = useState(false);
 
   return (
     <>
       <AddModal openState={addModalState} />
-      <EditModal
-        openState={editorModalState}
-        hook={selectedHook}
-        onClose={() => setSelectedHook("")}
-      />
+      {selectedHook && data && (
+        <EditModal
+          openState={editorModalState}
+          hook={selectedHook}
+          onClose={() => setSelectedHook("")}
+        />
+      )}
 
       <div className="flex flex-col gap-2 pt-4">
         <div className="flex flex-row items-center justify-between">
@@ -251,37 +255,26 @@ const AddModal: React.FC<{
   );
 };
 
+const InnerEditModal = () => {};
+
 const EditModal: React.FC<{
   openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  hook: string;
+  hook: {
+    name: string;
+    body: string;
+    config: any;
+  };
   onClose: () => void;
 }> = ({ openState, hook, onClose }) => {
   const [newHook, setNewHook] = useState<{
     name: string;
     body: string;
     config?: ConfigValidatorType;
-  }>();
-
-  const { isLoading } = cliApi.getHook.useQuery(
-    {
-      name: hook.split(".")[0],
-    },
-    {
-      enabled: !!hook,
-      onSuccess: (data) => {
-        setNewHook(data);
-      },
-    }
-  );
+  }>({
+    ...hook,
+  });
 
   const { mutate: updateHook } = cliApi.updateHook.useMutation();
-
-  if (isLoading)
-    return (
-      <Modal openState={openState} onClose={onClose}>
-        <ArrowPathIcon className="h-32 w-32 animate-spin text-white" />
-      </Modal>
-    );
 
   return (
     <Modal openState={openState} onClose={onClose}>
@@ -302,7 +295,7 @@ const EditModal: React.FC<{
           </div>
           <div className="mt-3 text-left sm:mt-0 sm:ml-4">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
-              Settings: {hook}
+              Settings: {hook.name}
             </h3>
             <div className="mt-2">
               <p className="text-sm text-gray-500">
@@ -441,20 +434,20 @@ const WebhookForm: React.FC<{
     setUrl(parsedUrl.toString());
   };
 
-  useEffect(() => {
-    setNewHook({
-      name,
-      body,
-      config:
-        url || query.length || headers.length
-          ? {
-              url,
-              query: query.length ? convertArrayStateToObject(query) : {},
-              headers: headers.length ? convertArrayStateToObject(headers) : {},
-            }
-          : undefined,
-    });
-  }, [name, body, url, query, headers, setNewHook]);
+  // useEffect(() => {
+  //   setNewHook({
+  //     name,
+  //     body,
+  //     config:
+  //       url || query.length || headers.length
+  //         ? {
+  //             url,
+  //             query: query.length ? convertArrayStateToObject(query) : {},
+  //             headers: headers.length ? convertArrayStateToObject(headers) : {},
+  //           }
+  //         : undefined,
+  //   });
+  // }, [name, body, url, query, headers, setNewHook]);
 
   return (
     <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
