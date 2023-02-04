@@ -55,7 +55,7 @@ export const Modal: React.FC<{
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="relative inline-block h-2/3 w-2/3 text-left align-bottom sm:align-middle">
+            <div className="relative inline-block h-2/3 w-full text-left align-bottom sm:w-2/3 sm:align-middle">
               {children}
             </div>
           </Transition.Child>
