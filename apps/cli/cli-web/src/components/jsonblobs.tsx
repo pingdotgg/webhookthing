@@ -262,24 +262,19 @@ const EditModal: React.FC<{
     config?: ConfigValidatorType;
   }>();
 
-  const { data: hookData, isLoading } = cliApi.getHook.useQuery(
+  const { isLoading } = cliApi.getHook.useQuery(
     {
       name: hook.split(".")[0],
     },
-    { enabled: !!hook }
+    {
+      enabled: !!hook,
+      onSuccess: (data) => {
+        setNewHook(data);
+      },
+    }
   );
 
   const { mutate: updateHook } = cliApi.updateHook.useMutation();
-
-  useEffect(() => {
-    if (hookData) {
-      setNewHook({
-        name: hookData.name,
-        body: hookData.body,
-        config: hookData.config,
-      });
-    }
-  }, [hookData]);
 
   if (isLoading)
     return (
@@ -383,7 +378,7 @@ type HookSetter = React.Dispatch<
                     [key: string]: string;
                   }
                 | undefined;
-              url: string;
+              url?: string | undefined;
             }
           | undefined;
       }
@@ -403,7 +398,7 @@ const WebhookForm: React.FC<{
       headers?: {
         [key: string]: string;
       };
-      url: string;
+      url?: string | undefined;
     };
   };
 }> = ({ setNewHook, data }) => {

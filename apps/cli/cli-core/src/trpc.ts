@@ -9,14 +9,7 @@ import path from "path";
 import { openInExplorer } from "./open-folder";
 import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
-
-const configValidator = z.object({
-  url: z.string(),
-  query: z.record(z.string()).optional(),
-  headers: z.record(z.string()).optional(),
-});
-
-export type ConfigValidatorType = z.infer<typeof configValidator>;
+import { configValidator, updateConfig } from "./update-config";
 
 export const t = initTRPC.create({
   transformer: superjson,
@@ -24,6 +17,7 @@ export const t = initTRPC.create({
 export const cliApiRouter = t.router({
   getBlobs: t.procedure.query(async () => {
     if (!fs.existsSync(HOOK_PATH)) {
+      // TODO: this should probably be an error, and the frontend should handle it
       return [];
     }
 
@@ -32,7 +26,7 @@ export const cliApiRouter = t.router({
     const res = hooks
       .filter(
         (hookFile) =>
-          hookFile.includes(".json") && !hookFile.includes(".config")
+          hookFile.includes(".json") && !hookFile.includes(".config.json")
       )
       .map(async (hook) => {
         const content = await fsPromises.readFile(
@@ -168,11 +162,7 @@ export const cliApiRouter = t.router({
       await fsPromises.writeFile(path.join(HOOK_PATH, `${name}.json`), body);
       if (config?.url || config?.query || config?.headers) {
         console.log(`[INFO] Config specified, creating ${name}.config.json`);
-
-        await fsPromises.writeFile(
-          path.join(HOOK_PATH, `${name}.config.json`),
-          JSON.stringify(config, null, 2)
-        );
+        updateConfig({ name, config });
       }
     }),
 
@@ -205,34 +195,14 @@ export const cliApiRouter = t.router({
         JSON.stringify(updatedBody, null, 2)
       );
 
-      if (config?.url || config?.query || config?.headers) {
+      if (
+        config?.url ||
+        config?.query ||
+        config?.headers ||
+        fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))
+      ) {
         console.log(`[INFO] Config specified, updating ${name}.config.json`);
-
-        // create config file if it doesn't exist
-        if (!fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))) {
-          await fsPromises.writeFile(
-            path.join(HOOK_PATH, `${name}.config.json`),
-            JSON.stringify(config, null, 2)
-          );
-        } else {
-          //update existing config file
-          const existingConfig = await fsPromises.readFile(
-            path.join(HOOK_PATH, `${name}.config.json`),
-            "utf-8"
-          );
-
-          const parsedConfig = JSON.parse(existingConfig);
-
-          const updatedConfig = {
-            ...parsedConfig,
-            ...config,
-          };
-
-          await fsPromises.writeFile(
-            path.join(HOOK_PATH, `${name}.config.json`),
-            JSON.stringify(updatedConfig, null, 2)
-          );
-        }
+        updateConfig({ name, config });
       }
     }),
 });
