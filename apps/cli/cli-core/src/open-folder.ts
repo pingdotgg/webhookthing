@@ -13,7 +13,7 @@ export async function openInExplorer(path: string) {
   ) {
     case `win`:
       path = path || "=";
-      cmd = `start`;
+      cmd = `explorer`;
       break;
     case `linux`:
       path = path || "/";
@@ -33,5 +33,5 @@ export async function openInExplorer(path: string) {
     fs.mkdirSync(path, { recursive: true });
   }
 
-  const p = await promisifiedExecFile(cmd, [path]);
+  return await promisifiedExecFile(cmd, [path]);
 }
