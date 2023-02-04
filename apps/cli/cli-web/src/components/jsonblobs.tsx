@@ -260,7 +260,7 @@ const FormModal: React.FC<{
 
   return (
     <Modal openState={openState} onClose={onClose}>
-      <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:p-6 sm:pr-20">
+      <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 sm:pr-20">
         <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
           <button
             type="button"
@@ -282,7 +282,7 @@ const FormModal: React.FC<{
               />
             )}
           </div>
-          <div className="mt-3 h-full w-full grow text-left sm:mt-0 sm:ml-4">
+          <div className="h-full w-full grow pt-3 text-left sm:ml-4 sm:pt-0">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
               {type === "edit" ? (
                 <>Settings: {prefill?.name}</>
