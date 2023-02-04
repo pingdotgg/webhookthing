@@ -56,15 +56,18 @@ export const JsonBlobs = () => {
 
   const selectedHook = data?.find((x) => x.name === selectedHookName);
 
-  const editorModalState = useState(false);
-
   return (
     <>
       <FormModal type="add" openState={addModalState} />
-      {selectedHook && data && (
+      {selectedHook && (
         <FormModal
           type="edit"
-          openState={editorModalState}
+          openState={[
+            true,
+            () => {
+              setSelectedHook("");
+            },
+          ]}
           prefill={selectedHook}
           onClose={() => {
             setSelectedHook("");
@@ -134,7 +137,6 @@ export const JsonBlobs = () => {
                     <button
                       onClick={() => {
                         setSelectedHook(blob.name);
-                        editorModalState[1](true);
                       }}
                     >
                       <CogIcon className="h-4 hover:text-indigo-600" />
@@ -271,7 +273,14 @@ const FormModal: React.FC<{
         </div>
         <div className="sm:flex sm:items-start">
           <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
-            <PlusIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+            {type === "edit" ? (
+              <CogIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
+            ) : (
+              <PlusIcon
+                className="h-6 w-6 text-indigo-600"
+                aria-hidden="true"
+              />
+            )}
           </div>
           <div className="mt-3 text-left sm:mt-0 sm:ml-4">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
