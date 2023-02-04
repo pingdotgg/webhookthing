@@ -159,7 +159,9 @@ export const cliApiRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      const { name, body, config } = input;
+      const { body, config } = input;
+      const name = input.name.split(".json")[0];
+
       console.log(`[INFO] updating ${name}.json`);
 
       const existingBody = await fsPromises.readFile(

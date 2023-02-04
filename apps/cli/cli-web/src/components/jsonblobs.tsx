@@ -60,12 +60,15 @@ export const JsonBlobs = () => {
 
   return (
     <>
-      <AddModal openState={addModalState} />
+      <FormModal type="add" openState={addModalState} />
       {selectedHook && data && (
-        <EditModal
+        <FormModal
+          type="edit"
           openState={editorModalState}
-          hook={selectedHook}
-          onClose={() => setSelectedHook("")}
+          prefill={selectedHook}
+          onClose={() => {
+            setSelectedHook("");
+          }}
         />
       )}
 
@@ -180,101 +183,78 @@ export const JsonBlobs = () => {
   );
 };
 
-const AddModal: React.FC<{
+const FormModal: React.FC<{
   openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-}> = ({ openState }) => {
-  const [newHook, setNewHook] = useState<{
+  type: "edit" | "add";
+  prefill?: {
     name: string;
     body: string;
     config?: ConfigValidatorType;
-  }>();
-
-  const { mutate: createHook } = cliApi.createHook.useMutation({
+  };
+  onClose?: () => void;
+}> = ({ openState, type, prefill, onClose }) => {
+  const ctx = cliApi.useContext();
+  const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
-      setTimeout(() => cliApi.getBlobs.useQuery().refetch(), 150);
+      ctx.getBlobs.invalidate();
+    },
+  });
+  const { mutate: addHook } = cliApi.createHook.useMutation({
+    onSuccess: () => {
+      ctx.getBlobs.invalidate();
     },
   });
 
-  return (
-    <Modal openState={openState}>
-      <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:pr-20">
-        <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-          <button
-            type="button"
-            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={() => openState[1](false)}
-          >
-            <span className="sr-only">Close</span>
-            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </div>
-        <div className="sm:flex sm:items-start">
-          <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
-            <PlusIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
-          </div>
-          <div className="mt-3 text-left sm:mt-0 sm:ml-4">
-            <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
-              Add a new webhook
-            </h3>
-            <div className="mt-2">
-              <p className="text-sm text-gray-500">
-                Give your webhook a name and paste the body contents below.
-              </p>
-            </div>
-            <WebhookForm setNewHook={setNewHook} />
-          </div>
-        </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <button
-            type="button"
-            className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
-            disabled={!newHook?.name || !newHook?.body}
-            onClick={() => {
-              if (!newHook?.name || !newHook?.body) return;
-              createHook({
-                name: newHook.name,
-                body: newHook.body,
-                config: newHook.config,
-              });
-              setNewHook(undefined);
-              openState[1](false);
-            }}
-          >
-            Create
-          </button>
-          <button
-            type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
-            onClick={() => openState[1](false)}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </Modal>
+  const [name, setName] = useState<string>(prefill?.name ?? "");
+  const [body, setBody] = useState<string>(prefill?.body ?? "");
+
+  const [showAddlOpts, setShowAddlOpts] = useState<boolean>(false);
+  const [url, setUrl] = useState<string>(prefill?.config?.url ?? "");
+  const [query, setQuery] = useState<{ key: string; value: string }[]>(
+    prefill?.config?.query
+      ? convertObjectStateToArray(prefill.config.query)
+      : []
   );
-};
+  const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
+    prefill?.config?.headers
+      ? convertObjectStateToArray(prefill.config.headers)
+      : []
+  );
 
-const InnerEditModal = () => {};
-
-const EditModal: React.FC<{
-  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  hook: {
-    name: string;
-    body: string;
-    config: any;
+  const updateUrl = (url: string) => {
+    setUrl(url);
+    const queryParams = new URLSearchParams(url.split("?")[1]);
+    const newQuery = Array.from(queryParams.entries()).map(([key, value]) => ({
+      key,
+      value,
+    }));
+    setQuery(newQuery);
   };
-  onClose: () => void;
-}> = ({ openState, hook, onClose }) => {
-  const [newHook, setNewHook] = useState<{
-    name: string;
-    body: string;
-    config?: ConfigValidatorType;
-  }>({
-    ...hook,
-  });
 
-  const { mutate: updateHook } = cliApi.updateHook.useMutation();
+  const updateQuery = (query: { key: string; value: string }[]) => {
+    setQuery(query);
+    if (!url) return;
+
+    const parsedUrl = new URL(url.includes("http") ? url : `http://${url}`);
+    query.forEach(({ key, value }) => {
+      parsedUrl.searchParams.set(key, value);
+    });
+    //delete any params that do not appear in the query
+    Array.from(parsedUrl.searchParams.keys()).forEach((key) => {
+      if (!query.find((q) => q.key === key)) {
+        parsedUrl.searchParams.delete(key);
+      }
+    });
+    setUrl(parsedUrl.toString());
+  };
+
+  const generateConfig = () => {
+    const config: ConfigValidatorType = {};
+    if (url) config.url = url;
+    if (query.length) config.query = convertArrayStateToObject(query);
+    if (headers.length) config.headers = convertArrayStateToObject(headers);
+    return config;
+  };
 
   return (
     <Modal openState={openState} onClose={onClose}>
@@ -295,32 +275,146 @@ const EditModal: React.FC<{
           </div>
           <div className="mt-3 text-left sm:mt-0 sm:ml-4">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
-              Settings: {hook.name}
+              {type === "edit" ? (
+                <>Settings: {prefill?.name}</>
+              ) : (
+                <>Add a new webhook</>
+              )}
             </h3>
             <div className="mt-2">
               <p className="text-sm text-gray-500">
-                Update your webhook&apos;s settings below.
+                {type === "edit" ? (
+                  <>Update your webhook&apos;s settings below.</>
+                ) : (
+                  <>
+                    Give your webhook a name and paste the body contents below.
+                  </>
+                )}
               </p>
             </div>
-            <WebhookForm data={newHook} setNewHook={setNewHook} />
+            <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
+              <div id="name-input">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="My Webhook"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div id="body-input">
+                <label
+                  htmlFor="body"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Body
+                </label>
+                <div className="mt-1">
+                  <textarea
+                    id="body"
+                    name="body"
+                    rows={3}
+                    className="mt-1 block w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="{}"
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {!showAddlOpts ? (
+                <button
+                  type="button"
+                  className="text-sm text-indigo-600"
+                  onClick={() => setShowAddlOpts(true)}
+                >
+                  Show Additional Options
+                </button>
+              ) : (
+                <>
+                  <div id="url-input">
+                    <label
+                      htmlFor="url"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Endpoint URL
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="text"
+                        name="url"
+                        id="url"
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="https://example.com/webhook"
+                        value={url}
+                        onChange={(e) => updateUrl(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div id="query-input">
+                    <KeyValueInput
+                      label="Query Parameter"
+                      values={query}
+                      setValues={updateQuery}
+                    />
+                  </div>
+                  <div id="headers-input">
+                    <KeyValueInput
+                      label="Header"
+                      values={headers}
+                      setValues={setHeaders}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm text-indigo-600"
+                    onClick={() => setShowAddlOpts(false)}
+                  >
+                    Hide Additional Options
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
         <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
           <button
             type="button"
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
-            disabled={!newHook?.name || !newHook?.body}
-            onClick={() => {
-              if (!newHook?.name || !newHook?.body) return;
-              updateHook({
-                name: newHook.name,
-                body: newHook.body,
-                config: newHook.config,
-              });
-              openState[1](false);
-            }}
+            disabled={!name || !body}
+            onClick={
+              type === "edit"
+                ? () => {
+                    if (!name || !body) return;
+                    updateHook({
+                      name: name,
+                      body: body,
+                      config: generateConfig(),
+                    });
+                    openState[1](false);
+                  }
+                : () => {
+                    if (!name || !body) return;
+                    addHook({
+                      name: name,
+                      body: body,
+                      config: generateConfig(),
+                    });
+                    openState[1](false);
+                  }
+            }
           >
-            Update
+            Save Changes
           </button>
           <button
             type="button"
@@ -352,198 +446,6 @@ const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
 
 const convertObjectStateToArray = (obj: { [k: string]: string }) => {
   return Object.entries(obj).map(([key, value]) => ({ key, value }));
-};
-
-type HookSetter = React.Dispatch<
-  React.SetStateAction<
-    | {
-        name: string;
-        body: string;
-        config?:
-          | {
-              query?:
-                | {
-                    [key: string]: string;
-                  }
-                | undefined;
-              headers?:
-                | {
-                    [key: string]: string;
-                  }
-                | undefined;
-              url?: string | undefined;
-            }
-          | undefined;
-      }
-    | undefined
-  >
->;
-
-const WebhookForm: React.FC<{
-  setNewHook: HookSetter;
-  data?: {
-    name: string;
-    body: string;
-    config?: {
-      query?: {
-        [key: string]: string;
-      };
-      headers?: {
-        [key: string]: string;
-      };
-      url?: string | undefined;
-    };
-  };
-}> = ({ setNewHook, data }) => {
-  const [name, setName] = useState<string>(data?.name ?? "");
-  const [body, setBody] = useState<string>(data?.body ?? "");
-
-  const [showAddlOpts, setShowAddlOpts] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>(data?.config?.url ?? "");
-  const [query, setQuery] = useState<{ key: string; value: string }[]>(
-    data?.config?.query ? convertObjectStateToArray(data.config.query) : []
-  );
-  const [headers, setHeaders] = useState<{ key: string; value: string }[]>(
-    data?.config?.headers ? convertObjectStateToArray(data.config.headers) : []
-  );
-
-  const updateUrl = (url: string) => {
-    setUrl(url);
-    const queryParams = new URLSearchParams(url.split("?")[1]);
-    const newQuery = Array.from(queryParams.entries()).map(([key, value]) => ({
-      key,
-      value,
-    }));
-    setQuery(newQuery);
-  };
-
-  const updateQuery = (query: { key: string; value: string }[]) => {
-    setQuery(query);
-    if (!url) return;
-
-    const parsedUrl = new URL(url.includes("http") ? url : `http://${url}`);
-    query.forEach(({ key, value }) => {
-      parsedUrl.searchParams.set(key, value);
-    });
-    //delete any params that do not appear in the query
-    Array.from(parsedUrl.searchParams.keys()).forEach((key) => {
-      if (!query.find((q) => q.key === key)) {
-        parsedUrl.searchParams.delete(key);
-      }
-    });
-    setUrl(parsedUrl.toString());
-  };
-
-  // useEffect(() => {
-  //   setNewHook({
-  //     name,
-  //     body,
-  //     config:
-  //       url || query.length || headers.length
-  //         ? {
-  //             url,
-  //             query: query.length ? convertArrayStateToObject(query) : {},
-  //             headers: headers.length ? convertArrayStateToObject(headers) : {},
-  //           }
-  //         : undefined,
-  //   });
-  // }, [name, body, url, query, headers, setNewHook]);
-
-  return (
-    <div className="mt-4 flex max-h-96 flex-col gap-2 overflow-y-auto">
-      <div id="name-input">
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Name
-        </label>
-        <div className="mt-1">
-          <input
-            type="text"
-            name="name"
-            id="name"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="My Webhook"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-      </div>
-      <div id="body-input">
-        <label
-          htmlFor="body"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Body
-        </label>
-        <div className="mt-1">
-          <textarea
-            id="body"
-            name="body"
-            rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="{}"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {!showAddlOpts ? (
-        <button
-          type="button"
-          className="text-sm text-indigo-600"
-          onClick={() => setShowAddlOpts(true)}
-        >
-          Show Additional Options
-        </button>
-      ) : (
-        <>
-          <div id="url-input">
-            <label
-              htmlFor="url"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Endpoint URL
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                name="url"
-                id="url"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="https://example.com/webhook"
-                value={url}
-                onChange={(e) => updateUrl(e.target.value)}
-              />
-            </div>
-          </div>
-          <div id="query-input">
-            <KeyValueInput
-              label="Query Parameter"
-              values={query}
-              setValues={updateQuery}
-            />
-          </div>
-          <div id="headers-input">
-            <KeyValueInput
-              label="Header"
-              values={headers}
-              setValues={setHeaders}
-            />
-          </div>
-          <button
-            type="button"
-            className="text-sm text-indigo-600"
-            onClick={() => setShowAddlOpts(false)}
-          >
-            Hide Additional Options
-          </button>
-        </>
-      )}
-    </div>
-  );
 };
 
 const KeyValueInput = ({
