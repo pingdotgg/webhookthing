@@ -11,7 +11,7 @@ export const ConnectionState = () => {
         .then(() => {
           if (!connected) {
             setConnected(true);
-            toast("Connected", {
+            toast("CLI Server Online", {
               icon: "🟢",
               id: "connected",
               duration: 2000,
@@ -20,7 +20,7 @@ export const ConnectionState = () => {
         })
         .catch(() => {
           setConnected(false);
-          toast("Disconnected", {
+          toast("CLI Server Offline", {
             icon: "🔴",
             id: "connected",
             duration: Infinity,
@@ -34,4 +34,5 @@ export const ConnectionState = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [connected]);
+  return <></>;
 };
