@@ -289,6 +289,12 @@ const FormModal: React.FC<{
     return config;
   };
 
+  const hasCustomConfig =
+    Object.keys(prefill?.config ?? {}).length > 0 ||
+    url ||
+    query.length ||
+    headers.length;
+
   return (
     <Modal openState={openState} onClose={onClose}>
       <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 sm:pr-20">
@@ -372,15 +378,7 @@ const FormModal: React.FC<{
                 </div>
               </div>
 
-              {!showAddlOpts ? (
-                <button
-                  type="button"
-                  className="text-sm text-indigo-600"
-                  onClick={() => setShowAddlOpts(true)}
-                >
-                  Show Additional Options
-                </button>
-              ) : (
+              {showAddlOpts || hasCustomConfig ? (
                 <>
                   <div id="url-input">
                     <label
@@ -415,14 +413,24 @@ const FormModal: React.FC<{
                       setValues={setHeaders}
                     />
                   </div>
-                  <button
-                    type="button"
-                    className="text-sm text-indigo-600"
-                    onClick={() => setShowAddlOpts(false)}
-                  >
-                    Hide Additional Options
-                  </button>
+                  {!hasCustomConfig && (
+                    <button
+                      type="button"
+                      className="text-sm text-indigo-600"
+                      onClick={() => setShowAddlOpts(false)}
+                    >
+                      Hide Additional Options
+                    </button>
+                  )}
                 </>
+              ) : (
+                <button
+                  type="button"
+                  className="text-sm text-indigo-600"
+                  onClick={() => setShowAddlOpts(true)}
+                >
+                  Show Additional Options
+                </button>
               )}
             </div>
           </div>
