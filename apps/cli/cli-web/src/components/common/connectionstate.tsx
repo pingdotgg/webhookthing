@@ -1,38 +1,41 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 export const ConnectionState = () => {
-  // ping the server to see if it's up every 5 seconds
   const [connected, setConnected] = useState(false);
 
-  useEffect(() => {
-    const fetcher = async () => {
+  const {} = useQuery(
+    ["connectionState"],
+    () =>
       fetch("/")
-        .then(() => {
-          if (!connected) {
-            setConnected(true);
-            toast("CLI Server Online", {
-              icon: "🟢",
-              id: "connected",
-              duration: 2000,
-            });
-          }
-        })
+        .then((res) => res.text())
         .catch(() => {
-          setConnected(false);
-          toast("CLI Server Offline", {
-            icon: "🔴",
-            id: "connected",
-            duration: Infinity,
+          throw new Error("Connection error");
+        }),
+    {
+      refetchInterval: 2000,
+      retry: false,
+      onSuccess(data) {
+        if (!connected) {
+          toast("Connected to CLI server", {
+            icon: "👍",
+            duration: 2000,
+            id: "connState",
           });
+          setConnected(true);
+        }
+      },
+      onError(error) {
+        toast("Disconnected from CLI server", {
+          icon: "👎",
+          duration: Infinity,
+          id: "connState",
         });
-    };
-    fetcher();
+        setConnected(false);
+      },
+    }
+  );
 
-    const interval = setInterval(() => {
-      fetcher();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [connected]);
   return <></>;
 };
