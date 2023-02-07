@@ -251,11 +251,17 @@ const FormModal: React.FC<{
     setUrl(parsedUrl.toString());
   };
 
-  const generateConfig = () => {
+  const generateConfig = (configuration: {
+    url?: string;
+    headers?: { key: string; value: string }[];
+    query?: { key: string; value: string }[];
+  }) => {
     const config: ConfigValidatorType = {};
     if (url) config.url = url;
-    if (query.length) config.query = convertArrayStateToObject(query);
-    if (headers.length) config.headers = convertArrayStateToObject(headers);
+    if (query.length)
+      config.query = convertArrayStateToObject(configuration.query ?? []);
+    if (headers.length)
+      config.headers = convertArrayStateToObject(configuration.headers ?? []);
     return config;
   };
 
@@ -315,21 +321,21 @@ const FormModal: React.FC<{
                 }}
                 submitAction={
                   type === "edit"
-                    ? () => {
+                    ? ({ name, body, config }) => {
                         if (!name || !body) return;
                         updateHook({
                           name: name,
                           body: body,
-                          config: generateConfig(),
+                          config: generateConfig(config),
                         });
                         openState[1](false);
                       }
-                    : () => {
+                    : ({ name, body, config }) => {
                         if (!name || !body) return;
                         addHook({
                           name: name,
                           body: body,
-                          config: generateConfig(),
+                          config: generateConfig(config),
                         });
                         openState[1](false);
                       }
@@ -343,27 +349,7 @@ const FormModal: React.FC<{
             type="button"
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
             disabled={!name || !body}
-            onClick={
-              type === "edit"
-                ? () => {
-                    if (!name || !body) return;
-                    updateHook({
-                      name: name,
-                      body: body,
-                      config: generateConfig(),
-                    });
-                    openState[1](false);
-                  }
-                : () => {
-                    if (!name || !body) return;
-                    addHook({
-                      name: name,
-                      body: body,
-                      config: generateConfig(),
-                    });
-                    openState[1](false);
-                  }
-            }
+            onClick={() => {}}
           >
             Save Changes
           </button>
