@@ -34,9 +34,11 @@ export const WebhookForm = (input: {
     getValues,
     setValue,
     setError,
+    trigger,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
+    mode: "onBlur",
   });
   const {
     fields: headerFields,
@@ -119,6 +121,7 @@ export const WebhookForm = (input: {
         className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         {...register("config.url", {
           onBlur: (e) => {
+            trigger();
             const value = e.target.value;
             if (value) {
               const url = new URL(value);
