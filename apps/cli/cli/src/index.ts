@@ -7,7 +7,7 @@ const DOCS_LINK = "https://docs.webhookthing.com";
 const main = async () => {
   renderTitle();
 
-  //link to docs
+  // link to docs
   console.log(
     `\x1b[36m%s\x1b[0m`,
     `Questions? Check out the docs: ${DOCS_LINK}`
