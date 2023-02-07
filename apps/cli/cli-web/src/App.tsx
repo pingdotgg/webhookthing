@@ -3,9 +3,11 @@ import { Toaster } from "react-hot-toast";
 
 import { JsonBlobs } from "./components/jsonblobs";
 import { EndpointSetting } from "./components/endpointsetting";
-import { ConnectionState } from "./components/common/connectionstate";
+import { useConnectionState } from "./utils/useConnectionState";
 
 export default function Example() {
+  useConnectionState();
+
   return (
     <>
       <Toaster />
@@ -42,7 +44,6 @@ export default function Example() {
           <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
             <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
               <div className="flex flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
-                <ConnectionState />
                 <EndpointSetting />
                 <JsonBlobs />
               </div>

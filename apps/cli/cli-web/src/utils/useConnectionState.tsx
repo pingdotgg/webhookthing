@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
-export const ConnectionState = () => {
+export const useConnectionState = () => {
   const [connected, setConnected] = useState(false);
 
   const {} = useQuery(
@@ -19,7 +19,7 @@ export const ConnectionState = () => {
       onSuccess(data) {
         if (!connected) {
           toast("Connected to CLI server", {
-            icon: "👍",
+            icon: "🟢",
             duration: 2000,
             id: "connState",
           });
@@ -28,7 +28,7 @@ export const ConnectionState = () => {
       },
       onError(error) {
         toast("Disconnected from CLI server", {
-          icon: "👎",
+          icon: "🔴",
           duration: Infinity,
           id: "connState",
         });
@@ -36,6 +36,4 @@ export const ConnectionState = () => {
       },
     }
   );
-
-  return <></>;
 };
