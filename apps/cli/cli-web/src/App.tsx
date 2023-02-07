@@ -3,10 +3,10 @@ import { Toaster } from "react-hot-toast";
 
 import { JsonBlobs } from "./components/jsonblobs";
 import { EndpointSetting } from "./components/endpointsetting";
-import { useConnectionState } from "./utils/useConnectionState";
+import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 
 export default function Example() {
-  useConnectionState();
+  useConnectionStateToasts();
 
   return (
     <>
