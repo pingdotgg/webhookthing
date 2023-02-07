@@ -35,6 +35,8 @@ export const WebhookForm = (input: {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
+    setValue,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
@@ -58,6 +60,25 @@ export const WebhookForm = (input: {
 
   const onSubmit = (data: FormValidatorType) => {
     submitAction(data);
+  };
+
+  const updateQuery = () => {
+    //get url & query from config
+    const url = getValues("config.url")?.split("?")[0];
+    const query = getValues("config.query");
+
+    if (!query?.length) {
+      setValue("config.url", url);
+      return;
+    }
+
+    // construct new url with query
+    const newUrl = `${url}?${query
+      .map((q) => `${q.key}=${q.value}`)
+      .join("&")}`;
+
+    // set new url
+    setValue("config.url", newUrl);
   };
 
   return (
@@ -87,7 +108,21 @@ export const WebhookForm = (input: {
       <input
         id="url"
         className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        {...register("config.url")}
+        {...register("config.url", {
+          onBlur: (e) => {
+            const value = e.target.value;
+            if (value) {
+              const url = new URL(value);
+              const queryFields = Array.from(url.searchParams.entries()).map(
+                ([key, value]) => ({
+                  key,
+                  value,
+                })
+              );
+              setValue("config.query", queryFields);
+            }
+          },
+        })}
       />
       <fieldset>
         <legend className="block text-sm font-medium text-gray-700">
@@ -183,7 +218,13 @@ export const WebhookForm = (input: {
                       "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                       index === 0 ? "rounded-tl-md" : ""
                     )}
-                    {...register(`config.query.${index}.key` as const)}
+                    {...(register(`config.query.${index}.key` as const),
+                    {
+                      onBlur: (e) => {
+                        setValue(`config.query.${index}.key`, e.target.value);
+                        updateQuery();
+                      },
+                    })}
                     defaultValue={item.key}
                     placeholder="Key"
                   />
@@ -198,7 +239,12 @@ export const WebhookForm = (input: {
                   <input
                     id={`config.query.${index}.value`}
                     className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    {...register(`config.query.${index}.value` as const)}
+                    {...register(`config.query.${index}.value` as const, {
+                      onBlur: (e) => {
+                        setValue(`config.query.${index}.value`, e.target.value);
+                        updateQuery();
+                      },
+                    })}
                     defaultValue={item.value}
                     placeholder="Value"
                   />
@@ -210,7 +256,10 @@ export const WebhookForm = (input: {
                       index === 0 ? "rounded-tr-md" : ""
                     )}
                     type="button"
-                    onClick={() => removeQuery(index)}
+                    onClick={() => {
+                      removeQuery(index);
+                      updateQuery();
+                    }}
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
