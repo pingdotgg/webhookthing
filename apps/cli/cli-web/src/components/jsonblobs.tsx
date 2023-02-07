@@ -5,6 +5,7 @@ import {
   DocumentDuplicateIcon,
   EyeIcon,
   EyeSlashIcon,
+  InformationCircleIcon,
   PlayIcon,
   PlusIcon,
   TrashIcon,
@@ -18,6 +19,7 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { Modal } from "./common/modal";
 
 import { ConfigValidatorType } from "@captain/cli-core/src/trpc";
+import { Tooltip } from "./common/tooltip";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -109,7 +111,14 @@ export const JsonBlobs = () => {
                 className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow"
               >
                 <div className="flex w-full flex-row items-center justify-between">
-                  <div className="text-xl">{blob.name}</div>
+                  <div className="flex flex-row items-center gap-1 text-xl ">
+                    {blob.name}
+                    {(blob.config?.url || blob.config?.headers) && (
+                      <Tooltip content="This has a custom config">
+                        <InformationCircleIcon className="h-5 w-5 text-gray-800" />
+                      </Tooltip>
+                    )}
+                  </div>
                   <div className=" flex flex-row items-center gap-x-4 ">
                     <button
                       className="invisible group-hover:visible"
@@ -144,9 +153,26 @@ export const JsonBlobs = () => {
                   </div>
                 </div>
                 {expanded.includes(i) && (
-                  <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
-                    <code>{blob.body}</code>
-                  </pre>
+                  <div className="flex w-full flex-col gap-2">
+                    {blob.config?.url && (
+                      <div className="flex flex-row items-center gap-2">
+                        <span className="text-gray-500">URL:</span>
+                        <span className="text-gray-800">{blob.config.url}</span>
+                      </div>
+                    )}
+                    {blob.config?.headers && (
+                      <div className="flex flex-row items-center gap-2">
+                        <span className="text-gray-500">Headers:</span>
+                        <span className="text-gray-800">
+                          {JSON.stringify(blob.config.headers)}
+                        </span>
+                      </div>
+                    )}
+                    <span className="text-gray-500">Body:</span>
+                    <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
+                      <code>{blob.body}</code>
+                    </pre>
+                  </div>
                 )}
               </li>
             ))}
@@ -207,6 +233,8 @@ const FormModal: React.FC<{
     },
   });
 
+  const [storedEndpoint] = useCurrentUrl();
+
   const [name, setName] = useState<string>(prefill?.name ?? "");
   const [body, setBody] = useState<string>(prefill?.body ?? "");
 
@@ -235,7 +263,10 @@ const FormModal: React.FC<{
 
   const updateQuery = (query: { key: string; value: string }[]) => {
     setQuery(query);
-    if (!url) return;
+    if (!url) {
+      // if no url is set, set the url to the default endpoint so that the query params can be added to the url
+      setUrl(storedEndpoint);
+    }
 
     const parsedUrl = new URL(url.includes("http") ? url : `http://${url}`);
     query.forEach(({ key, value }) => {
@@ -257,6 +288,12 @@ const FormModal: React.FC<{
     if (headers.length) config.headers = convertArrayStateToObject(headers);
     return config;
   };
+
+  const hasCustomConfig =
+    Object.keys(prefill?.config ?? {}).length > 0 ||
+    url ||
+    query.length ||
+    headers.length;
 
   return (
     <Modal openState={openState} onClose={onClose}>
@@ -341,15 +378,7 @@ const FormModal: React.FC<{
                 </div>
               </div>
 
-              {!showAddlOpts ? (
-                <button
-                  type="button"
-                  className="text-sm text-indigo-600"
-                  onClick={() => setShowAddlOpts(true)}
-                >
-                  Show Additional Options
-                </button>
-              ) : (
+              {showAddlOpts || hasCustomConfig ? (
                 <>
                   <div id="url-input">
                     <label
@@ -384,14 +413,24 @@ const FormModal: React.FC<{
                       setValues={setHeaders}
                     />
                   </div>
-                  <button
-                    type="button"
-                    className="text-sm text-indigo-600"
-                    onClick={() => setShowAddlOpts(false)}
-                  >
-                    Hide Additional Options
-                  </button>
+                  {!hasCustomConfig && (
+                    <button
+                      type="button"
+                      className="text-sm text-indigo-600"
+                      onClick={() => setShowAddlOpts(false)}
+                    >
+                      Hide Additional Options
+                    </button>
+                  )}
                 </>
+              ) : (
+                <button
+                  type="button"
+                  className="text-sm text-indigo-600"
+                  onClick={() => setShowAddlOpts(true)}
+                >
+                  Show Additional Options
+                </button>
               )}
             </div>
           </div>
