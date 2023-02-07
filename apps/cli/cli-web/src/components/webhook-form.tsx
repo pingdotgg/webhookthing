@@ -7,7 +7,7 @@ const formValidator = z.object({
   name: z.string().max(20),
   body: z.string().optional(),
   config: z.object({
-    url: z.string().optional(),
+    url: z.union([z.literal(""), z.string().trim().url()]),
     headers: z
       .array(z.object({ key: z.string(), value: z.string() }))
       .optional(),
