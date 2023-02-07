@@ -3,9 +3,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 
+const jsonValidator = () =>
+  z.string().refine(
+    (v) => {
+      if (!v) return true;
+      try {
+        JSON.parse(v);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    { message: "Invalid JSON" }
+  );
+
 const formValidator = z.object({
-  name: z.string().max(20),
-  body: z.string().optional(),
+  name: z.string().max(20).min(1, { message: "Required" }),
+  body: z.optional(jsonValidator()),
   config: z.object({
     url: z.union([z.literal(""), z.string().trim().url()]),
     headers: z
@@ -33,7 +47,6 @@ export const WebhookForm = (input: {
     formState: { errors },
     getValues,
     setValue,
-    setError,
     trigger,
   } = useForm({
     defaultValues: prefill,
@@ -85,32 +98,26 @@ export const WebhookForm = (input: {
       <label htmlFor="name" className="block text-sm font-medium text-gray-700">
         Name
       </label>
-      <p className="text-sm text-red-500">{errors.name?.message}</p>
+      {errors.name && (
+        <p className="text-sm text-red-500">
+          {errors.name?.message ?? errors.name.type}
+        </p>
+      )}
       <input
         id="name"
         className="block w-full rounded-md border border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        {...register("name", { required: true, maxLength: 20 })}
+        {...register("name")}
       />
       <label htmlFor="body" className="block text-sm font-medium text-gray-700">
         Body
       </label>
-      <p className="text-sm text-red-500">{errors.body?.message}</p>
+      {errors.body && (
+        <p className="text-sm text-red-500">{errors.body.message}</p>
+      )}
       <textarea
         id="body"
         className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        {...register("body", {
-          validate: (value) => {
-            if (!value) return;
-
-            try {
-              JSON.parse(value);
-            } catch (e) {
-              console.log("invalid json");
-              setError("body", { message: "Invalid JSON" });
-              return false;
-            }
-          },
-        })}
+        {...register("body", {})}
       />
       <label htmlFor="url" className="block text-sm font-medium text-gray-700">
         URL
