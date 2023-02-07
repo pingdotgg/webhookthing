@@ -18,6 +18,7 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { Modal } from "./common/modal";
 
 import { ConfigValidatorType } from "@captain/cli-core/src/trpc";
+import { WebhookForm } from "./webhook-form";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -301,98 +302,39 @@ const FormModal: React.FC<{
                 )}
               </p>
             </div>
-            <div className="mt-4 flex flex-col gap-2 overflow-y-scroll">
-              <div id="name-input">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="My Webhook"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div id="body-input">
-                <label
-                  htmlFor="body"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Body
-                </label>
-                <div className="mt-1">
-                  <textarea
-                    id="body"
-                    name="body"
-                    rows={3}
-                    className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="{}"
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {!showAddlOpts ? (
-                <button
-                  type="button"
-                  className="text-sm text-indigo-600"
-                  onClick={() => setShowAddlOpts(true)}
-                >
-                  Show Additional Options
-                </button>
-              ) : (
-                <>
-                  <div id="url-input">
-                    <label
-                      htmlFor="url"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Endpoint URL
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        type="text"
-                        name="url"
-                        id="url"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        placeholder="https://example.com/webhook"
-                        value={url}
-                        onChange={(e) => updateUrl(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div id="query-input">
-                    <KeyValueInput
-                      label="Query Parameter"
-                      values={query}
-                      setValues={updateQuery}
-                    />
-                  </div>
-                  <div id="headers-input">
-                    <KeyValueInput
-                      label="Header"
-                      values={headers}
-                      setValues={setHeaders}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    className="text-sm text-indigo-600"
-                    onClick={() => setShowAddlOpts(false)}
-                  >
-                    Hide Additional Options
-                  </button>
-                </>
-              )}
+            <div className="mt-5">
+              <WebhookForm
+                prefill={{
+                  name,
+                  body,
+                  config: {
+                    url,
+                    query,
+                    headers,
+                  },
+                }}
+                submitAction={
+                  type === "edit"
+                    ? () => {
+                        if (!name || !body) return;
+                        updateHook({
+                          name: name,
+                          body: body,
+                          config: generateConfig(),
+                        });
+                        openState[1](false);
+                      }
+                    : () => {
+                        if (!name || !body) return;
+                        addHook({
+                          name: name,
+                          body: body,
+                          config: generateConfig(),
+                        });
+                        openState[1](false);
+                      }
+                }
+              />
             </div>
           </div>
         </div>

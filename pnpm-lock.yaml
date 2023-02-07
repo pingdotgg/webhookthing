@@ -98,6 +98,7 @@ importers:
       '@captain/tsconfig': workspace:*
       '@headlessui/react': ^1.7.8
       '@heroicons/react': ^2.0.12
+      '@hookform/resolvers': ^2.9.10
       '@tailwindcss/forms': ^0.5.3
       '@tanstack/react-query': ^4.7.2
       '@trpc/client': 10.9.0
@@ -113,6 +114,7 @@ importers:
       postcss: ^8.4.14
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-hook-form: ^7.43.0
       react-hot-toast: ^2.4.0
       superjson: ^1.12.1
       tailwindcss: ^3.1.8
@@ -122,6 +124,7 @@ importers:
     dependencies:
       '@headlessui/react': 1.7.8_biqbaboplfbrettd7655fr4n2y
       '@heroicons/react': 2.0.14_react@18.2.0
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.43.0
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
       '@trpc/react-query': 10.9.0_22wgxldzdfxutowffn2dykkd3i
@@ -129,6 +132,7 @@ importers:
       jotai: 1.13.1_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-hook-form: 7.43.0_react@18.2.0
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       superjson: 1.12.2
       zod: 3.20.2
@@ -1020,6 +1024,14 @@ packages:
       react: '>= 16'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@hookform/resolvers/2.9.10_react-hook-form@7.43.0:
+    resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.0_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.5.0:
@@ -6117,6 +6129,15 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-hook-form/7.43.0_react@18.2.0:
+    resolution: {integrity: sha512-/rVEz7T0gLdSFwPqutJ1kn2e0sQNyb9ci/hmwEYr2YG0KF/LSuRLvNrf9QWJM+gj88CjDpDW5Bh/1AD7B2+z9Q==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-hot-toast/2.4.0_biqbaboplfbrettd7655fr4n2y:
