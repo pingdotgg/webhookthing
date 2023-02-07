@@ -1,10 +1,6 @@
-import {
-  configValidator,
-  ConfigValidatorType,
-} from "@captain/cli-core/src/update-config";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z, ZodString, ZodRecord } from "zod";
+import { z } from "zod";
 import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 
 const formValidator = z.object({
@@ -37,6 +33,7 @@ export const WebhookForm = (input: {
     formState: { errors },
     getValues,
     setValue,
+    setError,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
@@ -99,7 +96,19 @@ export const WebhookForm = (input: {
       <textarea
         id="body"
         className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        {...register("body")}
+        {...register("body", {
+          validate: (value) => {
+            if (!value) return;
+
+            try {
+              JSON.parse(value);
+            } catch (e) {
+              console.log("invalid json");
+              setError("body", { message: "Invalid JSON" });
+              return false;
+            }
+          },
+        })}
       />
       <label htmlFor="url" className="block text-sm font-medium text-gray-700">
         URL
