@@ -414,7 +414,7 @@ export const WebhookFormModal = (input: {
             type="submit"
             form="form"
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
-            disabled={!getValues("name") || !getValues("body") || !isValid}
+            disabled={!isValid}
           >
             Save Changes
           </button>
