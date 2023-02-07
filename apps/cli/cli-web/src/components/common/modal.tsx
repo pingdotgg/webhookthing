@@ -43,6 +43,7 @@ export const Modal: React.FC<{
           <span
             className="hidden sm:inline-block sm:h-screen sm:align-middle"
             aria-hidden="true"
+            // eslint-disable-next-line react/jsx-no-literals
           >
             &#8203;
           </span>

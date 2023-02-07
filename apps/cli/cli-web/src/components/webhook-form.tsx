@@ -53,11 +53,13 @@ export const WebhookFormModal = (input: {
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
       ctx.getBlobs.invalidate();
+      openState[1](false);
     },
   });
   const { mutate: addHook } = cliApi.createHook.useMutation({
     onSuccess: () => {
       ctx.getBlobs.invalidate();
+      openState[1](false);
     },
   });
 
@@ -106,11 +108,10 @@ export const WebhookFormModal = (input: {
         config: generateConfig(data.config),
       });
     }
-    openState[1](false);
   };
 
   const updateQuery = () => {
-    //get url & query from config
+    // get url & query from config
     const url = getValues("config.url")?.split("?")[0];
     const query = getValues("config.query");
 
@@ -137,7 +138,7 @@ export const WebhookFormModal = (input: {
             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => openState[1](false)}
           >
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{`Close`}</span>
             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
@@ -155,18 +156,18 @@ export const WebhookFormModal = (input: {
           <div className="h-full w-full grow pt-3 text-left sm:ml-4 sm:pt-0">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
               {type === "update" ? (
-                <>Settings: {prefill?.name}</>
+                <>{`Settings: ${prefill?.name}`}</>
               ) : (
-                <>Add a new webhook</>
+                <>{`Add a new webhook`}</>
               )}
             </h3>
             <div className="mt-2">
               <p className="text-sm text-gray-500">
                 {type === "update" ? (
-                  <>Update your webhook&apos;s settings below.</>
+                  <>{`Update your webhook&apos;s settings below.`}</>
                 ) : (
                   <>
-                    Give your webhook a name and paste the body contents below.
+                    {`Give your webhook a name and paste the body contents below.`}
                   </>
                 )}
               </p>
@@ -177,7 +178,7 @@ export const WebhookFormModal = (input: {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Name
+                  {`Name`}
                 </label>
                 {errors.name && (
                   <p className="text-sm text-red-500">
@@ -193,7 +194,7 @@ export const WebhookFormModal = (input: {
                   htmlFor="body"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Body
+                  {`Body`}
                 </label>
                 {errors.body && (
                   <p className="text-sm text-red-500">{errors.body.message}</p>
@@ -207,7 +208,7 @@ export const WebhookFormModal = (input: {
                   htmlFor="url"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  URL
+                  {`URL`}
                 </label>
                 <p className="text-sm text-red-500">
                   {errors.config?.url?.message}
@@ -234,7 +235,7 @@ export const WebhookFormModal = (input: {
                 />
                 <fieldset>
                   <legend className="block text-sm font-medium text-gray-700">
-                    Headers
+                    {`Headers`}
                   </legend>
                   <p className="text-sm text-red-500">
                     {errors.config?.headers?.message}
@@ -248,7 +249,7 @@ export const WebhookFormModal = (input: {
                               htmlFor={`config.headers.${index}.key`}
                               className="sr-only"
                             >
-                              Key
+                              {`Key`}
                             </label>
                             <input
                               id={`config.headers.${index}.key`}
@@ -268,7 +269,7 @@ export const WebhookFormModal = (input: {
                               htmlFor={`config.headers.${index}.value`}
                               className="sr-only"
                             >
-                              Value
+                              {`Value`}
                             </label>
                             <input
                               id={`config.headers.${index}.value`}
@@ -305,12 +306,12 @@ export const WebhookFormModal = (input: {
                     onClick={() => appendHeader({ key: "", value: "" })}
                   >
                     <PlusIcon className="h-4 w-4" />
-                    <span>Add Header</span>
+                    <span>{`Add Header`}</span>
                   </button>
                 </fieldset>
                 <fieldset>
                   <legend className="block text-sm font-medium text-gray-700">
-                    Query Parameters
+                    {`Query Parameters`}
                   </legend>
                   <p className="text-sm text-red-500">
                     {errors.config?.query?.message}
@@ -324,7 +325,7 @@ export const WebhookFormModal = (input: {
                               htmlFor={`config.query.${index}.key`}
                               className="sr-only"
                             >
-                              Key
+                              {`Key`}
                             </label>
                             <input
                               id={`config.query.${index}.key`}
@@ -353,7 +354,7 @@ export const WebhookFormModal = (input: {
                               htmlFor={`config.query.${index}.value`}
                               className="sr-only"
                             >
-                              Value
+                              {`Value`}
                             </label>
                             <input
                               id={`config.query.${index}.value`}
@@ -402,7 +403,7 @@ export const WebhookFormModal = (input: {
                     onClick={() => appendQuery({ key: "", value: "" })}
                   >
                     <PlusIcon className="h-4 w-4" />
-                    <span>Add Query Param</span>
+                    <span>{`Add Query Param`}</span>
                   </button>
                 </fieldset>
               </form>
@@ -416,7 +417,7 @@ export const WebhookFormModal = (input: {
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
             disabled={!isValid}
           >
-            Save Changes
+            {`Save Changes`}
           </button>
           <button
             type="button"
@@ -425,7 +426,7 @@ export const WebhookFormModal = (input: {
               openState[1](false);
             }}
           >
-            Cancel
+            {`Cancel`}
           </button>
         </div>
       </div>

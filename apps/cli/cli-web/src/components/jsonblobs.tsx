@@ -78,7 +78,7 @@ export const JsonBlobs = () => {
         <div className="flex flex-row items-center justify-between">
           <div>
             <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Your Webhooks
+              {`Your Webhooks`}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
               {`(put json files in ${HOOKS_FOLDER})`}
@@ -89,7 +89,7 @@ export const JsonBlobs = () => {
               className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               onClick={() => openFolder({ path: "" })}
             >
-              Open Hooks Folder
+              {`Open Hooks Folder`}
             </button>
             <button
               className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -153,19 +153,19 @@ export const JsonBlobs = () => {
                   <div className="flex w-full flex-col gap-2">
                     {blob.config?.url && (
                       <div className="flex flex-row items-center gap-2">
-                        <span className="text-gray-500">URL:</span>
+                        <span className="text-gray-500">{`URL:`}</span>
                         <span className="text-gray-800">{blob.config.url}</span>
                       </div>
                     )}
                     {blob.config?.headers && (
                       <div className="flex flex-row items-center gap-2">
-                        <span className="text-gray-500">Headers:</span>
+                        <span className="text-gray-500">{`Headers:`}</span>
                         <span className="text-gray-800">
                           {JSON.stringify(blob.config.headers)}
                         </span>
                       </div>
                     )}
-                    <span className="text-gray-500">Body:</span>
+                    <span className="text-gray-500">{`Body:`}</span>
                     <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
                       <code>{blob.body}</code>
                     </pre>
@@ -178,7 +178,7 @@ export const JsonBlobs = () => {
           <div className="bg-white-50 rounded-md p-6 text-center shadow-lg">
             <DocumentDuplicateIcon className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">
-              No Webhooks
+              {`No Webhooks`}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
               {`Get started with our sample webhooks by clicking the button below,
@@ -197,7 +197,7 @@ export const JsonBlobs = () => {
                     className="-ml-1 mr-2 h-5 w-5"
                     aria-hidden="true"
                   />
-                  Download Sample Webhooks
+                  {`Download Sample Webhooks`}
                 </button>
               )}
             </div>
