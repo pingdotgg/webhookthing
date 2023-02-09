@@ -27,9 +27,6 @@ export const JsonBlobs = () => {
   const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
-    onSuccess: (data) => {
-      toast.success(`Got response from server! Check console for details.`);
-    },
     onError: (err) => {
       toast.error(err.message);
     },
