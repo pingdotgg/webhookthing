@@ -1,17 +1,19 @@
-import { JsonBlobs } from "./components/jsonblobs";
-import { EndpointSetting } from "./components/endpointsetting";
-
 import { Disclosure } from "@headlessui/react";
-
 import { Toaster } from "react-hot-toast";
 
+import { JsonBlobs } from "./components/jsonblobs";
+import { EndpointSetting } from "./components/endpointsetting";
+import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
+
 export default function Example() {
+  useConnectionStateToasts();
+
   return (
     <>
       <Toaster />
-      <div className="min-h-full">
-        <div className="bg-gray-800 bg-gradient-to-r from-indigo-800/40 pb-32">
-          <Disclosure as="nav" className="">
+      <div className="flex h-screen min-h-full flex-col">
+        <div className="pattern pb-32">
+          <Disclosure as="nav">
             {({ open }) => (
               <>
                 <div className="mx-auto max-w-5xl sm:px-6 lg:px-8">
@@ -21,11 +23,12 @@ export default function Example() {
                         <div className="flex flex-shrink-0 items-center text-gray-50">
                           <h1 className="ml-2 text-4xl font-bold">
                             <span className="tracking-tight">
-                              webhook
-                              <span className="text-indigo-500">thing</span>
+                              {`webhook`}
+                              <span className="text-indigo-500">{`thing`}</span>
                             </span>
                             <span className="text-lg">
-                              ...by <a href="https://ping.gg">Ping</a>
+                              {`...by `}
+                              <a href="https://ping.gg">{`Ping`}</a>
                             </span>
                           </h1>
                         </div>
@@ -48,6 +51,23 @@ export default function Example() {
             </div>
           </div>
         </main>
+
+        <footer className="pattern bottom-0 mt-auto">
+          <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
+            <div className="text-center text-base text-gray-400">
+              <p>
+                <a
+                  href="https://docs.webhookthing.com"
+                  className="text-white hover:text-indigo-400"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {`Questions? Check out the docs!`}
+                </a>
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );

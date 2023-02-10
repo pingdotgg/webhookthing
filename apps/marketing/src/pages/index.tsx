@@ -7,6 +7,20 @@ import type { NextPage } from "next";
 
 import { api } from "../utils/api";
 
+const bannedEndpoints = [
+  "webhookthing.com",
+  "hookthing.com",
+  "example.com",
+  "foo.bar",
+  "localhost",
+  "example/",
+  "examplecom/",
+  "asdf.com",
+  "ping.gg",
+  "test.com",
+  "google.com",
+];
+
 const Home: NextPage = () => {
   const [showEmail, setShowEmail] = useState(false);
 
@@ -48,7 +62,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>webhookthing</title>
+        <title>{`webhookthing`}</title>
         <meta
           name="description"
           content="an easier way to develop with webhooks locally"
@@ -56,25 +70,22 @@ const Home: NextPage = () => {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
-      <main
-        className="flex min-h-screen flex-col items-center justify-center bg-gray-800 bg-gradient-to-br from-indigo-800/40
-"
-      >
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-800/40">
+        <div className="container flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16">
           <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
-            webhook
-            <span className="font-extrabold text-indigo-600 ">thing</span>
+            {`webhook`}
+            <span className="font-extrabold text-indigo-600 ">{`thing`}</span>
           </h1>
           <div className="flex w-96 max-w-sm flex-col gap-4 rounded-xl bg-white/10 p-6 text-white">
             {!submitted ? (
               <>
-                <h3 className="text-2xl font-bold">join the waitlist</h3>
+                <h3 className="text-2xl font-bold">{`join the waitlist`}</h3>
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="endpoint"
                     className="sr-only block text-sm font-medium"
                   >
-                    Endpoint
+                    {`Endpoint`}
                   </label>
                   <div className="relative mt-1 rounded-md shadow-sm">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -91,13 +102,18 @@ const Home: NextPage = () => {
                       placeholder="https://example.com/hooks"
                       onChange={(e) => {
                         setEndpoint(e.target.value);
-                        setInvalidEndpoint(false);
+                        const banned = bannedEndpoints.some((banned) =>
+                          e.target.value.includes(banned)
+                        );
+                        setInvalidEndpoint(banned);
                       }}
                       value={endpoint}
                     />
                   </div>
                   {invalidEndpoint && (
-                    <p className="text-sm text-red-500">invalid endpoint url</p>
+                    <p className="text-sm text-red-500">
+                      {`invalid endpoint url.`}
+                    </p>
                   )}
                   {showEmail && (
                     <>
@@ -105,7 +121,7 @@ const Home: NextPage = () => {
                         htmlFor="email"
                         className="sr-only block text-sm font-medium"
                       >
-                        Email
+                        {`Email`}
                       </label>
                       <div className="relative mt-1 rounded-md shadow-sm">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -131,27 +147,27 @@ const Home: NextPage = () => {
                         />
                       </div>
                       {invalidEmail && (
-                        <p className="text-sm text-red-500">invalid email</p>
+                        <p className="text-sm text-red-500">{`invalid email`}</p>
                       )}
                     </>
                   )}
                   <button
                     className="mt-4 w-full rounded-lg bg-indigo-600/80 px-4 py-2 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-600/80"
                     disabled={
-                      !endpoint ||
+                      (!endpoint && !email) ||
                       (showEmail && !email) ||
                       invalidEndpoint ||
                       invalidEmail
                     }
                     onClick={handleSubmit}
                   >
-                    submit
+                    {`submit`}
                   </button>
                 </div>
                 <p className="text-center text-sm text-white/70 ">
                   {showEmail ? (
                     <>
-                      {!endpoint && !bottomText && <>no endpoint? lame.</>}
+                      {!endpoint && !bottomText && <>{`no endpoint? lame.`}</>}
                       {bottomText}
                     </>
                   ) : (
@@ -160,7 +176,7 @@ const Home: NextPage = () => {
                         className="cursor-pointer hover:text-indigo-500 hover:underline"
                         onClick={() => setShowEmail(true)}
                       >
-                        where do i put my email?
+                        {`where do i put my email?`}
                       </span>
                     </>
                   )}
@@ -168,7 +184,7 @@ const Home: NextPage = () => {
               </>
             ) : (
               <h3 className="text-center text-2xl font-bold">
-                thanks for joining the waitlist!
+                {`thanks for joining the waitlist!`}
               </h3>
             )}
           </div>

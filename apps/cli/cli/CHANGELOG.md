@@ -1,5 +1,17 @@
 # webhookthing
 
+## 0.3.1
+
+### Patch Changes
+
+- Windows fixed...for real now
+
+## 0.3.0
+
+### Minor Changes
+
+- c43bee1: Added config for headers, urls, and HTTP method. Fixed windows too!"
+
 ## 0.2.5
 
 ### Patch Changes
