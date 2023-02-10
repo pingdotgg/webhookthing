@@ -138,7 +138,7 @@ export const cliApiRouter = t.router({
           headers: config.headers,
           body:
             config.method !== "GET" ? JSON.stringify(parsedJson) : undefined,
-        });
+        }).then((res) => res.json());
 
         console.log(
           `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}\n`
