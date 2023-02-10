@@ -23,11 +23,12 @@ export default function Example() {
                         <div className="flex flex-shrink-0 items-center text-gray-50">
                           <h1 className="ml-2 text-4xl font-bold">
                             <span className="tracking-tight">
-                              webhook
-                              <span className="text-indigo-500">thing</span>
+                              {`webhook`}
+                              <span className="text-indigo-500">{`thing`}</span>
                             </span>
                             <span className="text-lg">
-                              ...by <a href="https://ping.gg">Ping</a>
+                              {`...by `}
+                              <a href="https://ping.gg">{`Ping`}</a>
                             </span>
                           </h1>
                         </div>
@@ -61,7 +62,7 @@ export default function Example() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Questions? Check out the docs!
+                  {`Questions? Check out the docs!`}
                 </a>
               </p>
             </div>
