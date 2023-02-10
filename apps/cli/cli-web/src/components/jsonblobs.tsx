@@ -13,6 +13,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import Highlight, { defaultProps } from "prism-react-renderer";
+import vsLight from "prism-react-renderer/themes/vsLight";
 
 import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
@@ -172,9 +174,36 @@ export const JsonBlobs = () => {
                       </div>
                     )}
                     <span className="text-gray-500">Body:</span>
-                    <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
-                      <code>{blob.body}</code>
-                    </pre>
+                    <Highlight
+                      {...defaultProps}
+                      code={blob.body}
+                      language="json"
+                      theme={vsLight}
+                    >
+                      {({
+                        className,
+                        style,
+                        tokens,
+                        getLineProps,
+                        getTokenProps,
+                      }) => (
+                        <pre
+                          className={classNames(
+                            className,
+                            "w-full overflow-auto rounded-md !bg-gray-200 p-4"
+                          )}
+                          style={style}
+                        >
+                          {tokens.map((line, i) => (
+                            <div {...getLineProps({ line, key: i })}>
+                              {line.map((token, key) => (
+                                <span {...getTokenProps({ token, key })} />
+                              ))}
+                            </div>
+                          ))}
+                        </pre>
+                      )}
+                    </Highlight>
                   </div>
                 )}
               </li>
