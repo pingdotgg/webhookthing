@@ -83,6 +83,7 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
+      let hasCustomConfig = false;
       console.log(`[INFO] Reading file ${file}`);
 
       let config = {
@@ -100,6 +101,7 @@ export const cliApiRouter = t.router({
       if (
         fs.existsSync(path.join(HOOK_PATH, file.split(".")[0] + ".config.json"))
       ) {
+        hasCustomConfig = true;
         console.log(
           `[INFO] Found ${file.split(".")[0]}.config.json, reading it`
         );
@@ -123,11 +125,11 @@ export const cliApiRouter = t.router({
 
       try {
         console.log(
-          `[INFO] Sending to ${config.url} with config: \n\n${JSON.stringify(
-            config,
-            null,
-            2
-          )}\n`
+          `[INFO] Sending to ${config.url} ${
+            hasCustomConfig
+              ? `with custom config from ${file.split(".")[0]}.config.json`
+              : ""
+          }\n`
         );
 
         const fetchedResult = await fetch(config.url, {
