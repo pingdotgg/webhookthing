@@ -19,7 +19,7 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 import { WebhookFormModal } from "./webhook-form";
 import { Tooltip } from "./common/tooltip";
-import { classNames } from "src/utils/classnames";
+import { classNames } from "../utils/classnames";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
