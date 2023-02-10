@@ -99,13 +99,13 @@ export const WebhookFormModal = (input: {
       addHook({
         name: data.name,
         body: data.body ?? "",
-        config: generateConfig(data.config),
+        config: generateConfigFromState(data.config),
       });
     } else {
       updateHook({
         name: data.name,
         body: data.body ?? "",
-        config: generateConfig(data.config),
+        config: generateConfigFromState(data.config),
       });
     }
   };
@@ -443,16 +443,16 @@ const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
   }, {});
 };
 
-const generateConfig = (configuration: {
+const generateConfigFromState = (state: {
   url?: string;
   headers?: { key: string; value: string }[];
   query?: { key: string; value: string }[];
 }) => {
   const config: ConfigValidatorType = {};
-  if (configuration.url) config.url = configuration.url;
-  if (configuration.query?.length)
-    config.query = convertArrayStateToObject(configuration.query ?? []);
-  if (configuration.headers?.length)
-    config.headers = convertArrayStateToObject(configuration.headers ?? []);
+  if (state.url) config.url = state.url;
+  if (state.query?.length)
+    config.query = convertArrayStateToObject(state.query ?? []);
+  if (state.headers?.length)
+    config.headers = convertArrayStateToObject(state.headers ?? []);
   return config;
 };
