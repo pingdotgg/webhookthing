@@ -30,3 +30,9 @@ Once you have some json files in the `.thing/hooks` directory, you can run them 
 3. Fill the `.json` file with the contents you want to have POSTed when you run the webhook
 
 Your hook should now appear in the UI
+
+### Authentication headers
+
+For certain requests, you may want to include a secret in the headers of the request, but you don't want to commit that secret to your repo. For example, you may want to include a secret in the `Authorization` header of a request to a third-party API.
+
+In this case you can use the `%%ENV_VAR_NAME%%` syntax to include environment variables in your webhook, which will be replaced with the value of the environment variable when the webhook is run.
