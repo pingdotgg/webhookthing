@@ -10,6 +10,7 @@ import { openInExplorer } from "./open-folder";
 import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
 import { configValidator, updateConfig } from "./update-config";
+import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
 
@@ -112,11 +113,7 @@ export const cliApiRouter = t.router({
         if (config.headers) {
           config.headers = Object.fromEntries(
             Object.entries(config.headers).map(([key, value]) => {
-              // Convert string to template literal, then eval it
-              // Only do this if there is an env var in the string
-              if (value.includes("process.env."))
-                return [key, eval("`" + value + "`")];
-              return [key, value];
+              return [key, substituteTemplate({ template: value })];
             })
           );
         }
