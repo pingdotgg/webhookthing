@@ -110,8 +110,7 @@ export const cliApiRouter = t.router({
         );
         config = { ...config, ...JSON.parse(configFileContents.toString()) };
 
-        // Environment var replacement using eval
-        // TODO: this is a bit hacky, but it works for now
+        // template substitution for header values
         if (config.headers) {
           config.headers = Object.fromEntries(
             Object.entries(config.headers).map(([key, value]) => {
