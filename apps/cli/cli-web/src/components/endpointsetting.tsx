@@ -12,7 +12,7 @@ export const EndpointSetting = () => {
     <div className="flex flex-col gap-2">
       <div>
         <h3 className="text-lg font-medium leading-6 text-gray-900">
-          Settings
+          {`Settings`}
         </h3>
       </div>
       <div className="relative flex flex-col items-start gap-x-2">
@@ -20,7 +20,7 @@ export const EndpointSetting = () => {
           htmlFor="endpoint"
           className="block text-sm font-medium text-gray-700"
         >
-          Default Endpoint
+          {`Default Endpoint`}
         </label>
         <input
           type="text"
