@@ -1,11 +1,13 @@
-import { JsonBlobs } from "./components/jsonblobs";
-import { EndpointSetting } from "./components/endpointsetting";
-
 import { Disclosure } from "@headlessui/react";
-
 import { Toaster } from "react-hot-toast";
 
+import { JsonBlobs } from "./components/jsonblobs";
+import { EndpointSetting } from "./components/endpointsetting";
+import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
+
 export default function Example() {
+  useConnectionStateToasts();
+
   return (
     <>
       <Toaster />
