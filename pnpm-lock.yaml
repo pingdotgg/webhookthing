@@ -113,6 +113,7 @@ importers:
       eslint-config-custom: workspace:*
       jotai: ^1.13.1
       postcss: ^8.4.14
+      prism-react-renderer: ^1.3.5
       react: ^18.2.0
       react-dom: ^18.2.0
       react-hook-form: ^7.43.0
@@ -132,6 +133,7 @@ importers:
       '@trpc/react-query': 10.9.0_22wgxldzdfxutowffn2dykkd3i
       '@trpc/server': 10.9.0
       jotai: 1.13.1_react@18.2.0
+      prism-react-renderer: 1.3.5_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-hook-form: 7.43.0_react@18.2.0
@@ -6059,6 +6061,14 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
+
+  /prism-react-renderer/1.3.5_react@18.2.0:
+    resolution: {integrity: sha512-IJ+MSwBWKG+SM3b2SUfdrhC+gu01QkV2KmRQgREThBfSQRoufqRfxfHUxpG1WcaFjP+kojcFyO9Qqtpgt3qLCg==}
+    peerDependencies:
+      react: '>=0.14.9'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /process-warning/2.1.0:
     resolution: {integrity: sha512-9C20RLxrZU/rFnxWncDkuF6O999NdIf3E1ws4B0ZeY3sRVPzWBMsYDE2lxjxhiXxg464cQTgKUGm8/i6y2YGXg==}

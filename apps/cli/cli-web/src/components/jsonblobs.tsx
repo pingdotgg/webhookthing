@@ -11,6 +11,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Highlight, { defaultProps } from "prism-react-renderer";
+import vsLight from "prism-react-renderer/themes/vsLight";
 
 import { cliApi } from "../utils/api";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
@@ -24,6 +26,9 @@ export const JsonBlobs = () => {
   const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Got response from server! Check console for details.`);
+    },
     onError: (err) => {
       toast.error(err.message);
     },
@@ -165,10 +170,37 @@ export const JsonBlobs = () => {
                         </span>
                       </div>
                     )}
-                    <span className="text-gray-500">{`Body:`}</span>
-                    <pre className="w-full overflow-auto rounded-md bg-gray-200 p-4">
-                      <code>{blob.body}</code>
-                    </pre>
+                    <span className="text-gray-500">Body:</span>
+                    <Highlight
+                      {...defaultProps}
+                      code={blob.body}
+                      language="json"
+                      theme={vsLight}
+                    >
+                      {({
+                        className,
+                        style,
+                        tokens,
+                        getLineProps,
+                        getTokenProps,
+                      }) => (
+                        <pre
+                          className={classNames(
+                            className,
+                            "w-full overflow-auto rounded-md !bg-gray-200 p-4"
+                          )}
+                          style={style}
+                        >
+                          {tokens.map((line, i) => (
+                            <div {...getLineProps({ line, key: i })}>
+                              {line.map((token, key) => (
+                                <span {...getTokenProps({ token, key })} />
+                              ))}
+                            </div>
+                          ))}
+                        </pre>
+                      )}
+                    </Highlight>
                   </div>
                 )}
               </li>
