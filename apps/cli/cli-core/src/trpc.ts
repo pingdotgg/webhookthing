@@ -1,4 +1,3 @@
-import { ConfigValidatorType } from './../../../../../cli-core/src/update-config';
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
@@ -110,15 +109,16 @@ export const cliApiRouter = t.router({
 
         // Environment var replacement using eval
         // TODO: this is a bit hacky, but it works for now
-        if(config.headers) {
+        if (config.headers) {
           config.headers = Object.fromEntries(
             Object.entries(config.headers).map(([key, value]) => {
               // Convert string to template literal, then eval it
               // Only do this if there is an env var in the string
-              if(value.includes("process.env."))  return [key, eval("`"+value+"`")];
+              if (value.includes("process.env."))
+                return [key, eval("`" + value + "`")];
               return [key, value];
             })
-          )
+          );
         }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
