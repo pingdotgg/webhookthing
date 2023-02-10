@@ -19,6 +19,7 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 import { WebhookFormModal } from "./webhook-form";
 import { Tooltip } from "./common/tooltip";
+import { classNames } from "src/utils/classnames";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -170,7 +171,7 @@ export const JsonBlobs = () => {
                         </span>
                       </div>
                     )}
-                    <span className="text-gray-500">Body:</span>
+                    <span className="text-gray-500">{`Body:`}</span>
                     <Highlight
                       {...defaultProps}
                       code={blob.body}
