@@ -20,6 +20,10 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { WebhookFormModal } from "./webhook-form";
 import { Tooltip } from "./common/tooltip";
 import { classNames } from "../utils/classnames";
+import {
+  convertObjectToKVArray,
+  generatePrefillFromConfig,
+} from "../utils/configTransforms";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -73,7 +77,10 @@ export const JsonBlobs = () => {
               setSelectedHook("");
             },
           ]}
-          prefill={selectedHook}
+          prefill={{
+            ...selectedHook,
+            config: generatePrefillFromConfig(selectedHook.config ?? {}),
+          }}
           onClose={() => {
             setSelectedHook("");
           }}
