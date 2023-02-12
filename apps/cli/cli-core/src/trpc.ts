@@ -1,4 +1,4 @@
-import { ConfigValidatorType } from '@captain/cli-core/src/update-config';
+import { ConfigValidatorType } from "./update-config";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
@@ -50,7 +50,9 @@ export const cliApiRouter = t.router({
         return {
           name: hook,
           body: await bodyPromise,
-          config: config ? JSON.parse(config) as ConfigValidatorType : undefined ,
+          config: config
+            ? (JSON.parse(config) as ConfigValidatorType)
+            : undefined,
         };
       });
 
