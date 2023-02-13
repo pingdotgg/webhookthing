@@ -52,11 +52,18 @@ export const startServer = () => {
       console.log(
         `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
       );
-    } else {
+    }
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    else if (!process.env.CI && !process.env.CODESPACES) {
+      // Dont try to open the browser in CI, or on Codespaces, it will crash
       console.log(
         `[INFO] Opening webhookthing at address: http://localhost:2033`
       );
       await open("http://localhost:2033");
+    } else {
+      console.log(
+        `[INFO] Running webhookthing at address: http://localhost:2033`
+      );
     }
   });
 };
