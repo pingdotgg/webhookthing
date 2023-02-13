@@ -60,6 +60,27 @@ export const cliApiRouter = t.router({
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
     .mutation(async ({ input }) => {
+      // if running in codespace, early return
+      // eslint-disable-next-line turbo/no-undeclared-env-vars
+      if (process.env.CODESPACES) {
+        throw new Error(
+          "Sorry, opening folders in codespaces is not supported yet."
+        );
+      }
+      // if running over ssh, early return
+      if (
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CONNECTION ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CLIENT ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_TTY
+      ) {
+        throw new Error(
+          "Sorry, opening folders on remote connections is not supported yet."
+        );
+      }
+
       try {
         await openInExplorer(path.join(HOOK_PATH, input.path));
       } catch (e) {
