@@ -1,3 +1,4 @@
+import { ConfigValidatorType } from "./update-config";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import { openInExplorer } from "./open-folder";
 import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
 import { configValidator, updateConfig } from "./update-config";
+import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
 
@@ -49,7 +51,9 @@ export const cliApiRouter = t.router({
         return {
           name: hook,
           body: await bodyPromise,
-          config: config ? JSON.parse(config) : undefined,
+          config: config
+            ? (JSON.parse(config) as ConfigValidatorType)
+            : undefined,
         };
       });
 
@@ -59,6 +63,27 @@ export const cliApiRouter = t.router({
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
     .mutation(async ({ input }) => {
+      // if running in codespace, early return
+      // eslint-disable-next-line turbo/no-undeclared-env-vars
+      if (process.env.CODESPACES) {
+        throw new Error(
+          "Sorry, opening folders in codespaces is not supported yet."
+        );
+      }
+      // if running over ssh, early return
+      if (
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CONNECTION ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CLIENT ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_TTY
+      ) {
+        throw new Error(
+          "Sorry, opening folders on remote connections is not supported yet."
+        );
+      }
+
       try {
         await openInExplorer(path.join(HOOK_PATH, input.path));
       } catch (e) {
@@ -82,6 +107,7 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
+      let hasCustomConfig = false;
       console.log(`[INFO] Reading file ${file}`);
 
       let config = {
@@ -89,11 +115,17 @@ export const cliApiRouter = t.router({
         query: undefined,
         headers: undefined,
         method: "POST",
+      } as {
+        url: string;
+        query?: Record<string, string>;
+        headers?: Record<string, string>;
+        method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
       };
 
       if (
         fs.existsSync(path.join(HOOK_PATH, file.split(".")[0] + ".config.json"))
       ) {
+        hasCustomConfig = true;
         console.log(
           `[INFO] Found ${file.split(".")[0]}.config.json, reading it`
         );
@@ -101,17 +133,26 @@ export const cliApiRouter = t.router({
           path.join(HOOK_PATH, file.split(".")[0] + ".config.json")
         );
         config = { ...config, ...JSON.parse(configFileContents.toString()) };
+
+        // template substitution for header values
+        if (config.headers) {
+          config.headers = Object.fromEntries(
+            Object.entries(config.headers).map(([key, value]) => {
+              return [key, substituteTemplate({ template: value })];
+            })
+          );
+        }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
       const parsedJson = JSON.parse(data.toString());
 
       try {
         console.log(
-          `[INFO] Sending to ${config.url} with config: \n\n${JSON.stringify(
-            config,
-            null,
-            2
-          )}\n`
+          `[INFO] Sending to ${config.url} ${
+            hasCustomConfig
+              ? `with custom config from ${file.split(".")[0]}.config.json`
+              : ""
+          }\n`
         );
 
         const fetchedResult = await fetch(config.url, {

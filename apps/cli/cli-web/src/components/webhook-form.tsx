@@ -7,9 +7,10 @@ import {
   TrashIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
-import { ConfigValidatorType } from "@captain/cli-core/src/update-config";
 import { cliApi } from "../utils/api";
 import { Modal } from "./common/modal";
+import { classNames } from "../utils/classnames";
+import { generateConfigFromState } from "../utils/configTransforms";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -29,7 +30,7 @@ const formValidator = z.object({
   name: z.string().max(20).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
-    url: z.union([z.literal(""), z.string().trim().url()]),
+    url: z.union([z.literal(""), z.string().trim().url()]).optional(),
     headers: z
       .array(z.object({ key: z.string(), value: z.string() }))
       .optional(),
@@ -38,10 +39,6 @@ const formValidator = z.object({
 });
 
 type FormValidatorType = z.infer<typeof formValidator>;
-
-const classNames = (...classes: string[]) => {
-  return classes.filter(Boolean).join(" ");
-};
 
 export const WebhookFormModal = (input: {
   type: "create" | "update";
@@ -77,6 +74,7 @@ export const WebhookFormModal = (input: {
     resolver: zodResolver(formValidator),
     mode: "onBlur",
   });
+
   const {
     fields: headerFields,
     remove: removeHeader,
@@ -164,7 +162,7 @@ export const WebhookFormModal = (input: {
             <div className="mt-2">
               <p className="text-sm text-gray-500">
                 {type === "update" ? (
-                  <>{`Update your webhook&apos;s settings below.`}</>
+                  <>{`Update your webhook's settings below.`}</>
                 ) : (
                   <>
                     {`Give your webhook a name and paste the body contents below.`}
@@ -432,27 +430,4 @@ export const WebhookFormModal = (input: {
       </div>
     </Modal>
   );
-};
-
-const convertArrayStateToObject = (arr: { key: string; value: string }[]) => {
-  return arr.reduce((acc: { [k: string]: string }, curr) => {
-    if (curr.key) {
-      acc[curr.key] = curr.value;
-    }
-    return acc;
-  }, {});
-};
-
-const generateConfigFromState = (state: {
-  url?: string;
-  headers?: { key: string; value: string }[];
-  query?: { key: string; value: string }[];
-}) => {
-  const config: ConfigValidatorType = {};
-  if (state.url) config.url = state.url;
-  if (state.query?.length)
-    config.query = convertArrayStateToObject(state.query ?? []);
-  if (state.headers?.length)
-    config.headers = convertArrayStateToObject(state.headers ?? []);
-  return config;
 };

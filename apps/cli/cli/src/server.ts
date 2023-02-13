@@ -6,7 +6,19 @@ export const server = fastify({
 
 // Configure CORS
 import cors from "@fastify/cors";
-server.register(cors, { origin: "*" });
+server.register(cors, {
+  origin: (origin, cb) => {
+    // borrowed from fastify-cors docs
+    const hostname = new URL(origin).hostname;
+    if (hostname === "localhost") {
+      //  Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error("Not allowed"), false);
+  },
+});
 
 // Configure proxy for Plausible
 import proxy from "@fastify/http-proxy";
@@ -52,11 +64,27 @@ export const startServer = () => {
       console.log(
         `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
       );
-    } else {
+    }
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    else if (!process.env.CI && !process.env.CODESPACES) {
+      // Dont try to open the browser in CI, or on Codespaces, it will crash
       console.log(
         `[INFO] Opening webhookthing at address: http://localhost:2033`
       );
-      await open("http://localhost:2033");
+      try {
+        await open("http://localhost:2033");
+      } catch (_err) {
+        console.log(
+          "\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m"
+        );
+        console.log(
+          `[INFO] You can still manually open the web UI here: http://localhost:2033`
+        );
+      }
+    } else {
+      console.log(
+        `[INFO] Running webhookthing at address: http://localhost:2033`
+      );
     }
   });
 };
