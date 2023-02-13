@@ -1,6 +1,6 @@
 // This file is heavily based on the following example
 // https://github.com/styfle/ncc-bug-stack/blob/master/build.js#L7
-const { readFile, writeFile, rmdir, mkdir } = require("fs/promises");
+const { readFile, writeFile, rm, mkdir } = require("fs/promises");
 const { resolve } = require("path");
 
 const fse = require("fs-extra");
@@ -54,7 +54,13 @@ async function runBuild() {
     process.exit(1);
   }
 
-  await rmdir(DIST_DIR, { recursive: true });
+  try {
+    await rm(DIST_DIR, { recursive: true });
+    console.log("[INFO] Dist directory removed successfully");
+  } catch (e) {
+    console.log("[INFO] Dist directory does not exist, skipping removal step");
+  }
+
   await mkdir(DIST_DIR);
 
   // THIS IS WHERE THE CLI-WEB APP GETS BUNDLED
