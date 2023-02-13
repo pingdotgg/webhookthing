@@ -11,6 +11,7 @@ import { openInExplorer } from "./open-folder";
 import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
 import { configValidator, updateConfig } from "./update-config";
+import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
 
@@ -106,6 +107,7 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { file, url } = input;
+      let hasCustomConfig = false;
       console.log(`[INFO] Reading file ${file}`);
 
       let config = {
@@ -113,11 +115,17 @@ export const cliApiRouter = t.router({
         query: undefined,
         headers: undefined,
         method: "POST",
+      } as {
+        url: string;
+        query?: Record<string, string>;
+        headers?: Record<string, string>;
+        method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
       };
 
       if (
         fs.existsSync(path.join(HOOK_PATH, file.split(".")[0] + ".config.json"))
       ) {
+        hasCustomConfig = true;
         console.log(
           `[INFO] Found ${file.split(".")[0]}.config.json, reading it`
         );
@@ -125,17 +133,26 @@ export const cliApiRouter = t.router({
           path.join(HOOK_PATH, file.split(".")[0] + ".config.json")
         );
         config = { ...config, ...JSON.parse(configFileContents.toString()) };
+
+        // template substitution for header values
+        if (config.headers) {
+          config.headers = Object.fromEntries(
+            Object.entries(config.headers).map(([key, value]) => {
+              return [key, substituteTemplate({ template: value })];
+            })
+          );
+        }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
       const parsedJson = JSON.parse(data.toString());
 
       try {
         console.log(
-          `[INFO] Sending to ${config.url} with config: \n\n${JSON.stringify(
-            config,
-            null,
-            2
-          )}\n`
+          `[INFO] Sending to ${config.url} ${
+            hasCustomConfig
+              ? `with custom config from ${file.split(".")[0]}.config.json`
+              : ""
+          }\n`
         );
 
         const fetchedResult = await fetch(config.url, {

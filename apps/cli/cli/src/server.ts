@@ -6,7 +6,19 @@ export const server = fastify({
 
 // Configure CORS
 import cors from "@fastify/cors";
-server.register(cors, { origin: "*" });
+server.register(cors, {
+  origin: (origin, cb) => {
+    // borrowed from fastify-cors docs
+    const hostname = new URL(origin).hostname;
+    if (hostname === "localhost") {
+      //  Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error("Not allowed"), false);
+  },
+});
 
 // Configure proxy for Plausible
 import proxy from "@fastify/http-proxy";

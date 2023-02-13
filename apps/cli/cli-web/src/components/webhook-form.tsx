@@ -162,7 +162,7 @@ export const WebhookFormModal = (input: {
             <div className="mt-2">
               <p className="text-sm text-gray-500">
                 {type === "update" ? (
-                  <>{`Update your webhook&apos;s settings below.`}</>
+                  <>{`Update your webhook's settings below.`}</>
                 ) : (
                   <>
                     {`Give your webhook a name and paste the body contents below.`}
