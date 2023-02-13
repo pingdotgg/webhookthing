@@ -59,7 +59,13 @@ export const startServer = () => {
       console.log(
         `[INFO] Opening webhookthing at address: http://localhost:2033`
       );
-      await open("http://localhost:2033");
+      try {
+        await open("http://localhost:2033");
+      } catch (_err) {
+        console.log(
+          "\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m"
+        );
+      }
     } else {
       console.log(
         `[INFO] Running webhookthing at address: http://localhost:2033`
