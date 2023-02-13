@@ -65,6 +65,9 @@ export const startServer = () => {
         console.log(
           "\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m"
         );
+        console.log(
+          `[INFO] You can still manually open the web UI here: http://localhost:2033`
+        );
       }
     } else {
       console.log(
