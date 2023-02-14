@@ -122,15 +122,15 @@ export const cliApiRouter = t.router({
         method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
       };
 
-      if (
-        fs.existsSync(path.join(HOOK_PATH, file.split(".")[0] + ".config.json"))
-      ) {
+      const fileName = file.replace(".json", "");
+
+      const configName = `${fileName}.config.json`;
+
+      if (fs.existsSync(path.join(HOOK_PATH, configName))) {
         hasCustomConfig = true;
-        console.log(
-          `[INFO] Found ${file.split(".")[0]}.config.json, reading it`
-        );
+        console.log(`[INFO] Found ${configName}, reading it`);
         const configFileContents = await fsPromises.readFile(
-          path.join(HOOK_PATH, file.split(".")[0] + ".config.json")
+          path.join(HOOK_PATH, configName)
         );
         config = { ...config, ...JSON.parse(configFileContents.toString()) };
 

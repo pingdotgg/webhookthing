@@ -18,14 +18,16 @@ export const substituteTemplate = (input: {
     }
     const sanitizedString = `%%${variable}%%`;
 
-    const value = sanitize ? sanitizedString : process.env[variable];
+    const fromEnv = process.env[variable];
 
-    if (!value) {
+    if (!fromEnv) {
       console.log(
         `\u001b[31m[ERROR] Environment variable ${variable} not found`
       );
       throw new Error(`Environment variable ${variable} not found`);
     }
+
+    const value = sanitize ? sanitizedString : fromEnv;
 
     // replace the template variable with the value
     template = template.replace(match[0], `${value}`);
