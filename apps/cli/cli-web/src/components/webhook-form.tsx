@@ -69,6 +69,7 @@ export const WebhookFormModal = (input: {
     getValues,
     setValue,
     trigger,
+    reset,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
@@ -106,6 +107,7 @@ export const WebhookFormModal = (input: {
         config: generateConfigFromState(data.config),
       });
     }
+    reset();
   };
 
   const updateQuery = () => {
