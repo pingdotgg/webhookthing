@@ -27,7 +27,7 @@ const jsonValidator = () =>
   );
 
 const formValidator = z.object({
-  name: z.string().max(20).min(1, { message: "Required" }),
+  name: z.string().max(100).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
     url: z.union([z.literal(""), z.string().trim().url()]).optional(),
