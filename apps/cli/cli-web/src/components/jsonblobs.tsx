@@ -111,7 +111,7 @@ export const JsonBlobs = () => {
         </div>
 
         {data?.length ? (
-          <ul role="list" className="space-y-3">
+          <ul role="list" className="max-h-80 space-y-3 overflow-y-auto ">
             {data.map((blob, i) => (
               <li
                 key={blob.name}
