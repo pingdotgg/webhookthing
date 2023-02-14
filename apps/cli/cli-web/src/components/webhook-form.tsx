@@ -49,14 +49,16 @@ export const WebhookFormModal = (input: {
   const ctx = cliApi.useContext();
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
-      ctx.getBlobs.invalidate();
-      openState[1](false);
+      void ctx.getBlobs.invalidate().then(() => {
+        openState[1](false);
+      });
     },
   });
   const { mutate: addHook } = cliApi.createHook.useMutation({
     onSuccess: () => {
-      ctx.getBlobs.invalidate();
-      openState[1](false);
+      void ctx.getBlobs.invalidate().then(() => {
+        openState[1](false);
+      });
     },
   });
 
@@ -106,11 +108,13 @@ export const WebhookFormModal = (input: {
         config: generateConfigFromState(data.config),
       });
     }
+
+    return "";
   };
 
   const updateQuery = () => {
     // get url & query from config
-    const url = getValues("config.url")?.split("?")[0];
+    const url = getValues("config.url")?.split("?")[0] ?? "";
     const query = getValues("config.query");
 
     if (!query?.length) {
@@ -126,6 +130,8 @@ export const WebhookFormModal = (input: {
     // set new url
     setValue("config.url", newUrl);
   };
+
+  const submitHandler = handleSubmit(onSubmit);
 
   return (
     <Modal openState={openState} onClose={onClose}>
@@ -154,7 +160,7 @@ export const WebhookFormModal = (input: {
           <div className="h-full w-full grow pt-3 text-left sm:ml-4 sm:pt-0">
             <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
               {type === "update" ? (
-                <>{`Settings: ${prefill?.name}`}</>
+                <>{`Settings: ${prefill?.name ?? "<insert name here>"}`}</>
               ) : (
                 <>{`Add a new webhook`}</>
               )}
@@ -171,7 +177,7 @@ export const WebhookFormModal = (input: {
               </p>
             </div>
             <div className="mt-5">
-              <form onSubmit={handleSubmit(onSubmit)} id="form">
+              <form onSubmit={(e) => void submitHandler(e)} id="form">
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
@@ -215,9 +221,9 @@ export const WebhookFormModal = (input: {
                   id="url"
                   className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   {...register("config.url", {
-                    onBlur: (e) => {
-                      trigger();
-                      const value = e.target.value;
+                    onBlur: (e: React.FormEvent<HTMLInputElement>) => {
+                      void trigger();
+                      const value = e.currentTarget.value;
                       if (value) {
                         const url = new URL(value);
                         const queryFields = Array.from(
@@ -360,10 +366,12 @@ export const WebhookFormModal = (input: {
                               {...register(
                                 `config.query.${index}.value` as const,
                                 {
-                                  onBlur: (e) => {
+                                  onBlur: (
+                                    e: React.FormEvent<HTMLInputElement>
+                                  ) => {
                                     setValue(
                                       `config.query.${index}.value`,
-                                      e.target.value
+                                      e.currentTarget.value
                                     );
                                     updateQuery();
                                   },

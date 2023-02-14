@@ -50,12 +50,13 @@ export const updateConfig = async ({
       "utf-8"
     );
 
-    const parsedConfig = JSON.parse(existingConfig);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const parsedConfig = JSON.parse(existingConfig) as Record<string, any>;
 
     const updatedConfig = {
       ...parsedConfig,
       ...config,
-    };
+    } as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // if value not in config, remove it
     Object.keys(parsedConfig).forEach((key) => {

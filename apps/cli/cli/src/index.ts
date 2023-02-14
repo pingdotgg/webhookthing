@@ -13,7 +13,7 @@ const main = async () => {
     `Questions? Check out the docs: ${DOCS_LINK}`
   );
 
-  startServer();
+  await startServer();
 };
 
 main().catch((err) => {
