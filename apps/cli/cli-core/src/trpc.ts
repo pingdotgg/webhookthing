@@ -132,7 +132,15 @@ export const cliApiRouter = t.router({
         const configFileContents = await fsPromises.readFile(
           path.join(HOOK_PATH, configName)
         );
-        config = { ...config, ...JSON.parse(configFileContents.toString()) };
+        config = {
+          ...config,
+          ...(JSON.parse(configFileContents.toString()) as {
+            url: string;
+            query?: Record<string, string>;
+            headers?: Record<string, string>;
+            method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
+          }),
+        };
 
         // template substitution for header values
         if (config.headers) {
@@ -144,22 +152,18 @@ export const cliApiRouter = t.router({
         }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
-      const parsedJson = JSON.parse(data.toString());
 
       try {
         console.log(
           `[INFO] Sending to ${config.url} ${
-            hasCustomConfig
-              ? `with custom config from ${file.split(".")[0]}.config.json`
-              : ""
+            hasCustomConfig ? `with custom config from ${configName}` : ""
           }\n`
         );
 
         const fetchedResult = await fetch(config.url, {
           method: config.method,
           headers: config.headers,
-          body:
-            config.method !== "GET" ? JSON.stringify(parsedJson) : undefined,
+          body: config.method !== "GET" ? data.toString() : undefined,
         }).then((res) => res.json());
 
         console.log(
@@ -168,7 +172,7 @@ export const cliApiRouter = t.router({
         return fetchedResult;
       } catch (e) {
         console.log("\u001b[31m[ERROR] FAILED TO SEND");
-        if ((e as any).code === "ECONNREFUSED") {
+        if ((e as { code: string }).code === "ECONNREFUSED") {
           console.log(
             "\u001b[31m[ERROR] Connection refused. Is the server running?"
           );
@@ -194,7 +198,7 @@ export const cliApiRouter = t.router({
       await fsPromises.writeFile(path.join(HOOK_PATH, `${name}.json`), body);
       if (config?.url || config?.query || config?.headers) {
         console.log(`[INFO] Config specified, creating ${name}.config.json`);
-        updateConfig({ name, config });
+        return await updateConfig({ name, config });
       }
     }),
 
@@ -219,8 +223,11 @@ export const cliApiRouter = t.router({
         "utf-8"
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parsedBody = JSON.parse(existingBody);
 
+      // TODO: Fix this
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const updatedBody = {
         ...parsedBody,
         ...JSON.parse(body),
@@ -238,7 +245,7 @@ export const cliApiRouter = t.router({
         fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))
       ) {
         console.log(`[INFO] Config specified, updating ${name}.config.json`);
-        updateConfig({ name, config });
+        return await updateConfig({ name, config });
       }
     }),
 });
