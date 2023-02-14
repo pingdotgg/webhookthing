@@ -172,22 +172,33 @@ export const WebhookFormModal = (input: {
             </div>
             <div className="mt-5">
               <form onSubmit={handleSubmit(onSubmit)} id="form">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {`Name`}
-                </label>
-                {errors.name && (
-                  <p className="text-sm text-red-500">
-                    {errors.name?.message ?? errors.name.type}
-                  </p>
+                {type === "create" && (
+                  <>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      {`Name`}
+                    </label>
+                    {errors.name && (
+                      <p className="text-sm text-red-500">
+                        {errors.name?.message ?? errors.name.type}
+                      </p>
+                    )}
+                    <div className="mt-1 flex rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        id="name"
+                        className="block w-full min-w-0 flex-1 rounded-none rounded-l-md border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="my_webhook"
+                        {...register("name")}
+                      />
+                      <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">
+                        {`.json`}
+                      </span>
+                    </div>
+                  </>
                 )}
-                <input
-                  id="name"
-                  className="block w-full rounded-md border border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  {...register("name")}
-                />
                 <label
                   htmlFor="body"
                   className="block text-sm font-medium text-gray-700"
