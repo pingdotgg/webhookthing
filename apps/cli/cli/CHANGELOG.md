@@ -1,5 +1,11 @@
 # webhookthing
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix server
+
 ## 0.4.0
 
 ### Minor Changes
