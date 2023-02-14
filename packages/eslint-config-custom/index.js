@@ -1,5 +1,11 @@
 module.exports = {
-  extends: ["next", "turbo", "prettier"],
+  extends: [
+    "next",
+    "turbo",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+  ],
   rules: {
     "@next/next/no-html-link-for-pages": "off",
     "react/jsx-key": "off",
@@ -24,5 +30,7 @@ module.exports = {
     babelOptions: {
       presets: [require.resolve("next/babel")],
     },
+    project: ["./tsconfig.json"],
   },
+  plugins: ["@typescript-eslint"],
 };
