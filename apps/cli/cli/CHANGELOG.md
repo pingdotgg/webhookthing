@@ -1,5 +1,11 @@
 # webhookthing
 
+## 0.4.0
+
+### Minor Changes
+
+- 46520cd: Added configurable headers with env variables
+
 ## 0.3.1
 
 ### Patch Changes
