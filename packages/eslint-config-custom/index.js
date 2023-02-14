@@ -25,6 +25,18 @@ module.exports = {
         },
       },
     ],
+
+    // Allows for _ prefixed variables to be unused
+    // Ripped from https://stackoverflow.com/questions/64052318/how-to-disable-warn-about-some-unused-params-but-keep-typescript-eslint-no-un
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn", // or "error"
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
   parserOptions: {
     babelOptions: {

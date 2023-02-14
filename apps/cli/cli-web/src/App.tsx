@@ -14,7 +14,7 @@ export default function Example() {
       <div className="flex h-screen min-h-full flex-col">
         <div className="pattern pb-32">
           <Disclosure as="nav">
-            {({ open }) => (
+            {({ open: _open }) => (
               <>
                 <div className="mx-auto max-w-5xl sm:px-6 lg:px-8">
                   <div className="border-b border-gray-700">
