@@ -15,10 +15,27 @@ import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
 
+import { Logger } from "./logger";
+import { observable } from "@trpc/server/observable";
+
 export const t = initTRPC.create({
   transformer: superjson,
 });
 export const cliApiRouter = t.router({
+  onLog: t.procedure.subscription(() => {
+    return observable<{ message: string }>((emit) => {
+      const onLog = (m: { message: string }) => {
+        emit.next(m);
+      };
+
+      Logger.subscribe(onLog);
+
+      return () => {
+        // Logger.unsubscribe(onLog);
+      };
+    });
+  }),
+
   getBlobs: t.procedure.query(async () => {
     if (!fs.existsSync(HOOK_PATH)) {
       // TODO: this should probably be an error, and the frontend should handle it
