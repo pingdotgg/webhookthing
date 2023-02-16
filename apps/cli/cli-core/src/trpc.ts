@@ -128,7 +128,7 @@ export const cliApiRouter = t.router({
     .mutation(async ({ input }) => {
       const { file, url } = input;
       let hasCustomConfig = false;
-      console.log(`[INFO] Reading file ${file}`);
+      logger.info(`Reading file ${file}`);
 
       let config = {
         url,

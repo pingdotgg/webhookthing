@@ -68,9 +68,11 @@ export const startSocketServer = async () => {
   });
   const handler = applyWSSHandler({ wss, router: cliApiRouter });
   wss.on("connection", (ws) => {
-    console.log(`++ Connection (${wss.clients.size})`);
+    if (process.env.NODE_ENV === "development")
+      console.log(`Websocket Connection ++ (${wss.clients.size})`);
     ws.once("close", () => {
-      console.log(`-- Connection (${wss.clients.size})`);
+      if (process.env.NODE_ENV === "development")
+        console.log(`Websocket Connection -- (${wss.clients.size})`);
     });
   });
   console.log(`[INFO] WebSocket Server listening on ws://localhost:${WS_PORT}`);

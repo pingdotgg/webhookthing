@@ -5,9 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren, useState } from "react";
 import { cliApi } from "./api";
 
+const WS_PORT = 2034;
+
 // create persistent WebSocket connection
 const wsClient = createWSClient({
-  url: `ws://localhost:3001`,
+  url: `ws://localhost:${WS_PORT}`,
 });
 
 export const ApiTRPCProvider = (props: PropsWithChildren) => {

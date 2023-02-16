@@ -65,7 +65,7 @@ class logger implements Logger {
 
   private log(level: LogLevels, message: string, optionalParams: any[]) {
     console[level](
-      `${prefixColors[level]}[${level}] ${message}${colorReset}`,
+      `${prefixColors[level]}[${level.toUpperCase()}] ${message}${colorReset}`,
       ...optionalParams
     );
 
