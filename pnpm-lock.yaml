@@ -22,6 +22,7 @@ importers:
     specifiers:
       '@captain/cli-core': '*'
       '@captain/cli-web': '*'
+      '@captain/logger': workspace:*
       '@captain/tsconfig': workspace:*
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': ^8.4.0
@@ -46,6 +47,7 @@ importers:
       ws: ^8.12.1
     dependencies:
       '@captain/cli-core': link:../cli-core
+      '@captain/logger': link:../../../packages/logger
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.7.0
