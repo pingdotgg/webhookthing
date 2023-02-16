@@ -77,7 +77,6 @@ export const startSocketServer = () => {
   });
   console.log(`[INFO] WebSocket Server listening on ws://localhost:${WS_PORT}`);
   process.on("SIGTERM", () => {
-    console.log("SIGTERM");
     handler.broadcastReconnectNotification();
     wss.close();
   });
@@ -108,6 +107,8 @@ export const startServer = async () => {
       );
     }
 
-    return;
+    process.on("SIGTERM", () => {
+      server.close();
+    });
   });
 };

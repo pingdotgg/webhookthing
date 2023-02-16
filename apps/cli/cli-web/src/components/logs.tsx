@@ -7,7 +7,7 @@ export const Logs = () => {
     onData: (data) => {
       console.log("new message received");
       setMessages((messages) => {
-        return [...messages, data.message];
+        return [...messages, JSON.stringify(data, null, 2)];
       });
     },
   });
@@ -15,7 +15,7 @@ export const Logs = () => {
   console.log("messages", messages);
 
   return (
-    <div>
+    <div className="flex flex-col">
       {messages.map((m) => (
         <span>{m}</span>
       ))}
