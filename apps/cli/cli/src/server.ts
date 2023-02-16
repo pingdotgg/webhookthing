@@ -8,6 +8,9 @@ import { cliApiRouter } from "@captain/cli-core";
 import { fastifyStatic } from "@fastify/static";
 import path from "path";
 
+const PORT = 2033;
+const WS_PORT = 2034;
+
 const createServer = async () => {
   const server = fastify({
     maxParamLength: 5000,
@@ -47,18 +50,40 @@ import open from "open";
 
 const openInBrowser = async () => {
   try {
-    await open("http://localhost:2033");
+    await open(`http://localhost:${PORT}`);
   } catch (_err) {
     console.log("\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m");
     console.log(
-      `[INFO] You can still manually open the web UI here: http://localhost:2033`
+      `[INFO] You can still manually open the web UI here: http://localhost:${PORT}`
     );
   }
 };
 
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
+import ws from "ws";
+
+export const startSocketServer = async () => {
+  const wss = new ws.Server({
+    port: WS_PORT,
+  });
+  const handler = applyWSSHandler({ wss, router: cliApiRouter });
+  wss.on("connection", (ws) => {
+    console.log(`++ Connection (${wss.clients.size})`);
+    ws.once("close", () => {
+      console.log(`-- Connection (${wss.clients.size})`);
+    });
+  });
+  console.log(`[INFO] WebSocket Server listening on ws://localhost:${WS_PORT}`);
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM");
+    handler.broadcastReconnectNotification();
+    wss.close();
+  });
+};
+
 export const startServer = async () => {
   const server = await createServer();
-  server.listen({ port: 2033 }, (err) => {
+  server.listen({ port: PORT }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -72,12 +97,12 @@ export const startServer = async () => {
     else if (!process.env.CI && !process.env.CODESPACES) {
       // Dont try to open the browser in CI, or on Codespaces, it will crash
       console.log(
-        `[INFO] Opening webhookthing at address: http://localhost:2033`
+        `[INFO] Opening webhookthing at address: http://localhost:${PORT}`
       );
       void openInBrowser();
     } else {
       console.log(
-        `[INFO] Running webhookthing at address: http://localhost:2033`
+        `[INFO] Running webhookthing at address: http://localhost:${PORT}`
       );
     }
 
