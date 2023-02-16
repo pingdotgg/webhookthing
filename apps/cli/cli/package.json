@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@captain/cli-core": "*",
+    "@captain/logger": "workspace:*",
     "@fastify/cors": "^8.2.0",
     "@fastify/http-proxy": "^8.4.0",
     "@fastify/static": "^6.6.0",
