@@ -33,7 +33,6 @@ export async function getSampleHooks() {
       return await fsPromise.writeFile(newFilePath, fileContent);
     } catch (e) {
       logger.error(`Could not write file ${file.name}`);
-      logger.error(`Error: ${e}`);
       throw e;
     }
   });

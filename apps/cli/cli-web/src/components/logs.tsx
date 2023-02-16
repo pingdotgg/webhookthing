@@ -15,7 +15,8 @@ const webFormat = (input: { level: LogLevels; message: string }) => {
   const { level, message } = input;
   return (
     <span className={colorMap[level]}>
-      <span className="font-semibold">[{level.toUpperCase()}]</span> {message}
+      <span className="font-semibold">{`[${level.toUpperCase()}]`}</span>{" "}
+      {message}
     </span>
   );
 };

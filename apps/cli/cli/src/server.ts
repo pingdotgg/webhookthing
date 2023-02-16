@@ -89,7 +89,7 @@ export const startServer = async () => {
   const server = await createServer();
   server.listen({ port: PORT }, (err) => {
     if (err) {
-      console.error(err);
+      logger.error(err.message, err.name, err.stack, err.cause);
       process.exit(1);
     }
     if (process.env.NODE_ENV === "development") {
@@ -107,7 +107,7 @@ export const startServer = async () => {
     }
 
     process.on("SIGTERM", () => {
-      server.close();
+      void server.close();
     });
   });
 };
