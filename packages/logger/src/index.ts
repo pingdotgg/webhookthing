@@ -7,7 +7,8 @@ interface Logger {
   [x: string]: any;
 }
 
-export type LogLevels = "trace" | "debug" | "info" | "warn" | "error";
+const levels = ["trace", "debug", "info", "warn", "error"] as const;
+export type LogLevels = (typeof levels)[number];
 
 const prefixColors = {
   trace: `\x1b[90m`, // gray
@@ -19,7 +20,10 @@ const prefixColors = {
 const colorReset = `\x1b[0m`;
 
 class logger implements Logger {
-  private subscriptions: ((m: { message: string; level: LogLevels }) => void)[];
+  private subscriptions: {
+    fn: (m: { message: string; level: LogLevels }) => void;
+    level: LogLevels;
+  }[];
 
   constructor() {
     this.subscriptions = [];
@@ -45,12 +49,18 @@ class logger implements Logger {
     this.log("error", message, optionalParams);
   }
 
-  subscribe(fn: (m: { message: string; level: LogLevels }) => void) {
-    this.subscriptions.push(fn);
+  subscribe(
+    fn: (m: { message: string; level: LogLevels }) => void,
+    level?: LogLevels
+  ) {
+    if (!level) level = "info";
+    this.subscriptions.push({ fn, level });
   }
 
   unsubscribe(fn: (m: { message: string; level: LogLevels }) => void) {
-    this.subscriptions = this.subscriptions.filter((sub) => sub !== fn);
+    this.subscriptions = this.subscriptions.filter(
+      ({ fn: subFn }) => subFn !== fn
+    );
   }
 
   private log(level: LogLevels, message: string, optionalParams: any[]) {
@@ -59,8 +69,15 @@ class logger implements Logger {
       ...optionalParams
     );
 
-    this.subscriptions.forEach((sub) => sub({ message, level }));
+    this.subscriptions.forEach(({ fn, level: subLevel }) => {
+      if (getLogLevels(subLevel).includes(level)) fn({ message, level });
+    });
   }
 }
+
+// get all log levels above and including the given level
+const getLogLevels = (level: LogLevels): LogLevels[] => {
+  return levels.slice(levels.indexOf(level));
+};
 
 export default new logger();
