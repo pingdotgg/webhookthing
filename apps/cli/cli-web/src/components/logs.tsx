@@ -1,24 +1,38 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { cliApi } from "../utils/api";
 
+import type { LogLevels } from "@captain/logger";
+
+const colorMap = {
+  trace: "text-gray-600", // gray
+  debug: `text-cyan-600`, // cyan
+  info: `text-white`, // white
+  warn: `text-yellow-600`, // yellow
+  error: `text-red-600`, // red
+} as const;
+
+const webFormat = (input: { level: LogLevels; message: string }) => {
+  const { level, message } = input;
+  return (
+    <span className={colorMap[level]}>
+      <span className="font-semibold">[{level.toUpperCase()}]</span> {message}
+    </span>
+  );
+};
+
 export const Logs = () => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ReactNode[]>([]);
   cliApi.onLog.useSubscription(undefined, {
     onData: (data) => {
-      console.log("new message received");
       setMessages((messages) => {
-        return [...messages, JSON.stringify(data, null, 2)];
+        return [...messages, webFormat(data)];
       });
     },
   });
 
-  console.log("messages", messages);
-
   return (
-    <div className="flex flex-col">
-      {messages.map((m) => (
-        <span>{m}</span>
-      ))}
+    <div className="flex h-96 flex-col overflow-y-auto rounded-md bg-gray-900 p-4">
+      {...messages}
     </div>
   );
 };

@@ -66,10 +66,7 @@ class logger implements Logger {
   }
 
   private log(level: LogLevels, message: string, optionalParams: any[]) {
-    console[level](
-      `${prefixColors[level]}[${level.toUpperCase()}] ${message}${colorReset}`,
-      ...optionalParams
-    );
+    console[level](consoleFormat(level, message), ...optionalParams);
 
     this.subscriptions.forEach(({ fn, level: subLevel }) => {
       if (getLogLevels(subLevel).includes(level)) fn({ message, level });
@@ -80,6 +77,13 @@ class logger implements Logger {
 // get all log levels above and including the given level
 const getLogLevels = (level: LogLevels): LogLevels[] => {
   return levels.slice(levels.indexOf(level));
+};
+
+// formatting
+const consoleFormat = (level: LogLevels, message: string) => {
+  return `${
+    prefixColors[level]
+  }[${level.toUpperCase()}] ${message}${colorReset}`;
 };
 
 const loggerInstance = new logger();
