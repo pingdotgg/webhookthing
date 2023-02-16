@@ -106,8 +106,8 @@ export const cliApiRouter = t.router({
       try {
         await openInExplorer(path.join(HOOK_PATH, input.path));
       } catch (e) {
-        console.log(
-          "[ERROR] Failed to open folder (unless you're on Windows, then this just happens)",
+        logger.error(
+          "Failed to open folder (unless you're on Windows, then this just happens)",
           e
         );
       }
@@ -147,7 +147,7 @@ export const cliApiRouter = t.router({
 
       if (fs.existsSync(path.join(HOOK_PATH, configName))) {
         hasCustomConfig = true;
-        console.log(`[INFO] Found ${configName}, reading it`);
+        logger.info(`Found ${configName}, reading it`);
         const configFileContents = await fsPromises.readFile(
           path.join(HOOK_PATH, configName)
         );
@@ -173,8 +173,8 @@ export const cliApiRouter = t.router({
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
 
       try {
-        console.log(
-          `[INFO] Sending to ${config.url} ${
+        logger.info(
+          `Sending to ${config.url} ${
             hasCustomConfig ? `with custom config from ${configName}` : ""
           }\n`
         );
@@ -185,18 +185,16 @@ export const cliApiRouter = t.router({
           body: config.method !== "GET" ? data.toString() : undefined,
         }).then((res) => res.json());
 
-        console.log(
-          `[INFO] Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}\n`
+        logger.info(
+          `Got response: \n\n${JSON.stringify(fetchedResult, null, 2)}\n`
         );
         return fetchedResult;
       } catch (e) {
-        console.log("\u001b[31m[ERROR] FAILED TO SEND");
+        logger.error("FAILED TO SEND");
         if ((e as { code: string }).code === "ECONNREFUSED") {
-          console.log(
-            "\u001b[31m[ERROR] Connection refused. Is the server running?"
-          );
+          logger.error("Connection refused. Is the server running?");
         } else {
-          console.log("\u001b[31m[ERROR] Unknown error", e);
+          logger.error("Unknown error", e);
         }
         throw new Error("Connection refused. Is the server running?");
       }
@@ -212,11 +210,11 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { name, body, config } = input;
-      console.log(`[INFO] Creating ${name}.json`);
+      logger.info(`Creating ${name}.json`);
 
       await fsPromises.writeFile(path.join(HOOK_PATH, `${name}.json`), body);
       if (config?.url || config?.query || config?.headers) {
-        console.log(`[INFO] Config specified, creating ${name}.config.json`);
+        logger.info(`Config specified, creating ${name}.config.json`);
         return await updateConfig({ name, config });
       }
     }),
@@ -235,7 +233,7 @@ export const cliApiRouter = t.router({
 
       if (!name) throw new Error("No name");
 
-      console.log(`[INFO] updating ${name}.json`);
+      logger.info(`Updating ${name}.json`);
 
       const existingBody = await fsPromises.readFile(
         path.join(HOOK_PATH, `${name}.json`),
@@ -263,7 +261,7 @@ export const cliApiRouter = t.router({
         config?.headers ||
         fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))
       ) {
-        console.log(`[INFO] Config specified, updating ${name}.config.json`);
+        logger.info(`Config specified, updating ${name}.config.json`);
         return await updateConfig({ name, config });
       }
     }),
