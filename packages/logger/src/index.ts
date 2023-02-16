@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 interface Logger {
   trace(message: string, ...optionalParams: any[]): void;
   debug(message: string, ...optionalParams: any[]): void;
@@ -33,19 +35,19 @@ class logger implements Logger {
     this.log("trace", message, optionalParams);
   }
 
-  debug(message?: any, ...optionalParams: any[]) {
+  debug(message: string, ...optionalParams: any[]) {
     this.log("debug", message, optionalParams);
   }
 
-  info(message?: any, ...optionalParams: any[]) {
+  info(message: string, ...optionalParams: any[]) {
     this.log("info", message, optionalParams);
   }
 
-  warn(message?: any, ...optionalParams: any[]) {
+  warn(message: string, ...optionalParams: any[]) {
     this.log("warn", message, optionalParams);
   }
 
-  error(message?: any, ...optionalParams: any[]) {
+  error(message: string, ...optionalParams: any[]) {
     this.log("error", message, optionalParams);
   }
 
@@ -80,4 +82,6 @@ const getLogLevels = (level: LogLevels): LogLevels[] => {
   return levels.slice(levels.indexOf(level));
 };
 
-export default new logger();
+const loggerInstance = new logger();
+
+export default loggerInstance;

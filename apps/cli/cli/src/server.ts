@@ -62,7 +62,7 @@ const openInBrowser = async () => {
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import ws from "ws";
 
-export const startSocketServer = async () => {
+export const startSocketServer = () => {
   const wss = new ws.Server({
     port: WS_PORT,
   });

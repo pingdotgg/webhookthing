@@ -13,8 +13,9 @@ const main = async () => {
     `Questions? Check out the docs: ${DOCS_LINK}`
   );
 
+  startSocketServer();
+
   await startServer();
-  await startSocketServer();
 };
 
 main().catch((err) => {

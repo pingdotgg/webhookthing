@@ -1,5 +1,5 @@
 {
   "extends": "@captain/tsconfig/cli.json",
-
-  "include": ["src", ".eslintrc.cjs"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
