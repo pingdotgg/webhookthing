@@ -2,14 +2,14 @@ import path from "path";
 import fs from "fs";
 import fsPromise from "fs/promises";
 import fetch from "node-fetch";
+
 import { HOOK_PATH } from "./constants";
+import logger from "@captain/logger";
 
 export async function getSampleHooks() {
   // Create the directory if it doesn't exist
   if (!fs.existsSync(HOOK_PATH)) {
-    console.log(
-      `\x1b[33m[WARNING] Could not find .thing directory, creating it now!\x1b[0m`
-    );
+    logger.warn(`Could not find .thing directory, creating it now!`);
     fs.mkdirSync(HOOK_PATH, { recursive: true });
   }
 
@@ -20,10 +20,10 @@ export async function getSampleHooks() {
     download_url: string;
   }[];
 
-  console.log(`[INFO] Downloading ${files.length} sample hooks.`);
+  logger.info(`Downloading ${files.length} sample hooks.`);
 
   const promiseMap = files.map(async (file) => {
-    console.log(`[INFO] Downloading ${file.name}`);
+    logger.info(`Downloading ${file.name}`);
     const fileContent = await fetch(file.download_url).then((res) =>
       res.text()
     );
@@ -32,8 +32,8 @@ export async function getSampleHooks() {
     try {
       return await fsPromise.writeFile(newFilePath, fileContent);
     } catch (e) {
-      console.log(`[ERROR] Could not write file ${file.name}`);
-      console.log(e);
+      logger.error(`Could not write file ${file.name}`);
+      logger.error(`Error: ${e}`);
       throw e;
     }
   });

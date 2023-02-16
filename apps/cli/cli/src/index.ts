@@ -8,10 +8,7 @@ const main = async () => {
   renderTitle();
 
   // link to docs
-  console.log(
-    `\x1b[36m%s\x1b[0m`,
-    `Questions? Check out the docs: ${DOCS_LINK}`
-  );
+  console.log(`\x1b[36mQuestions? Check out the docs: ${DOCS_LINK}\x1b[0m`);
 
   startSocketServer();
 

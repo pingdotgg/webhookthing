@@ -8,6 +8,8 @@ import { cliApiRouter } from "@captain/cli-core";
 import { fastifyStatic } from "@fastify/static";
 import path from "path";
 
+import logger from "@captain/logger";
+
 const PORT = 2033;
 const WS_PORT = 2034;
 
@@ -52,9 +54,9 @@ const openInBrowser = async () => {
   try {
     await open(`http://localhost:${PORT}`);
   } catch (_err) {
-    console.log("\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m");
-    console.log(
-      `[INFO] You can still manually open the web UI here: http://localhost:${PORT}`
+    logger.error("Failed to open browser automatically");
+    logger.info(
+      `You can still manually open the web UI here: http://localhost:${PORT}`
     );
   }
 };
@@ -69,10 +71,10 @@ export const startSocketServer = () => {
   const handler = applyWSSHandler({ wss, router: cliApiRouter });
   wss.on("connection", (ws) => {
     if (process.env.NODE_ENV === "development")
-      console.log(`Websocket Connection ++ (${wss.clients.size})`);
+      logger.debug(`Websocket Connection ++ (${wss.clients.size})`);
     ws.once("close", () => {
       if (process.env.NODE_ENV === "development")
-        console.log(`Websocket Connection -- (${wss.clients.size})`);
+        logger.debug(`Websocket Connection -- (${wss.clients.size})`);
     });
   });
   console.log(`[INFO] WebSocket Server listening on ws://localhost:${WS_PORT}`);
@@ -90,21 +92,17 @@ export const startServer = async () => {
       process.exit(1);
     }
     if (process.env.NODE_ENV === "development") {
-      console.log(
-        `\x1b[33m[WARNING] Running in development mode, you can access the web UI at http://localhost:5173\x1b[0m`
+      logger.warn(
+        `Running in development mode, you can access the web UI at http://localhost:5173`
       );
     }
     // eslint-disable-next-line turbo/no-undeclared-env-vars
     else if (!process.env.CI && !process.env.CODESPACES) {
       // Dont try to open the browser in CI, or on Codespaces, it will crash
-      console.log(
-        `[INFO] Opening webhookthing at address: http://localhost:${PORT}`
-      );
+      logger.info(`Opening webhookthing at address: http://localhost:${PORT}`);
       void openInBrowser();
     } else {
-      console.log(
-        `[INFO] Running webhookthing at address: http://localhost:${PORT}`
-      );
+      logger.info(`Running webhookthing at address: http://localhost:${PORT}`);
     }
 
     process.on("SIGTERM", () => {
