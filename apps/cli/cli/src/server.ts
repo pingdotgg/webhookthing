@@ -77,7 +77,8 @@ export const startSocketServer = () => {
         logger.debug(`Websocket Connection -- (${wss.clients.size})`);
     });
   });
-  console.log(`[INFO] WebSocket Server listening on ws://localhost:${WS_PORT}`);
+  if (process.env.NODE_ENV === "development")
+    logger.debug(`WebSocket Server listening on ws://localhost:${WS_PORT}`);
   process.on("SIGTERM", () => {
     handler.broadcastReconnectNotification();
     wss.close();

@@ -20,9 +20,8 @@ export const ApiTRPCProvider = (props: PropsWithChildren) => {
       transformer: superjson,
       links: [
         splitLink({
+          // subscriptions are handled by WebSocket, everything else is handled by HTTP
           condition(op) {
-            console.log("operation?", op);
-            // check for context property `skipBatch`
             return op.type === "subscription";
           },
           true: wsLink({
