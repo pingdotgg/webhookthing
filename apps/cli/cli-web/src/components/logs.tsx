@@ -5,11 +5,14 @@ export const Logs = () => {
   const [messages, setMessages] = useState<string[]>([]);
   cliApi.onLog.useSubscription(undefined, {
     onData: (data) => {
-      setMessages((messages) => [...messages, data.message]);
+      console.log("new message received");
+      setMessages((messages) => {
+        return [...messages, data.message];
+      });
     },
   });
 
-  console.log(messages);
+  console.log("messages", messages);
 
   return (
     <div>

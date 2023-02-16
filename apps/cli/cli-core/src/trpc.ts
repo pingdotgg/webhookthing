@@ -23,11 +23,13 @@ import type { LogLevels } from "@captain/logger";
 export const t = initTRPC.create({
   transformer: superjson,
 });
-
 export const cliApiRouter = t.router({
   onLog: t.procedure.subscription(() => {
+    console.log("\n\n\n SUBBING NOW \n\n\n\n");
     return observable<{ message: string }>((emit) => {
+      console.log("\n\n\n OBSERVABLE STARTING NOW \n\n\n\n");
       const onLog = (m: { message: string; level: LogLevels }) => {
+        console.log("\n\n\n NEW MESSAGE RECEIVED \n\n\n\n");
         emit.next(m);
       };
 
