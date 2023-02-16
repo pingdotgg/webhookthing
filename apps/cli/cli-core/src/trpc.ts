@@ -15,8 +15,10 @@ import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
 
-import { Logger } from "./logger";
+import logger from "@captain/logger";
 import { observable } from "@trpc/server/observable";
+
+import type { LogLevels } from "@captain/logger";
 
 export const t = initTRPC.create({
   transformer: superjson,
@@ -24,14 +26,14 @@ export const t = initTRPC.create({
 export const cliApiRouter = t.router({
   onLog: t.procedure.subscription(() => {
     return observable<{ message: string }>((emit) => {
-      const onLog = (m: { message: string }) => {
+      const onLog = (m: { message: string; level: LogLevels }) => {
         emit.next(m);
       };
 
-      Logger.subscribe(onLog);
+      logger.subscribe(onLog);
 
       return () => {
-        // Logger.unsubscribe(onLog);
+        logger.unsubscribe(onLog);
       };
     });
   }),

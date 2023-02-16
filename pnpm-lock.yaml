@@ -70,6 +70,7 @@ importers:
 
   apps/cli/cli-core:
     specifiers:
+      '@captain/logger': workspace:*
       '@captain/tsconfig': workspace:*
       '@trpc/client': 10.9.0
       '@trpc/server': 10.9.0
@@ -80,6 +81,7 @@ importers:
       typescript: ^4.9.4
       zod: ^3.19.1
     dependencies:
+      '@captain/logger': link:../../../packages/logger
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
       '@trpc/server': 10.9.0
       node-fetch: 3.3.0
@@ -255,6 +257,18 @@ importers:
       eslint-config-turbo: 0.0.7
       eslint-plugin-react: 7.28.0
       next: 13.1.5
+
+  packages/logger:
+    specifiers:
+      '@captain/tsconfig': workspace:*
+      eslint: ^7.32.0
+      eslint-config-custom: workspace:*
+      typescript: ^4.9.4
+    devDependencies:
+      '@captain/tsconfig': link:../tsconfig
+      eslint: 7.32.0
+      eslint-config-custom: link:../eslint-config-custom
+      typescript: 4.9.4
 
   packages/tailwind-config:
     specifiers:
