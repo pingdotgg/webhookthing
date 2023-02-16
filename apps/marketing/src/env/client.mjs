@@ -1,5 +1,4 @@
 // @ts-check
-/* eslint-disable no-console */
 
 import { clientEnv, clientSchema } from "./schema.mjs";
 
