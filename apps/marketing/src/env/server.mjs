@@ -11,7 +11,9 @@ const _serverEnv = serverSchema.safeParse(serverEnv);
 if (!_serverEnv.success) {
   console.error(
     "❌ Invalid environment variables:\n",
-    ...formatErrors(_serverEnv.error.format()),
+    // eslint-disable-next-line
+    // @ts-ignore
+    ...formatErrors(_serverEnv.error.format()) // eslint-disable-line
   );
   throw new Error("Invalid environment variables");
 }

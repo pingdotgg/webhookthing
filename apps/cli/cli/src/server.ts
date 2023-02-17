@@ -1,49 +1,64 @@
 // Configure fastify
 import fastify from "fastify";
-export const server = fastify({
-  maxParamLength: 5000,
-});
 
-// Configure CORS
 import cors from "@fastify/cors";
-server.register(cors, { origin: "*" });
-
-// Configure proxy for Plausible
 import proxy from "@fastify/http-proxy";
-server.register(proxy, {
-  upstream: "https://plausible.io/api/event",
-  prefix: "/api/event",
-});
-
-// Configure tRPC
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { cliApiRouter } from "@captain/cli-core";
-
-server.register(fastifyTRPCPlugin, {
-  prefix: "/trpc",
-  trpcOptions: { router: cliApiRouter },
-});
-
 import { fastifyStatic } from "@fastify/static";
 import path from "path";
 
-const devMode = process.env.NODE_ENV === "development";
+const createServer = async () => {
+  const server = fastify({
+    maxParamLength: 5000,
+  });
+  // Configure CORS
+  await server.register(cors, { origin: "*" });
 
-if (!devMode) {
-  const webPath = path.join(__dirname, "web");
-  server.register(fastifyStatic, {
-    root: webPath,
+  // Configure proxy for Plausible
+  await server.register(proxy, {
+    upstream: "https://plausible.io/api/event",
+    prefix: "/api/event",
   });
-} else {
-  // in dev mode, serve a redirect to vite server
-  server.get("/", async (req, res) => {
-    res.redirect("http://localhost:5173");
+  // Configure tRPC
+  await server.register(fastifyTRPCPlugin, {
+    prefix: "/trpc",
+    trpcOptions: { router: cliApiRouter },
   });
-}
+
+  const devMode = process.env.NODE_ENV === "development";
+
+  if (!devMode) {
+    const webPath = path.join(__dirname, "web");
+    await server.register(fastifyStatic, {
+      root: webPath,
+    });
+  } else {
+    // in dev mode, serve a redirect to vite server
+    server.get("/", async (req, res) => {
+      await res.redirect("http://localhost:5173");
+    });
+  }
+
+  return server;
+};
 
 import open from "open";
-export const startServer = () => {
-  server.listen({ port: 2033 }, async (err) => {
+
+const openInBrowser = async () => {
+  try {
+    await open("http://localhost:2033");
+  } catch (_err) {
+    console.log("\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m");
+    console.log(
+      `[INFO] You can still manually open the web UI here: http://localhost:2033`
+    );
+  }
+};
+
+export const startServer = async () => {
+  const server = await createServer();
+  server.listen({ port: 2033 }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -59,20 +74,13 @@ export const startServer = () => {
       console.log(
         `[INFO] Opening webhookthing at address: http://localhost:2033`
       );
-      try {
-        await open("http://localhost:2033");
-      } catch (_err) {
-        console.log(
-          "\x1b[31m[ERROR] Failed to open browser automatically\x1b[0m"
-        );
-        console.log(
-          `[INFO] You can still manually open the web UI here: http://localhost:2033`
-        );
-      }
+      void openInBrowser();
     } else {
       console.log(
         `[INFO] Running webhookthing at address: http://localhost:2033`
       );
     }
+
+    return;
   });
 };

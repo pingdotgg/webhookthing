@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { classNames } from "../utils/classnames";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 export const EndpointSetting = () => {
   const [storedEndpoint, setStoredEndpoint] = useCurrentUrl();
   const [endpoint, setEndpoint] = useState<string>(storedEndpoint);
-
-  const changed = storedEndpoint !== endpoint;
 
   return (
     <div className="flex flex-col gap-2">
