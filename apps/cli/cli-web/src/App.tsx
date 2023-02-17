@@ -6,12 +6,17 @@ import { EndpointSetting } from "./components/endpointsetting";
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
 
-export default function Example() {
+const SubscriptionsHelper = () => {
   useConnectionStateToasts();
 
+  return null;
+};
+
+export default function Example() {
   return (
     <>
       <Toaster />
+      <SubscriptionsHelper />
       <div className="flex h-screen min-h-full flex-col">
         <div className="pattern pb-32">
           <Disclosure as="nav">
