@@ -179,7 +179,7 @@ export const WebhookFormModal = (input: {
               </p>
             </div>
             <div className="mt-5">
-              <form onSubmit={handleSubmit(onSubmit)} id="form">
+              <form onSubmit={(e) => void submitHandler(e)} id="form">
                 {type === "create" && (
                   <>
                     <label
