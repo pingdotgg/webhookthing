@@ -1,6 +1,8 @@
 import { ConfigValidatorType } from "@captain/cli-core/src/update-config";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const convertObjectToKVArray = (obj: { [k: string]: any }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   return Object.entries(obj).map(([key, value]) => ({ key, value }));
 };
 

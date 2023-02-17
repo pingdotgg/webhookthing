@@ -20,10 +20,7 @@ import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { WebhookFormModal } from "./webhook-form";
 import { Tooltip } from "./common/tooltip";
 import { classNames } from "../utils/classnames";
-import {
-  convertObjectToKVArray,
-  generatePrefillFromConfig,
-} from "../utils/configTransforms";
+import { generatePrefillFromConfig } from "../utils/configTransforms";
 
 const HOOKS_FOLDER = ".thing/hooks";
 
@@ -31,7 +28,7 @@ export const JsonBlobs = () => {
   const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(`Got response from server! Check console for details.`);
     },
     onError: (err) => {
@@ -48,7 +45,7 @@ export const JsonBlobs = () => {
   const { mutate: getSampleHooks, isLoading } =
     cliApi.getSampleHooks.useMutation({
       onSuccess: () => {
-        setTimeout(() => refetchBlobs(), 150);
+        setTimeout(() => void refetchBlobs(), 150);
       },
       onError: (err) => {
         toast.error(err.message);

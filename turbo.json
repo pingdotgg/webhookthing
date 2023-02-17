@@ -1,6 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local",
+    "./packages/eslint-config-custom/index.js"
+  ],
   "pipeline": {
     "build": {
       "env": [

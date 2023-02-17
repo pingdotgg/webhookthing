@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 export const useConnectionStateToasts = () => {
@@ -16,7 +16,7 @@ export const useConnectionStateToasts = () => {
     {
       refetchInterval: 2000,
       retry: false,
-      onSuccess(data) {
+      onSuccess() {
         if (!connected) {
           toast("Connected to CLI server", {
             icon: "🟢",
@@ -26,7 +26,7 @@ export const useConnectionStateToasts = () => {
           setConnected(true);
         }
       },
-      onError(error) {
+      onError() {
         toast("Disconnected from CLI server", {
           icon: "🔴",
           duration: Infinity,

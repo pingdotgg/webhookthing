@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { atomWithStorage, RESET } from "jotai/utils";
+import { atomWithStorage } from "jotai/utils";
 
 export const urlAtom = atomWithStorage(
   "current-endpoint",
