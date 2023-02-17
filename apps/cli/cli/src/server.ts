@@ -13,7 +13,7 @@ const createServer = async () => {
     maxParamLength: 5000,
   });
   // Configure CORS
-  server.register(cors, {
+  await server.register(cors, {
     origin:
       process.env.NODE_ENV === "development" ? "*" : "http://localhost:2033",
   });
