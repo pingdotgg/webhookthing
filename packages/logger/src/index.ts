@@ -32,24 +32,74 @@ class logger implements Logger {
     this.subscriptions = [];
   }
 
-  trace(message: string, ...optionalParams: any[]) {
-    this.log("trace", message, optionalParams);
+  trace(message: string | Error | unknown, ...optionalParams: any[]) {
+    if (message instanceof Error) {
+      this.log("trace", message.message, [
+        optionalParams,
+        message.stack,
+        message.cause,
+      ]);
+    } else if (typeof message === "string") {
+      this.log("trace", message, optionalParams);
+    } else {
+      this.log("trace", JSON.stringify(message), optionalParams);
+    }
   }
 
-  debug(message: string, ...optionalParams: any[]) {
-    this.log("debug", message, optionalParams);
+  debug(message: string | Error | unknown, ...optionalParams: any[]) {
+    if (message instanceof Error) {
+      this.log("debug", message.message, [
+        optionalParams,
+        message.stack,
+        message.cause,
+      ]);
+    } else if (typeof message === "string") {
+      this.log("debug", message, optionalParams);
+    } else {
+      this.log("debug", JSON.stringify(message), optionalParams);
+    }
   }
 
-  info(message: string, ...optionalParams: any[]) {
-    this.log("info", message, optionalParams);
+  info(message: string | Error | unknown, ...optionalParams: any[]) {
+    if (message instanceof Error) {
+      this.log("info", message.message, [
+        optionalParams,
+        message.stack,
+        message.cause,
+      ]);
+    } else if (typeof message === "string") {
+      this.log("info", message, optionalParams);
+    } else {
+      this.log("info", JSON.stringify(message), optionalParams);
+    }
   }
 
-  warn(message: string, ...optionalParams: any[]) {
-    this.log("warn", message, optionalParams);
+  warn(message: string | Error | unknown, ...optionalParams: any[]) {
+    if (message instanceof Error) {
+      this.log("warn", message.message, [
+        optionalParams,
+        message.stack,
+        message.cause,
+      ]);
+    } else if (typeof message === "string") {
+      this.log("warn", message, optionalParams);
+    } else {
+      this.log("warn", JSON.stringify(message), optionalParams);
+    }
   }
 
-  error(message: string, ...optionalParams: any[]) {
-    this.log("error", message, optionalParams);
+  error(message: string | Error | unknown, ...optionalParams: any[]) {
+    if (message instanceof Error) {
+      this.log("error", message.message, [
+        optionalParams,
+        message.stack,
+        message.cause,
+      ]);
+    } else if (typeof message === "string") {
+      this.log("error", message, optionalParams);
+    } else {
+      this.log("error", JSON.stringify(message), optionalParams);
+    }
   }
 
   subscribe(

@@ -89,7 +89,7 @@ export const startServer = async () => {
   const server = await createServer();
   server.listen({ port: PORT }, (err) => {
     if (err) {
-      logger.error(err.message, err.name, err.stack, err.cause);
+      logger.error(err);
       process.exit(1);
     }
     if (process.env.NODE_ENV === "development") {
