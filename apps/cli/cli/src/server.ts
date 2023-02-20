@@ -69,16 +69,18 @@ export const startSocketServer = () => {
     port: WS_PORT,
   });
   const handler = applyWSSHandler({ wss, router: cliApiRouter });
-  wss.on("connection", (ws) => {
-    if (process.env.NODE_ENV === "development")
-      logger.debug(`Websocket Connection ++ (${wss.clients.size})`);
-    ws.once("close", () => {
-      if (process.env.NODE_ENV === "development")
-        logger.debug(`Websocket Connection -- (${wss.clients.size})`);
-    });
-  });
-  if (process.env.NODE_ENV === "development")
+
+  // Debug logging for dev
+  if (process.env.NODE_ENV === "development") {
     logger.debug(`WebSocket Server listening on ws://localhost:${WS_PORT}`);
+    wss.on("connection", (ws) => {
+      logger.debug(`Websocket Connection ++ (${wss.clients.size})`);
+      ws.once("close", () => {
+        logger.debug(`Websocket Connection -- (${wss.clients.size})`);
+      });
+    });
+  }
+
   process.on("SIGTERM", () => {
     handler.broadcastReconnectNotification();
     wss.close();
