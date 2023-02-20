@@ -22,18 +22,26 @@ const webFormat = (input: { level: LogLevels; message: string }) => {
 };
 
 export const Logs = () => {
-  const [messages, setMessages] = useState<ReactNode[]>([]);
+  const [messages, setMessages] = useState<
+    { level: LogLevels; message: string }[]
+  >([]);
   cliApi.onLog.useSubscription(undefined, {
     onData: (data) => {
       setMessages((messages) => {
-        return [...messages, webFormat(data)];
+        return [...messages, data];
       });
     },
   });
 
   return (
     <div className="flex h-96 flex-col overflow-y-auto rounded-md bg-gray-900 p-4">
-      {...messages}
+      {messages.map((message, index) => {
+        return (
+          <div key={index} className="text-sm">
+            {webFormat(message)}
+          </div>
+        );
+      })}
     </div>
   );
 };
