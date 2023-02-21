@@ -23,7 +23,7 @@ const colorReset = `\x1b[0m`;
 
 class logger implements Logger {
   private subscriptions: {
-    fn: (m: { message: string; level: LogLevels }) => void;
+    fn: (m: { message: string; level: LogLevels; ts: number }) => void;
     level: LogLevels;
   }[];
 
@@ -102,24 +102,28 @@ class logger implements Logger {
   }
 
   subscribe(
-    fn: (m: { message: string; level: LogLevels }) => void,
+    fn: (m: { message: string; level: LogLevels; ts: number }) => void,
     level?: LogLevels
   ) {
     if (!level) level = "info";
     this.subscriptions.push({ fn, level });
   }
 
-  unsubscribe(fn: (m: { message: string; level: LogLevels }) => void) {
+  unsubscribe(
+    fn: (m: { message: string; level: LogLevels; ts: number }) => void
+  ) {
     this.subscriptions = this.subscriptions.filter(
       ({ fn: subFn }) => subFn !== fn
     );
   }
 
   private log(level: LogLevels, message: string, optionalParams: any[]) {
+    const ts = Date.now();
+
     console[level](consoleFormat(level, message), ...optionalParams);
 
     this.subscriptions.forEach(({ fn, level: subLevel }) => {
-      if (getLogLevels(subLevel).includes(level)) fn({ message, level });
+      if (getLogLevels(subLevel).includes(level)) fn({ message, level, ts });
     });
   }
 }

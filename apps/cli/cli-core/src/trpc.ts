@@ -25,8 +25,8 @@ export const t = initTRPC.create({
 });
 export const cliApiRouter = t.router({
   onLog: t.procedure.subscription(() => {
-    return observable<{ message: string; level: LogLevels }>((emit) => {
-      const onLog = (m: { message: string; level: LogLevels }) => {
+    return observable<{ message: string; level: LogLevels; ts:number }>((emit) => {
+      const onLog = (m: { message: string; level: LogLevels, ts:number }) => {
         emit.next(m);
       };
 

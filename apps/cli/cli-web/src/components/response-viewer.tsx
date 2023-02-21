@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
+import { Tooltip } from "./common/tooltip";
 
 const colorMap = {
   trace: "text-gray-600", // gray
@@ -15,7 +16,7 @@ const colorMap = {
 
 export const ResponseViewer = () => {
   const [messages, setMessages] = useState<
-    { level: LogLevels; message: string }[]
+    { level: LogLevels; message: string; ts: number }[]
   >([]);
 
   cliApi.onLog.useSubscription(undefined, {
@@ -51,14 +52,19 @@ export const ResponseViewer = () => {
           <table>
             {messages.map((message, index) => (
               <tr key={index}>
-                <td
-                  className={classNames(
-                    "w-1/8 px-1 text-right align-top font-mono text-sm font-medium",
-                    colorMap[message.level]
-                  )}
+                <Tooltip
+                  content={new Date(message.ts).toLocaleString()}
+                  placement="top"
                 >
-                  {`[${message.level.toUpperCase()}]`}
-                </td>
+                  <td
+                    className={classNames(
+                      "w-1/8 px-1 text-right align-top font-mono text-sm font-medium",
+                      colorMap[message.level]
+                    )}
+                  >
+                    {`[${message.level.toUpperCase()}]`}
+                  </td>
+                </Tooltip>
                 <td className="w-7/8 px-1 font-mono text-sm font-medium text-gray-300">
                   {message.message}
                 </td>
