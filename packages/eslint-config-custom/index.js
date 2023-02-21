@@ -25,6 +25,7 @@ module.exports = {
         },
       },
     ],
+    "no-console": "warn",
 
     // Allows for _ prefixed variables to be unused
     // Ripped from https://stackoverflow.com/questions/64052318/how-to-disable-warn-about-some-unused-params-but-keep-typescript-eslint-no-un

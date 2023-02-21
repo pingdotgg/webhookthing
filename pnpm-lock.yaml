@@ -22,6 +22,7 @@ importers:
     specifiers:
       '@captain/cli-core': '*'
       '@captain/cli-web': '*'
+      '@captain/logger': workspace:*
       '@captain/tsconfig': workspace:*
       '@fastify/cors': ^8.2.0
       '@fastify/http-proxy': ^8.4.0
@@ -31,6 +32,7 @@ importers:
       '@types/gradient-string': ^1.1.2
       '@types/inquirer': ^9.0.2
       '@types/node': ^18.8.0
+      '@types/ws': ^8.5.4
       '@vercel/ncc': ^0.36.0
       fastify: ^4.11.0
       fs-extra: ^11.1.0
@@ -42,8 +44,10 @@ importers:
       tsup: ^6.5.0
       type-fest: ^3.0.0
       typescript: ^4.9.4
+      ws: ^8.12.1
     dependencies:
       '@captain/cli-core': link:../cli-core
+      '@captain/logger': link:../../../packages/logger
       '@fastify/cors': 8.2.0
       '@fastify/http-proxy': 8.4.0
       '@fastify/static': 6.7.0
@@ -53,6 +57,7 @@ importers:
       graceful-fs: 4.2.10
       gradient-string: 2.0.2
       open: 8.4.0
+      ws: 8.12.1
     devDependencies:
       '@captain/cli-web': link:../cli-web
       '@captain/tsconfig': link:../../../packages/tsconfig
@@ -60,6 +65,7 @@ importers:
       '@types/gradient-string': 1.1.2
       '@types/inquirer': 9.0.3
       '@types/node': 18.11.18
+      '@types/ws': 8.5.4
       '@vercel/ncc': 0.36.1
       prettier: 2.8.3
       prettier-plugin-tailwindcss: 0.1.13_prettier@2.8.3
@@ -70,6 +76,7 @@ importers:
 
   apps/cli/cli-core:
     specifiers:
+      '@captain/logger': workspace:*
       '@captain/tsconfig': workspace:*
       '@trpc/client': 10.9.0
       '@trpc/server': 10.9.0
@@ -80,6 +87,7 @@ importers:
       typescript: ^4.9.4
       zod: ^3.19.1
     dependencies:
+      '@captain/logger': link:../../../packages/logger
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
       '@trpc/server': 10.9.0
       node-fetch: 3.3.0
@@ -94,6 +102,7 @@ importers:
   apps/cli/cli-web:
     specifiers:
       '@captain/cli-core': '*'
+      '@captain/logger': workspace:*
       '@captain/tailwind-config': '*'
       '@captain/tsconfig': workspace:*
       '@headlessui/react': ^1.7.8
@@ -124,6 +133,7 @@ importers:
       vite: ^4.0.0
       zod: ^3.19.1
     dependencies:
+      '@captain/logger': link:../../../packages/logger
       '@headlessui/react': 1.7.8_biqbaboplfbrettd7655fr4n2y
       '@heroicons/react': 2.0.14_react@18.2.0
       '@hookform/resolvers': 2.9.10_react-hook-form@7.43.0
@@ -255,6 +265,18 @@ importers:
       eslint-config-turbo: 0.0.7
       eslint-plugin-react: 7.28.0
       next: 13.1.5
+
+  packages/logger:
+    specifiers:
+      '@captain/tsconfig': workspace:*
+      eslint: ^7.32.0
+      eslint-config-custom: workspace:*
+      typescript: ^4.9.4
+    devDependencies:
+      '@captain/tsconfig': link:../tsconfig
+      eslint: 7.32.0
+      eslint-config-custom: link:../eslint-config-custom
+      typescript: 4.9.4
 
   packages/tailwind-config:
     specifiers:
@@ -961,7 +983,7 @@ packages:
     resolution: {integrity: sha512-H8nwsmawFtKKRE6uhh1BtF1gQi/l147SmLsDGxB0HdYTHzjXz6uSQO3lEVmY7unKMzbArRjdoJQkEGpScszdSw==}
     dependencies:
       '@fastify/reply-from': 8.3.1
-      ws: 8.12.0
+      ws: 8.12.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -1814,6 +1836,12 @@ packages:
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
     dev: false
+
+  /@types/ws/8.5.4:
+    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
+    dependencies:
+      '@types/node': 18.11.18
+    dev: true
 
   /@typescript-eslint/eslint-plugin/5.52.0_t6eclxjmd5f54roe4wwsj3rtvy:
     resolution: {integrity: sha512-lHazYdvYVsBokwCdKOppvYJKaJ4S41CgKBcPvyd0xjZNbvQdhn/pnJlGtQksQ/NhInzdaeaSarlBjDXHuclEbg==}
@@ -7679,8 +7707,8 @@ packages:
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  /ws/8.12.0:
-    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
+  /ws/8.12.1:
+    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

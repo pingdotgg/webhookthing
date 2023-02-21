@@ -18,5 +18,5 @@ export default defineConfig({
 
   shims: true,
 
-  noExternal: ["@captain/cli-core"],
+  noExternal: ["@captain/cli-core", "@captain/logger"],
 });

@@ -14,5 +14,6 @@ const poimandresTheme = {
 export const renderTitle = () => {
   const captGradient = gradient(Object.values(poimandresTheme));
 
+  // eslint-disable-next-line no-console
   console.log(captGradient.multiline(TITLE_TEXT));
 };

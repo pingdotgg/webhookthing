@@ -1,3 +1,5 @@
+import logger from "@captain/logger";
+
 export const substituteTemplate = (input: {
   template: string;
   sanitize?: boolean;
@@ -13,7 +15,7 @@ export const substituteTemplate = (input: {
     const variable = match[1]?.trim();
 
     if (!variable) {
-      console.log(`\u001b[31m[ERROR] Invalid template configuration`);
+      logger.error(`Invalid template configuration`);
       throw new Error(`Invalid template configuration`);
     }
     const sanitizedString = `%%${variable}%%`;
@@ -21,9 +23,7 @@ export const substituteTemplate = (input: {
     const fromEnv = process.env[variable];
 
     if (!fromEnv) {
-      console.log(
-        `\u001b[31m[ERROR] Environment variable ${variable} not found`
-      );
+      logger.error(`Environment variable ${variable} not found`);
       throw new Error(`Environment variable ${variable} not found`);
     }
 
