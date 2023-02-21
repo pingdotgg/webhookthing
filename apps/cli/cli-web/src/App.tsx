@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { JsonBlobs } from "./components/jsonblobs";
 import { EndpointSetting } from "./components/endpointsetting";
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
+import { Logs } from "./components/logs";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -52,6 +53,7 @@ export default function Example() {
               <div className="flex flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
                 <EndpointSetting />
                 <JsonBlobs />
+                <Logs />
               </div>
             </div>
           </div>
