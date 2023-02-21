@@ -11,6 +11,7 @@ import { cliApi } from "../utils/api";
 import { Modal } from "./common/modal";
 import { classNames } from "../utils/classnames";
 import { generateConfigFromState } from "../utils/configTransforms";
+import toast from "react-hot-toast";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -47,6 +48,9 @@ export const WebhookFormModal = (input: {
   onClose?: () => void;
 }) => {
   const ctx = cliApi.useContext();
+
+  const { data: existing } = cliApi.getBlobs.useQuery();
+
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
       void ctx.getBlobs.invalidate().then(() => {
@@ -97,6 +101,10 @@ export const WebhookFormModal = (input: {
 
   const onSubmit = (data: FormValidatorType) => {
     if (type === "create") {
+      // Don't allow duplicate names (this overwrites the existing hook)
+      if (existing?.find((b) => b.name.split(".json")[0] === data.name)) {
+        return toast.error("Hook with that name already exists");
+      }
       addHook({
         name: data.name,
         body: data.body ?? "",
