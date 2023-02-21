@@ -7,11 +7,11 @@ import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
 
 const colorMap = {
-  trace: "text-gray-600", // gray
-  debug: `text-cyan-600`, // cyan
-  info: `text-white`, // white
-  warn: `text-yellow-600`, // yellow
-  error: `text-red-600`, // red
+  trace: { label: "text-gray-600", body: "text-gray-700" }, // gray
+  debug: { label: "text-cyan-600", body: "text-cyan-700" }, // cyan
+  info: { label: "text-white", body: "text-gray-100" }, // white
+  warn: { label: "text-yellow-600", body: "text-yellow-700" }, // yellow
+  error: { label: "text-red-600", body: "text-red-700" }, // red
 } as const;
 
 export const ResponseViewer = () => {
@@ -58,14 +58,19 @@ export const ResponseViewer = () => {
                 >
                   <td
                     className={classNames(
-                      "w-1/8 px-1 text-right align-top font-mono text-sm font-medium",
-                      colorMap[message.level]
+                      "w-1/8 px-1 text-right align-top font-mono text-sm font-semibold",
+                      colorMap[message.level].label
                     )}
                   >
                     {`[${message.level.toUpperCase()}]`}
                   </td>
                 </Tooltip>
-                <td className="w-7/8 px-1 font-mono text-sm font-medium text-gray-300">
+                <td
+                  className={classNames(
+                    "w-7/8 px-1 font-mono text-sm font-medium text-gray-300",
+                    colorMap[message.level].body
+                  )}
+                >
                   {message.message}
                 </td>
               </tr>
