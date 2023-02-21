@@ -3,6 +3,8 @@ import { promisify } from "util";
 import os from "os";
 import fs from "fs";
 
+import logger from "@captain/logger";
+
 const promisifiedExecFile = promisify(childProcess.execFile);
 
 const getCommand = () => {
@@ -23,9 +25,7 @@ const getCommand = () => {
 export async function openInExplorer(path: string) {
   // Create the directory if it doesn't exist
   if (!fs.existsSync(path)) {
-    console.log(
-      `\x1b[33m[WARNING] Could not find .thing directory, creating it now!\x1b[0m`
-    );
+    logger.warn(`Could not find .thing directory, creating it now!`);
     fs.mkdirSync(path, { recursive: true });
   }
 
