@@ -58,7 +58,7 @@ export const ResponseViewer = () => {
                 >
                   <td
                     className={classNames(
-                      "w-1/8 px-1 text-right align-top font-mono text-sm font-semibold",
+                      "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
                       colorMap[message.level].label
                     )}
                   >
@@ -67,7 +67,7 @@ export const ResponseViewer = () => {
                 </Tooltip>
                 <td
                   className={classNames(
-                    "w-7/8 px-1 font-mono text-sm font-medium text-gray-300",
+                    "px-1 font-mono text-sm font-medium text-gray-300",
                     colorMap[message.level].body
                   )}
                 >
