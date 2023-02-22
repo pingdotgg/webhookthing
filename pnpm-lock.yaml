@@ -193,6 +193,7 @@ importers:
     specifiers:
       '@captain/tailwind-config': '*'
       '@captain/tsconfig': workspace:*
+      '@formkit/auto-animate': ^1.0.0-beta.6
       '@heroicons/react': ^2.0.14
       '@tanstack/react-query': ^4.20.0
       '@trpc/client': ^10.8.1
@@ -220,6 +221,7 @@ importers:
       zod: ^3.20.2
     dependencies:
       '@captain/tailwind-config': link:../../packages/tailwind-config
+      '@formkit/auto-animate': 1.0.0-beta.6
       '@heroicons/react': 2.0.14_react@18.2.0
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
       '@trpc/client': 10.9.0_@trpc+server@10.9.0
@@ -1034,6 +1036,10 @@ packages:
       readable-stream: 4.3.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@formkit/auto-animate/1.0.0-beta.6:
+    resolution: {integrity: sha512-PVDhLAlr+B4Xb7e+1wozBUWmXa6BFU8xUPR/W/E+TsQhPS1qkAdAsJ25keEnFrcePSnXHrOsh3tiFbEToOzV9w==}
     dev: false
 
   /@headlessui/react/1.7.8_biqbaboplfbrettd7655fr4n2y:

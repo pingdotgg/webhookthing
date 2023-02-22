@@ -1,63 +1,18 @@
-import { EnvelopeIcon, GlobeAltIcon } from "@heroicons/react/20/solid";
+import {
+  ClipboardIcon,
+  EnvelopeIcon,
+  GlobeAltIcon,
+  PlayIcon,
+} from "@heroicons/react/20/solid";
 import Head from "next/head";
 import { useState } from "react";
 import { z } from "zod";
 
 import type { NextPage } from "next";
-
-import { api } from "../utils/api";
-
-const bannedEndpoints = [
-  "webhookthing.com",
-  "hookthing.com",
-  "example.com",
-  "foo.bar",
-  "localhost",
-  "example/",
-  "examplecom/",
-  "asdf.com",
-  "ping.gg",
-  "test.com",
-  "google.com",
-];
+import { classNames } from "../utils/classnames";
 
 const Home: NextPage = () => {
-  const [showEmail, setShowEmail] = useState(false);
-
-  const [endpoint, setEndpoint] = useState<string>();
-  const [email, setEmail] = useState<string>();
-
-  const [invalidEndpoint, setInvalidEndpoint] = useState(false);
-  const [invalidEmail, setInvalidEmail] = useState(false);
-
-  const [bottomText, setBottomText] = useState("");
-
-  const [submitted, setSubmitted] = useState(false);
-
-  const { mutate: submit } = api.example.submitWaitlist.useMutation();
-  const handleSubmit = () => {
-    if (!email) {
-      setShowEmail(true);
-      setBottomText("ok... so we actually do want your email");
-      if (endpoint && !z.string().url().safeParse(endpoint).success) {
-        setInvalidEndpoint(true);
-      }
-      return;
-    }
-
-    if (!z.string().email().safeParse(email).success) {
-      setInvalidEmail(true);
-      return;
-    }
-
-    if (endpoint && !z.string().url().safeParse(endpoint).success) {
-      setInvalidEndpoint(true);
-      return;
-    }
-
-    submit({ endpoint: endpoint === "" ? undefined : endpoint, email });
-    setSubmitted(true);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -70,124 +25,61 @@ const Home: NextPage = () => {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-800/40">
+      <main
+        className={classNames(
+          "relative z-10 flex min-h-screen flex-col items-center justify-center transition-all duration-[1500ms] ease-in-out",
+          open ? "bg-gradient-to-br from-indigo-800/40 " : "bg-white"
+        )}
+      >
         <div className="container flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
-            {`webhook`}
-            <span className="font-extrabold text-indigo-600 ">{`thing`}</span>
-          </h1>
-          <div className="flex w-96 max-w-sm flex-col gap-4 rounded-xl bg-white/10 p-6 text-white">
-            {!submitted ? (
-              <>
-                <h3 className="text-2xl font-bold">{`join the waitlist`}</h3>
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="endpoint"
-                    className="sr-only block text-sm font-medium"
-                  >
-                    {`Endpoint`}
-                  </label>
-                  <div className="relative mt-1 rounded-md shadow-sm">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <GlobeAltIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <input
-                      type="url"
-                      name="endpoint"
-                      id="endpoint"
-                      className="block w-full rounded-md border-gray-300 bg-white/10 p-2 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="https://example.com/hooks"
-                      onChange={(e) => {
-                        setEndpoint(e.target.value);
-                        const banned = bannedEndpoints.some((banned) =>
-                          e.target.value.includes(banned)
-                        );
-                        setInvalidEndpoint(banned);
-                      }}
-                      value={endpoint}
-                    />
+          {!open ? (
+            <button
+              className="flex items-center justify-center gap-2 rounded-md bg-white px-4 py-2 transition-colors hover:bg-indigo-600/80 hover:text-white"
+              onClick={() => setOpen(true)}
+            >
+              {`Run`}
+              <PlayIcon className="h-4 w-4" />
+            </button>
+          ) : (
+            <>
+              <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
+                {`webhook`}
+                <span className="font-extrabold text-indigo-600 ">{`thing`}</span>
+              </h1>
+              <div className="flex w-96 max-w-sm flex-col gap-4 rounded-xl bg-white/10 p-6 text-white">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    {`That's how easy it could be to test your webhooks locally!`}
                   </div>
-                  {invalidEndpoint && (
-                    <p className="text-sm text-red-500">
-                      {`invalid endpoint url.`}
-                    </p>
-                  )}
-                  {showEmail && (
-                    <>
-                      <label
-                        htmlFor="email"
-                        className="sr-only block text-sm font-medium"
-                      >
-                        {`Email`}
-                      </label>
-                      <div className="relative mt-1 rounded-md shadow-sm">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                          <EnvelopeIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
+                  <div className="flex items-center gap-2">
+                    {`this is where we might put a gif or something`}
+                  </div>
+                  {/* code block with click to copy for npx */}
+                  <div className="flex items-center gap-2">
+                    <div className="w-full divide-y divide-gray-600 rounded-md bg-gray-900 text-white">
+                      <div className="flex items-center justify-between px-2 py-1">
+                        <div className="flex items-center gap-2"></div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() =>
+                              void navigator.clipboard.writeText(
+                                "npx webhookthing"
+                              )
+                            }
+                          >
+                            <ClipboardIcon className="h-4 w-4" />
+                          </button>
                         </div>
-                        <input
-                          type="email"
-                          name="email"
-                          id="email"
-                          className="block w-full rounded-md border-gray-300 bg-white/10 p-2 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                          placeholder="jdoe@example.com"
-                          onChange={(e) => {
-                            setEmail(e.target.value);
-                            setInvalidEmail(
-                              !z.string().email().safeParse(e.target.value)
-                                .success
-                            );
-                          }}
-                          value={email}
-                        />
                       </div>
-                      {invalidEmail && (
-                        <p className="text-sm text-red-500">{`invalid email`}</p>
-                      )}
-                    </>
-                  )}
-                  <button
-                    className="mt-4 w-full rounded-lg bg-indigo-600/80 px-4 py-2 text-white hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-600/80"
-                    disabled={
-                      (!endpoint && !email) ||
-                      (showEmail && !email) ||
-                      invalidEndpoint ||
-                      invalidEmail
-                    }
-                    onClick={handleSubmit}
-                  >
-                    {`submit`}
-                  </button>
+                      <div className="flex items-center justify-between px-2 py-1">
+                        <pre>{`npx webhookthing`}</pre>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-center text-sm text-white/70 ">
-                  {showEmail ? (
-                    <>
-                      {!endpoint && !bottomText && <>{`no endpoint? lame.`}</>}
-                      {bottomText}
-                    </>
-                  ) : (
-                    <>
-                      <span
-                        className="cursor-pointer hover:text-indigo-500 hover:underline"
-                        onClick={() => setShowEmail(true)}
-                      >
-                        {`where do i put my email?`}
-                      </span>
-                    </>
-                  )}
-                </p>
-              </>
-            ) : (
-              <h3 className="text-center text-2xl font-bold">
-                {`thanks for joining the waitlist!`}
-              </h3>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </main>
     </>
