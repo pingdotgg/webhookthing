@@ -15,7 +15,9 @@ const createServer = async () => {
   // Configure CORS
   await server.register(cors, {
     origin:
-      process.env.NODE_ENV === "development" ? "*" : "http://localhost:2033",
+      process.env.NODE_ENV === "development"
+        ? "*"
+        : /^(https?:\/\/)?(127\.0\.0\.1|localhost|::1):2033$/gm,
   });
 
   // Configure proxy for Plausible
