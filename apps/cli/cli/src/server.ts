@@ -1,24 +1,29 @@
 // Configure fastify
 import fastify from "fastify";
-
 import cors from "@fastify/cors";
 import proxy from "@fastify/http-proxy";
-import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
-import { cliApiRouter } from "@captain/cli-core";
 import { fastifyStatic } from "@fastify/static";
+import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import path from "path";
 
+import { cliApiRouter } from "@captain/cli-core";
 import logger from "@captain/logger";
 
 const PORT = 2033;
 const WS_PORT = 2034;
+
 
 const createServer = async () => {
   const server = fastify({
     maxParamLength: 5000,
   });
   // Configure CORS
-  await server.register(cors, { origin: "*" });
+  await server.register(cors, {
+    origin:
+      process.env.NODE_ENV === "development"
+        ? "*"
+        : /^(https?:\/\/)?(127\.0\.0\.1|localhost|::1):2033$/gm,
+  });
 
   // Configure proxy for Plausible
   await server.register(proxy, {
