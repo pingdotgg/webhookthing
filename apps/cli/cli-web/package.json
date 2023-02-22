@@ -13,6 +13,7 @@
     "format:check": "prettier --check --plugin-search-dir=. src/**/*.{cjs,mjs,ts,tsx,md,json} --ignore-path ../.gitignore"
   },
   "dependencies": {
+    "@captain/logger": "workspace:*",
     "@headlessui/react": "^1.7.8",
     "@heroicons/react": "^2.0.12",
     "@hookform/resolvers": "^2.9.10",

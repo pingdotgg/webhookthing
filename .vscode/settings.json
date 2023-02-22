@@ -11,6 +11,7 @@
     "apps/cli/cli-core",
     "apps/cli/cli-web",
     "apps/docs",
-    "apps/marketing"
+    "apps/marketing",
+    "packages/logger"
   ]
 }
