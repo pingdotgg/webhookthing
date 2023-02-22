@@ -40,7 +40,7 @@ const Home: NextPage = () => {
       </Head>
       <main
         className={classNames(
-          "relative z-10 flex min-h-screen flex-col items-center justify-center transition-all duration-[1500ms] ease-in-out",
+          "relative z-10 flex min-h-screen flex-col items-center justify-center transition-all duration-1000 ease-in-out",
           open ? "bg-gradient-to-br from-indigo-800/40 " : "bg-white"
         )}
       >
@@ -64,8 +64,12 @@ const Home: NextPage = () => {
                   <div className="flex items-center gap-2 text-xl">
                     {`Run webhooks locally with 1 click.`}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-full divide-y divide-gray-600 rounded-md bg-gray-900 p-2 text-white">
+                  <div
+                    className={classNames(
+                      "flex animate-fade-in items-center gap-2"
+                    )}
+                  >
+                    <div className="w-full animate-delayed-fade-in rounded-md bg-gray-900 p-2 text-white">
                       <div className="flex items-center justify-between px-2 py-1">
                         <pre>{`npx webhookthing`}</pre>
                         <div className="flex gap-1">
