@@ -73,6 +73,14 @@ const Home: NextPage = () => {
             </div>
           )}
         </div>
+
+        {open && (
+          <div className="absolute bottom-0 w-full animate-fade-in p-4 text-center text-xl text-white">
+            <a className="hover:underline" href="https://docs.webhookthing.com">
+              {"Docs"}
+            </a>
+          </div>
+        )}
       </main>
     </>
   );
