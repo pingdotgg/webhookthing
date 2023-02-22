@@ -1,18 +1,28 @@
-import {
-  ClipboardIcon,
-  EnvelopeIcon,
-  GlobeAltIcon,
-  PlayIcon,
-} from "@heroicons/react/20/solid";
+import { CheckIcon, ClipboardIcon, PlayIcon } from "@heroicons/react/20/solid";
+import { ClipboardIcon as ClipboardIconHover } from "@heroicons/react/24/outline";
+
 import Head from "next/head";
-import { useState } from "react";
-import { z } from "zod";
+import { useEffect, useState } from "react";
 
 import type { NextPage } from "next";
 import { classNames } from "../utils/classnames";
 
+const useTemp = (timeout = 2000) => {
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => {
+        setCopied(false);
+      }, timeout);
+      return () => clearTimeout(timer);
+    }
+  }, [copied, timeout]);
+  return [copied, () => setCopied(true)] as [boolean, () => void];
+};
+
 const Home: NextPage = () => {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useTemp();
 
   return (
     <>
@@ -51,20 +61,30 @@ const Home: NextPage = () => {
                   <div className="flex items-center gap-2 text-xl">
                     {`Run webhooks locally with 1 click.`}
                   </div>
-                  {/* code block with click to copy for npx */}
                   <div className="flex items-center gap-2">
                     <div className="w-full divide-y divide-gray-600 rounded-md bg-gray-900 p-2 text-white">
                       <div className="flex items-center justify-between px-2 py-1">
                         <pre>{`npx webhookthing`}</pre>
-                        <button
-                          onClick={() =>
-                            void navigator.clipboard.writeText(
-                              "npx webhookthing"
-                            )
-                          }
-                        >
-                          <ClipboardIcon className="h-4 w-4" />
-                        </button>
+                        <div className="flex gap-1">
+                          <button
+                            className="group"
+                            onClick={() => {
+                              void navigator.clipboard.writeText(
+                                "npx webhookthing"
+                              );
+                              setCopied();
+                            }}
+                          >
+                            {copied ? (
+                              <CheckIcon className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <>
+                                <ClipboardIconHover className="block h-4 w-4 group-hover:hidden" />
+                                <ClipboardIcon className="hidden h-4 w-4 group-hover:block" />
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
