@@ -41,44 +41,36 @@ const Home: NextPage = () => {
               <PlayIcon className="h-4 w-4" />
             </button>
           ) : (
-            <>
+            <div className="flex animate-fade-in flex-col items-center justify-center">
               <h1 className="text-[3.5rem] font-medium tracking-tighter text-white sm:text-[5rem]">
                 {`webhook`}
                 <span className="font-extrabold text-indigo-600 ">{`thing`}</span>
               </h1>
-              <div className="flex w-96 max-w-sm flex-col gap-4 rounded-xl bg-white/10 p-6 text-white">
+              <div className="flex w-96 max-w-sm flex-col items-center text-center text-white">
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2">
-                    {`That's how easy it could be to test your webhooks locally!`}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {`this is where we might put a gif or something`}
+                  <div className="flex items-center gap-2 text-xl">
+                    {`Run webhooks locally with 1 click.`}
                   </div>
                   {/* code block with click to copy for npx */}
                   <div className="flex items-center gap-2">
-                    <div className="w-full divide-y divide-gray-600 rounded-md bg-gray-900 text-white">
-                      <div className="flex items-center justify-between px-2 py-1">
-                        <div className="flex items-center gap-2"></div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() =>
-                              void navigator.clipboard.writeText(
-                                "npx webhookthing"
-                              )
-                            }
-                          >
-                            <ClipboardIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
+                    <div className="w-full divide-y divide-gray-600 rounded-md bg-gray-900 p-2 text-white">
                       <div className="flex items-center justify-between px-2 py-1">
                         <pre>{`npx webhookthing`}</pre>
+                        <button
+                          onClick={() =>
+                            void navigator.clipboard.writeText(
+                              "npx webhookthing"
+                            )
+                          }
+                        >
+                          <ClipboardIcon className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </main>
