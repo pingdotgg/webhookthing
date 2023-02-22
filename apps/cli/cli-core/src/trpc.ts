@@ -25,17 +25,23 @@ export const t = initTRPC.create({
 });
 export const cliApiRouter = t.router({
   onLog: t.procedure.subscription(() => {
-    return observable<{ message: string; level: LogLevels }>((emit) => {
-      const onLog = (m: { message: string; level: LogLevels }) => {
-        emit.next(m);
-      };
+    return observable<{ message: string; level: LogLevels; ts: number }>(
+      (emit) => {
+        const onLog = (m: {
+          message: string;
+          level: LogLevels;
+          ts: number;
+        }) => {
+          emit.next(m);
+        };
 
-      logger.subscribe(onLog);
+        logger.subscribe(onLog);
 
-      return () => {
-        logger.unsubscribe(onLog);
-      };
-    });
+        return () => {
+          logger.unsubscribe(onLog);
+        };
+      }
+    );
   }),
 
   getBlobs: t.procedure.query(async () => {
