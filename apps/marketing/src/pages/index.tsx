@@ -1,11 +1,14 @@
 import { CheckIcon, ClipboardIcon, PlayIcon } from "@heroicons/react/20/solid";
-import { ClipboardIcon as ClipboardIconHover } from "@heroicons/react/24/outline";
+import { ClipboardIcon as ClipboardIconOutline } from "@heroicons/react/24/outline";
 
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
 import type { NextPage } from "next";
-import { classNames } from "../utils/classnames";
+
+const classNames = (...classes: string[]) => {
+  return classes.filter(Boolean).join(" ");
+};
 
 const useTemp = (timeout = 2000) => {
   const [copied, setCopied] = useState(false);
@@ -79,7 +82,7 @@ const Home: NextPage = () => {
                               <CheckIcon className="h-4 w-4 text-green-500" />
                             ) : (
                               <>
-                                <ClipboardIconHover className="block h-4 w-4 group-hover:hidden" />
+                                <ClipboardIconOutline className="block h-4 w-4 group-hover:hidden" />
                                 <ClipboardIcon className="hidden h-4 w-4 group-hover:block" />
                               </>
                             )}
