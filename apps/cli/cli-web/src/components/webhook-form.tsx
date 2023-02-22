@@ -11,6 +11,7 @@ import { cliApi } from "../utils/api";
 import { Modal } from "./common/modal";
 import { classNames } from "../utils/classnames";
 import { generateConfigFromState } from "../utils/configTransforms";
+import toast from "react-hot-toast";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -27,7 +28,7 @@ const jsonValidator = () =>
   );
 
 const formValidator = z.object({
-  name: z.string().max(20).min(1, { message: "Required" }),
+  name: z.string().max(100).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
     url: z.union([z.literal(""), z.string().trim().url()]).optional(),
@@ -47,6 +48,9 @@ export const WebhookFormModal = (input: {
   onClose?: () => void;
 }) => {
   const ctx = cliApi.useContext();
+
+  const { data: existing } = cliApi.getBlobs.useQuery();
+
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
       void ctx.getBlobs.invalidate().then(() => {
@@ -71,6 +75,7 @@ export const WebhookFormModal = (input: {
     getValues,
     setValue,
     trigger,
+    reset,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
@@ -96,6 +101,10 @@ export const WebhookFormModal = (input: {
 
   const onSubmit = (data: FormValidatorType) => {
     if (type === "create") {
+      // Don't allow duplicate names (this overwrites the existing hook)
+      if (existing?.find((b) => b.name.split(".json")[0] === data.name)) {
+        return toast.error("Hook with that name already exists");
+      }
       addHook({
         name: data.name,
         body: data.body ?? "",
@@ -108,6 +117,7 @@ export const WebhookFormModal = (input: {
         config: generateConfigFromState(data.config),
       });
     }
+    reset();
 
     return "";
   };
@@ -178,22 +188,33 @@ export const WebhookFormModal = (input: {
             </div>
             <div className="mt-5">
               <form onSubmit={(e) => void submitHandler(e)} id="form">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {`Name`}
-                </label>
-                {errors.name && (
-                  <p className="text-sm text-red-500">
-                    {errors.name?.message ?? errors.name.type}
-                  </p>
+                {type === "create" && (
+                  <>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      {`Name`}
+                    </label>
+                    {errors.name && (
+                      <p className="text-sm text-red-500">
+                        {errors.name?.message ?? errors.name.type}
+                      </p>
+                    )}
+                    <div className="mt-1 flex rounded-md shadow-sm">
+                      <input
+                        type="text"
+                        id="name"
+                        className="block w-full min-w-0 flex-1 rounded-none rounded-l-md border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="my_webhook"
+                        {...register("name")}
+                      />
+                      <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">
+                        {`.json`}
+                      </span>
+                    </div>
+                  </>
                 )}
-                <input
-                  id="name"
-                  className="block w-full rounded-md border border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  {...register("name")}
-                />
                 <label
                   htmlFor="body"
                   className="block text-sm font-medium text-gray-700"
