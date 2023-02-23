@@ -27,6 +27,14 @@ const Home: NextPage = () => {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useTemp();
 
+  useEffect(() => {
+    // check local storage for open
+    const openFromStorage = window.localStorage.getItem("hasClickedRun");
+    if (openFromStorage) {
+      setOpen(true);
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -47,8 +55,11 @@ const Home: NextPage = () => {
         <div className="container flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16">
           {!open ? (
             <button
-              className="flex items-center justify-center gap-2 rounded-md bg-white px-4 py-2 transition-colors hover:bg-indigo-600/80 hover:text-white"
-              onClick={() => setOpen(true)}
+              className="flex animate-fade-in items-center justify-center gap-2 rounded-md bg-white px-4 py-2 transition-colors hover:bg-indigo-600/80 hover:text-white"
+              onClick={() => {
+                setOpen(true);
+                window.localStorage.setItem("hasClickedRun", "true");
+              }}
             >
               {`Run`}
               <PlayIcon className="h-4 w-4" />
