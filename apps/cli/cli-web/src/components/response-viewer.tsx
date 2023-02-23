@@ -1,6 +1,6 @@
 import { LogLevels } from "@captain/logger";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -28,6 +28,13 @@ export const ResponseViewer = () => {
   });
 
   const [expanded, setExpanded] = useState(true);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // 👇️ scroll to bottom every time messages change
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="flex max-h-96 flex-col gap-2 pt-4">
@@ -76,6 +83,7 @@ export const ResponseViewer = () => {
               </tr>
             ))}
           </table>
+          <div ref={bottomRef} />
         </div>
       )}
     </div>
