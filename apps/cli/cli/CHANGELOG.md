@@ -1,5 +1,11 @@
 # webhookthing
 
+## 0.5.0
+
+### Minor Changes
+
+- Output UI, overhaul config for hooks
+
 ## 0.4.1
 
 ### Patch Changes
