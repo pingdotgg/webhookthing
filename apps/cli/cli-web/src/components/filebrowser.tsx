@@ -1,6 +1,8 @@
 import { HomeIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
+
 import { cliApi } from "../utils/api";
+import { classNames } from "../utils/classnames";
 
 export const FileBrowser = () => {
   const [path, setPath] = useState<string[]>([]);
@@ -13,8 +15,6 @@ export const FileBrowser = () => {
     return <div>{`Loading...`}</div>;
   }
 
-  console.log(path);
-
   return (
     <div className="flex flex-col gap-2 divide-y divide-gray-400">
       <nav className="flex" aria-label="Breadcrumb">
@@ -23,7 +23,11 @@ export const FileBrowser = () => {
             <div>
               <button
                 onClick={() => setPath([])}
-                className="text-gray-400 hover:text-gray-500"
+                className={classNames(
+                  "text-gray-400",
+                  path.length > 0 ? "hover:text-gray-500" : "cursor-default"
+                )}
+                disabled={path.length === 0}
               >
                 <HomeIcon
                   className="h-5 w-5 flex-shrink-0"
