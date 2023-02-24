@@ -88,12 +88,12 @@ export const cliApiRouter = t.router({
   getFilesAndFolders: t.procedure
     .input(
       z.object({
-        path: z.string(),
+        path: z.array(z.string()),
       })
     )
     .query(({ input }) => {
       const { path } = input;
-      const fullPath = `${HOOK_PATH}/${path}`;
+      const fullPath = `${HOOK_PATH}/${path.join("/")}`;
 
       const dirListing: { folders: string[]; files: string[] } = {
         folders: [],

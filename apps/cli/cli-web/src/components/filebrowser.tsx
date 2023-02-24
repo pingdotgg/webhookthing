@@ -3,7 +3,7 @@ import { useState } from "react";
 import { cliApi } from "../utils/api";
 
 export const FileBrowser = () => {
-  const [path, setPath] = useState<string>("");
+  const [path, setPath] = useState<string[]>([]);
 
   const { data, isLoading } = cliApi.getFilesAndFolders.useQuery({
     path,
@@ -13,7 +13,7 @@ export const FileBrowser = () => {
     return <div>{`Loading...`}</div>;
   }
 
-  console.log(data);
+  console.log(path);
 
   return (
     <div className="flex flex-col gap-2 divide-y divide-gray-400">
@@ -22,7 +22,7 @@ export const FileBrowser = () => {
           <li>
             <div>
               <button
-                onClick={() => setPath("")}
+                onClick={() => setPath([])}
                 className="text-gray-400 hover:text-gray-500"
               >
                 <HomeIcon
@@ -33,7 +33,7 @@ export const FileBrowser = () => {
               </button>
             </div>
           </li>
-          {path.split("/").map((page) => (
+          {path.map((page) => (
             <li key={page}>
               <div className="flex items-center">
                 <svg
@@ -45,7 +45,11 @@ export const FileBrowser = () => {
                   <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                 </svg>
                 <button
-                  onClick={() => setPath(page)}
+                  onClick={() =>
+                    setPath((p) => {
+                      return p.slice(0, p.indexOf(page) + 1);
+                    })
+                  }
                   className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
                   aria-current={page ? "page" : undefined}
                 >
@@ -59,7 +63,11 @@ export const FileBrowser = () => {
       <div>
         {`Folders:`}
         {data?.folders.map((folder) => (
-          <div key={folder}>{folder}</div>
+          <div key={folder}>
+            <button onClick={() => setPath((p) => [...p, folder])}>
+              {folder}
+            </button>
+          </div>
         ))}
       </div>
       {`Files:`}
