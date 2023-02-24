@@ -171,7 +171,7 @@ export const FileBrowser = () => {
           {blobData?.map((blob, i) => (
             <li
               key={blob.name}
-              className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow"
+              className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow-sm hover:shadow-md"
             >
               <div className="flex w-full flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-1 text-xl ">
@@ -201,7 +201,10 @@ export const FileBrowser = () => {
                   </button>
                   <button
                     onClick={() => {
-                      runFile({ file: blob.name, url: storedEndpoint });
+                      runFile({
+                        file: `${path.join("/")}/${blob.name}`,
+                        url: storedEndpoint,
+                      });
                     }}
                   >
                     <PlayIcon className="h-4 hover:text-indigo-600" />

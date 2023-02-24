@@ -53,9 +53,8 @@ export default function Example() {
             <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
               <div className="flex flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
                 <FileBrowser />
-                {/* <EndpointSetting />
-                <JsonBlobs />
-                <ResponseViewer /> */}
+                <EndpointSetting />
+                <ResponseViewer />
               </div>
             </div>
           </div>
