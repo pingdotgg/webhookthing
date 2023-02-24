@@ -69,7 +69,7 @@ export const FileBrowser = () => {
                 onClick={() => setPath([])}
                 className={classNames(
                   "text-gray-400",
-                  path.length > 0 ? "hover:text-gray-500" : "cursor-default"
+                  path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
                 )}
                 disabled={path.length === 0}
               >
@@ -98,7 +98,7 @@ export const FileBrowser = () => {
                       return p.slice(0, p.indexOf(page) + 1);
                     })
                   }
-                  className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                  className="ml-4 text-sm font-medium text-gray-400 hover:text-indigo-600"
                   aria-current={page ? "page" : undefined}
                 >
                   {page}

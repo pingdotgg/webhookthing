@@ -1,4 +1,4 @@
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Toaster } from "react-hot-toast";
 
 import { JsonBlobs } from "./components/jsonblobs";
@@ -6,6 +6,14 @@ import { EndpointSetting } from "./components/endpointsetting";
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
 import { FileBrowser } from "./components/filebrowser";
+import {
+  ArchiveBoxIcon,
+  BookOpenIcon,
+  EllipsisVerticalIcon,
+  QuestionMarkCircleIcon,
+} from "@heroicons/react/20/solid";
+import { Fragment } from "react";
+import { classNames } from "./utils/classnames";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -40,6 +48,9 @@ export default function Example() {
                           </h1>
                         </div>
                       </div>
+                      <div className="flex items-end justify-center px-2">
+                        <NavMenu />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -59,24 +70,77 @@ export default function Example() {
             </div>
           </div>
         </main>
-
-        <footer className="pattern bottom-0 mt-auto">
-          <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
-            <div className="text-center text-base text-gray-400">
-              <p>
-                <a
-                  href="https://docs.webhookthing.com"
-                  className="text-white hover:text-indigo-400"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {`Questions? Check out the docs!`}
-                </a>
-              </p>
-            </div>
-          </div>
-        </footer>
       </div>
     </>
   );
 }
+
+const NavMenu = () => {
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button className="flex items-center rounded-sm  text-gray-50 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100">
+          <span className="sr-only">{`Open options`}</span>
+          <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="https://discord.gg/4wD3CNdsf6"
+                  className={classNames(
+                    active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+                    "flex flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                  )}
+                >
+                  <QuestionMarkCircleIcon className="h-4" aria-hidden="true" />
+                  {`Support`}
+                </a>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="https://github.com/pingdotgg/sample_hooks/issues/new"
+                  className={classNames(
+                    active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+                    "flex flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                  )}
+                >
+                  <ArchiveBoxIcon className="h-4" aria-hidden="true" />
+                  {`File an Issue`}
+                </a>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="https://docs.webhookthing.com"
+                  className={classNames(
+                    active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+                    "flex flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                  )}
+                >
+                  <BookOpenIcon className="h-4" aria-hidden="true" />
+                  {`Documentation`}
+                </a>
+              )}
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+};
