@@ -5,6 +5,7 @@ import { JsonBlobs } from "./components/jsonblobs";
 import { EndpointSetting } from "./components/endpointsetting";
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
+import { FileBrowser } from "./components/filebrowser";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -51,9 +52,10 @@ export default function Example() {
           <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
             <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
               <div className="flex flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
-                <EndpointSetting />
+                <FileBrowser />
+                {/* <EndpointSetting />
                 <JsonBlobs />
-                <ResponseViewer />
+                <ResponseViewer /> */}
               </div>
             </div>
           </div>

@@ -85,6 +85,59 @@ export const cliApiRouter = t.router({
     return Promise.all(res);
   }),
 
+  getFilesAndFolders: t.procedure
+    .input(
+      z.object({
+        path: z.string(),
+      })
+    )
+    .query(({ input }) => {
+      const { path } = input;
+      const fullPath = `${HOOK_PATH}/${path}`;
+
+      logger.info(`Getting files and folders for ${fullPath}`);
+
+      const dirListing: { folders: string[]; files: string[] } = {
+        folders: [],
+        files: [],
+      };
+
+      if (!fs.existsSync(fullPath)) {
+        logger.warn(`Path ${fullPath} does not exist`);
+        return dirListing;
+      }
+
+      fs.readdir(fullPath, (err, files) => {
+        if (err) {
+          logger.error(err);
+          throw err;
+        }
+
+        logger.info(`Found ${files.length} files and folders`);
+
+        files.forEach((file) => {
+          // if file is directory, add to folders array
+          if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
+            dirListing.folders.push(file);
+          }
+          // if file is not directory, add to files array
+          else {
+            // if file is a hidden file, don't add to files array
+            if (file.startsWith(".")) return;
+            dirListing.files.push(file);
+          }
+        });
+
+        logger.info(
+          `Returning ${dirListing.files.length} files and ${dirListing.folders.length} folders`
+        );
+
+        logger.info(dirListing);
+
+        return dirListing;
+      });
+    }),
+
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
     .mutation(async ({ input }) => {
