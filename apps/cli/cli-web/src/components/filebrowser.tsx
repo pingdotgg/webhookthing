@@ -33,7 +33,7 @@ export const FileBrowser = () => {
     },
   });
 
-  const { data: blobData, refetch: refetchBlobs } = cliApi.getBlobs.useQuery({
+  const { data: blobData } = cliApi.getBlobs.useQuery({
     path,
   });
 

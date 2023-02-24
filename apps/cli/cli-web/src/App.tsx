@@ -1,7 +1,6 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Toaster } from "react-hot-toast";
 
-import { JsonBlobs } from "./components/jsonblobs";
 import { EndpointSetting } from "./components/endpointsetting";
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
