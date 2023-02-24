@@ -95,8 +95,6 @@ export const cliApiRouter = t.router({
       const { path } = input;
       const fullPath = `${HOOK_PATH}/${path}`;
 
-      logger.info(`Getting files and folders for ${fullPath}`);
-
       const dirListing: { folders: string[]; files: string[] } = {
         folders: [],
         files: [],
@@ -107,35 +105,16 @@ export const cliApiRouter = t.router({
         return dirListing;
       }
 
-      fs.readdir(fullPath, (err, files) => {
-        if (err) {
-          logger.error(err);
-          throw err;
+      fs.readdirSync(fullPath).forEach((file) => {
+        if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
+          dirListing.folders.push(file);
+        } else {
+          if (file.startsWith(".")) return; // skip hidden files
+          dirListing.files.push(file);
         }
-
-        logger.info(`Found ${files.length} files and folders`);
-
-        files.forEach((file) => {
-          // if file is directory, add to folders array
-          if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
-            dirListing.folders.push(file);
-          }
-          // if file is not directory, add to files array
-          else {
-            // if file is a hidden file, don't add to files array
-            if (file.startsWith(".")) return;
-            dirListing.files.push(file);
-          }
-        });
-
-        logger.info(
-          `Returning ${dirListing.files.length} files and ${dirListing.folders.length} folders`
-        );
-
-        logger.info(dirListing);
-
-        return dirListing;
       });
+
+      return dirListing;
     }),
 
   openFolder: t.procedure
