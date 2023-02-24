@@ -27,8 +27,6 @@ export const ResponseViewer = () => {
     },
   });
 
-  const [expanded, setExpanded] = useState(true);
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,55 +35,41 @@ export const ResponseViewer = () => {
   }, [messages]);
 
   return (
-    <div className="flex max-h-96 flex-col gap-2 pt-4">
+    <div className="flex max-h-fit w-full flex-col gap-2">
       <div className="flex flex-row items-center justify-between gap-2">
         <h3 className="text-lg font-medium leading-6 text-gray-900">{`Log`}</h3>
-        {
-          <button
-            className="text-sm font-medium text-gray-500 hover:text-gray-700"
-            onClick={() => setExpanded((v) => !v)}
-          >
-            <ChevronUpIcon
-              className={classNames(
-                "h-6 transition duration-500 ease-in-out hover:text-indigo-600",
-                expanded ? "" : "rotate-180"
-              )}
-            />
-          </button>
-        }
       </div>
-      {expanded && (
-        <div className="h-48 w-full overflow-auto rounded-md !bg-gray-900 p-4">
-          <table>
-            {messages.map((message, index) => (
-              <tr key={index}>
-                <Tooltip
-                  content={new Date(message.ts).toLocaleString()}
-                  placement="top"
-                >
-                  <td
-                    className={classNames(
-                      "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
-                      colorMap[message.level].label
-                    )}
-                  >
-                    {`[${message.level.toUpperCase()}]`}
-                  </td>
-                </Tooltip>
+
+      <div className="h-full w-full overflow-auto rounded-md !bg-gray-900 px-1 py-4">
+        <table>
+          {messages.map((message, index) => (
+            <tr key={index}>
+              <Tooltip
+                content={new Date(message.ts).toLocaleString()}
+                placement="top"
+              >
                 <td
                   className={classNames(
-                    "px-1 font-mono text-sm font-medium text-gray-300",
-                    colorMap[message.level].body
+                    "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
+                    colorMap[message.level].label
                   )}
                 >
-                  {message.message}
+                  {`[${message.level.toUpperCase()}]`}
                 </td>
-              </tr>
-            ))}
-          </table>
-          <div ref={bottomRef} />
-        </div>
-      )}
+              </Tooltip>
+              <td
+                className={classNames(
+                  "px-1 font-mono text-sm font-medium text-gray-300",
+                  colorMap[message.level].body
+                )}
+              >
+                {message.message}
+              </td>
+            </tr>
+          ))}
+        </table>
+        <div ref={bottomRef} />
+      </div>
     </div>
   );
 };

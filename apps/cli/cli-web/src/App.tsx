@@ -30,7 +30,7 @@ export default function Example() {
           <Disclosure as="nav">
             {() => (
               <>
-                <div className="mx-auto max-w-5xl sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-6xl sm:px-6 lg:px-8">
                   <div className="border-b border-gray-700">
                     <div className="flex h-16 items-center justify-between px-4 sm:px-0">
                       <div className="flex items-center">
@@ -58,14 +58,16 @@ export default function Example() {
           </Disclosure>
         </div>
 
-        <main className="-mt-32">
-          <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
-            <div className="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
-              <div className="flex flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
+        <main className="-mt-32 h-full">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 pb-12 sm:px-6 md:flex-row lg:px-8">
+            <div className="flex w-full rounded-lg bg-white px-5 py-6 shadow sm:px-6 md:w-3/5">
+              <div className="flex w-full flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
                 <FileBrowser />
                 <EndpointSetting />
-                <ResponseViewer />
               </div>
+            </div>
+            <div className="flex w-full rounded-lg bg-white px-5 py-6 shadow sm:px-6 md:w-2/5">
+              <ResponseViewer />
             </div>
           </div>
         </main>
