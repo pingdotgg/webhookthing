@@ -1,14 +1,24 @@
 import {
+  CogIcon,
+  EyeIcon,
+  EyeSlashIcon,
   FolderIcon,
   HomeIcon,
+  InformationCircleIcon,
+  PlayIcon,
   PlusCircleIcon,
 } from "@heroicons/react/20/solid";
+import Highlight, { defaultProps } from "prism-react-renderer";
+import vsLight from "prism-react-renderer/themes/vsLight";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
+import { useCurrentUrl } from "../utils/useCurrentUrl";
+import { generatePrefillFromConfig } from "../utils/configTransforms";
+import { WebhookFormModal } from "./webhook-form";
 
 export const FileBrowser = () => {
   const [path, setPath] = useState<string[]>([]);
@@ -22,6 +32,28 @@ export const FileBrowser = () => {
       toast.error(err.message);
     },
   });
+
+  const { data: blobData, refetch: refetchBlobs } = cliApi.getBlobs.useQuery({
+    path,
+  });
+
+  const { mutate: runFile } = cliApi.runFile.useMutation({
+    onSuccess: () => {
+      toast.success(`Got response from server! Check console for details.`);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const [expanded, setExpanded] = useState<number[]>([]);
+
+  const [selectedHookName, setSelectedHook] = useState<string>("");
+  const [storedEndpoint] = useCurrentUrl();
+
+  const addModalState = useState(false);
+
+  const selectedHook = blobData?.find((x) => x.name === selectedHookName);
 
   if (isLoading) {
     return <div>{`Loading...`}</div>;
@@ -103,7 +135,7 @@ export const FileBrowser = () => {
               </button>
             </Tooltip>
           ))}
-          <div className="flex flex-col items-center justify-center rounded-md bg-white text-gray-600 hover:text-indigo-600 ">
+          <div className="flex flex-col items-center justify-center rounded-md bg-white py-4 text-gray-600 hover:text-indigo-600 ">
             <PlusCircleIcon
               className="h-5 w-5 flex-shrink-0"
               aria-hidden="true"
@@ -112,12 +144,139 @@ export const FileBrowser = () => {
         </div>
       </div>
       <div className="py-2">
+        <WebhookFormModal type="create" openState={addModalState} path={path} />
+        {selectedHook && (
+          <WebhookFormModal
+            type="update"
+            openState={[
+              true,
+              () => {
+                setSelectedHook("");
+              },
+            ]}
+            prefill={{
+              ...selectedHook,
+              config: generatePrefillFromConfig(selectedHook.config ?? {}),
+            }}
+            onClose={() => {
+              setSelectedHook("");
+            }}
+            path={path}
+          />
+        )}
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
-        {data?.files.map((file) => (
-          <div key={file}>{file}</div>
-        ))}
+        <ul role="list" className="max-h-80 space-y-3 overflow-y-auto ">
+          {blobData?.map((blob, i) => (
+            <li
+              key={blob.name}
+              className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow"
+            >
+              <div className="flex w-full flex-row items-center justify-between">
+                <div className="flex flex-row items-center gap-1 text-xl ">
+                  {blob.name}
+                  {(blob.config?.url || blob.config?.headers) && (
+                    <Tooltip content="This has a custom config">
+                      <InformationCircleIcon className="h-5 w-5 text-gray-800" />
+                    </Tooltip>
+                  )}
+                </div>
+                <div className=" flex flex-row items-center gap-x-4 ">
+                  <button
+                    className="invisible group-hover:visible"
+                    onClick={() => {
+                      setExpanded((prev) =>
+                        prev.includes(i)
+                          ? prev.filter((x) => x !== i)
+                          : [...prev, i]
+                      );
+                    }}
+                  >
+                    {expanded.includes(i) ? (
+                      <EyeSlashIcon className="h-4" />
+                    ) : (
+                      <EyeIcon className="h-4 hover:text-indigo-600" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      runFile({ file: blob.name, url: storedEndpoint });
+                    }}
+                  >
+                    <PlayIcon className="h-4 hover:text-indigo-600" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedHook(blob.name);
+                    }}
+                  >
+                    <CogIcon className="h-4 hover:text-indigo-600" />
+                  </button>
+                </div>
+              </div>
+              {expanded.includes(i) && (
+                <div className="flex w-full flex-col gap-2">
+                  {blob.config?.url && (
+                    <div className="flex flex-row items-center gap-2">
+                      <span className="text-gray-500">{`URL:`}</span>
+                      <span className="text-gray-800">{blob.config.url}</span>
+                    </div>
+                  )}
+                  {blob.config?.headers && (
+                    <div className="flex flex-row items-center gap-2">
+                      <span className="text-gray-500">{`Headers:`}</span>
+                      <span className="text-gray-800">
+                        {JSON.stringify(blob.config.headers)}
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-gray-500">{`Body:`}</span>
+                  <Highlight
+                    {...defaultProps}
+                    code={blob.body}
+                    language="json"
+                    theme={vsLight}
+                  >
+                    {({
+                      className,
+                      style,
+                      tokens,
+                      getLineProps,
+                      getTokenProps,
+                    }) => (
+                      <pre
+                        className={classNames(
+                          className,
+                          "w-full overflow-auto rounded-md !bg-gray-200 p-4"
+                        )}
+                        style={style}
+                      >
+                        {tokens.map((line, i) => (
+                          <div {...getLineProps({ line, key: i })}>
+                            {line.map((token, key) => (
+                              <span {...getTokenProps({ token, key })} />
+                            ))}
+                          </div>
+                        ))}
+                      </pre>
+                    )}
+                  </Highlight>
+                </div>
+              )}
+            </li>
+          ))}
+          <li className="group flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow">
+            <button onClick={() => addModalState[1](true)}>
+              <div className="flex flex-col items-center justify-center rounded-md bg-white text-gray-600 group-hover:text-indigo-600 ">
+                <PlusCircleIcon
+                  className="h-5 w-5 flex-shrink-0"
+                  aria-hidden="true"
+                />
+              </div>
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   );

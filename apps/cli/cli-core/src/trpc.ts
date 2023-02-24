@@ -44,46 +44,56 @@ export const cliApiRouter = t.router({
     );
   }),
 
-  getBlobs: t.procedure.query(async () => {
-    if (!fs.existsSync(HOOK_PATH)) {
-      // TODO: this should probably be an error, and the frontend should handle it
-      return [];
-    }
+  getBlobs: t.procedure
+    .input(
+      z.object({
+        path: z.array(z.string()),
+      })
+    )
+    .query(async ({ input }) => {
+      const fullPath = `${HOOK_PATH}/${input.path.join("/")}`;
 
-    const hooks = await fsPromises.readdir(HOOK_PATH);
+      logger.debug(`Getting blobs from ${fullPath}`);
 
-    const res = hooks
-      .filter(
-        (hookFile) =>
-          hookFile.includes(".json") && !hookFile.includes(".config.json")
-      )
-      .map(async (hook) => {
-        const bodyPromise = fsPromises.readFile(
-          path.join(HOOK_PATH, hook),
-          "utf-8"
-        );
+      if (!fs.existsSync(fullPath)) {
+        // TODO: this should probably be an error, and the frontend should handle it
+        return [];
+      }
 
-        const configPath = hook.replace(".json", "") + ".config.json";
+      const hooks = await fsPromises.readdir(fullPath);
 
-        let config;
-        if (fs.existsSync(path.join(HOOK_PATH, configPath))) {
-          config = await fsPromises.readFile(
-            path.join(HOOK_PATH, configPath),
+      const res = hooks
+        .filter(
+          (hookFile) =>
+            hookFile.includes(".json") && !hookFile.includes(".config.json")
+        )
+        .map(async (hook) => {
+          const bodyPromise = fsPromises.readFile(
+            path.join(fullPath, hook),
             "utf-8"
           );
-        }
 
-        return {
-          name: hook,
-          body: await bodyPromise,
-          config: config
-            ? (JSON.parse(config) as ConfigValidatorType)
-            : undefined,
-        };
-      });
+          const configPath = hook.replace(".json", "") + ".config.json";
 
-    return Promise.all(res);
-  }),
+          let config;
+          if (fs.existsSync(path.join(fullPath, configPath))) {
+            config = await fsPromises.readFile(
+              path.join(fullPath, configPath),
+              "utf-8"
+            );
+          }
+
+          return {
+            name: hook,
+            body: await bodyPromise,
+            config: config
+              ? (JSON.parse(config) as ConfigValidatorType)
+              : undefined,
+          };
+        });
+
+      return Promise.all(res);
+    }),
 
   getFilesAndFolders: t.procedure
     .input(
@@ -244,13 +254,19 @@ export const cliApiRouter = t.router({
         name: z.string(),
         body: z.string(),
         config: configValidator.optional(),
+        path: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input }) => {
       const { name, body, config } = input;
+
+      const fullPath = input.path
+        ? `${HOOK_PATH}/${input.path.join("/")}`
+        : HOOK_PATH;
+
       logger.info(`Creating ${name}.json`);
 
-      await fsPromises.writeFile(path.join(HOOK_PATH, `${name}.json`), body);
+      await fsPromises.writeFile(path.join(fullPath, `${name}.json`), body);
       if (config?.url || config?.query || config?.headers) {
         logger.info(`Config specified, creating ${name}.config.json`);
         return await updateConfig({ name, config });
@@ -263,10 +279,15 @@ export const cliApiRouter = t.router({
         name: z.string(),
         body: z.string(),
         config: configValidator.optional(),
+        path: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input }) => {
       const { body, config } = input;
+      const fullPath = input.path
+        ? `${HOOK_PATH}/${input.path.join("/")}`
+        : HOOK_PATH;
+
       const name = input.name.split(".json")[0];
 
       if (!name) throw new Error("No name");
@@ -274,7 +295,7 @@ export const cliApiRouter = t.router({
       logger.info(`Updating ${name}.json`);
 
       const existingBody = await fsPromises.readFile(
-        path.join(HOOK_PATH, `${name}.json`),
+        path.join(fullPath, `${name}.json`),
         "utf-8"
       );
 
@@ -289,7 +310,7 @@ export const cliApiRouter = t.router({
       };
 
       await fsPromises.writeFile(
-        path.join(HOOK_PATH, `${name}.json`),
+        path.join(fullPath, `${name}.json`),
         JSON.stringify(updatedBody, null, 2)
       );
 
@@ -297,7 +318,7 @@ export const cliApiRouter = t.router({
         config?.url ||
         config?.query ||
         config?.headers ||
-        fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))
+        fs.existsSync(path.join(fullPath, `${name}.config.json`))
       ) {
         logger.info(`Config specified, updating ${name}.config.json`);
         return await updateConfig({ name, config });

@@ -25,7 +25,9 @@ import { generatePrefillFromConfig } from "../utils/configTransforms";
 const HOOKS_FOLDER = ".thing/hooks";
 
 export const JsonBlobs = () => {
-  const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery();
+  const { data, refetch: refetchBlobs } = cliApi.getBlobs.useQuery({
+    path: [],
+  });
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
     onSuccess: () => {
@@ -64,7 +66,7 @@ export const JsonBlobs = () => {
 
   return (
     <>
-      <WebhookFormModal type="create" openState={addModalState} />
+      <WebhookFormModal type="create" openState={addModalState} path={[]} />
       {selectedHook && (
         <WebhookFormModal
           type="update"
@@ -81,6 +83,7 @@ export const JsonBlobs = () => {
           onClose={() => {
             setSelectedHook("");
           }}
+          path={[]}
         />
       )}
 

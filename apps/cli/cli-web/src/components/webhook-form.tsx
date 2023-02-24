@@ -46,10 +46,11 @@ export const WebhookFormModal = (input: {
   prefill?: FormValidatorType;
   openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   onClose?: () => void;
+  path: string[];
 }) => {
   const ctx = cliApi.useContext();
 
-  const { data: existing } = cliApi.getBlobs.useQuery();
+  const { data: existing } = cliApi.getBlobs.useQuery({ path: input.path });
 
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
@@ -109,12 +110,14 @@ export const WebhookFormModal = (input: {
         name: data.name,
         body: data.body ?? "",
         config: generateConfigFromState(data.config),
+        path: input.path,
       });
     } else {
       updateHook({
         name: data.name,
         body: data.body ?? "",
         config: generateConfigFromState(data.config),
+        path: input.path,
       });
     }
     reset();
