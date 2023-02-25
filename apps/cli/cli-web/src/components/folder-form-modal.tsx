@@ -16,6 +16,7 @@ type FormValidatorType = z.infer<typeof formValidator>;
 export const FolderFormModal = (input: {
   type: "create" | "update";
   openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  prefill?: FormValidatorType;
   onClose?: () => void;
   path: string[];
 }) => {
@@ -35,13 +36,14 @@ export const FolderFormModal = (input: {
     },
   });
 
-  const { type, openState, onClose } = input;
+  const { type, openState, onClose, prefill } = input;
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
   } = useForm({
+    defaultValues: prefill,
     resolver: zodResolver(formValidator),
     mode: "onBlur",
   });
@@ -119,7 +121,7 @@ export const FolderFormModal = (input: {
                     </label>
                     {errors.name && (
                       <p className="text-sm text-red-500">
-                        {(errors.name?.message ?? errors.name.type) as string}
+                        {errors.name?.message ?? errors.name.type}
                       </p>
                     )}
                     <div className="mt-1 flex rounded-md shadow-sm">
