@@ -126,7 +126,7 @@ export const FileBrowser = () => {
               <button onClick={() => setPath((p) => [...p, folder])}>
                 <div
                   key={folder}
-                  className="flex w-28 flex-col items-center justify-center space-y-1 truncate rounded-md bg-white px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md"
+                  className="flex w-28 flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md"
                 >
                   <FolderIcon
                     className="h-5 w-5 flex-shrink-0"
@@ -137,11 +137,16 @@ export const FileBrowser = () => {
               </button>
             </Tooltip>
           ))}
-          <div className="flex flex-col items-center justify-center rounded-md bg-white py-4 text-gray-600 hover:text-indigo-600 ">
-            <PlusCircleIcon
-              className="h-5 w-5 flex-shrink-0"
-              aria-hidden="true"
-            />
+          <div className="flex flex-col items-center justify-center rounded-md bg-white py-4 text-gray-600 hover:text-indigo-600">
+            <button
+              className="flex h-full w-full items-center justify-center"
+              onClick={() => addModalState[1](true)}
+            >
+              <PlusCircleIcon
+                className="h-5 w-5 flex-shrink-0"
+                aria-hidden="true"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -175,7 +180,7 @@ export const FileBrowser = () => {
             {blobData?.map((blob, i) => (
               <li
                 key={blob.name}
-                className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow-sm hover:shadow-md"
+                className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-4 shadow-sm hover:bg-indigo-100/10 hover:shadow-md"
               >
                 <div className="flex w-full flex-row items-center justify-between">
                   <div className="flex flex-row items-center gap-1 text-xl ">
@@ -273,14 +278,15 @@ export const FileBrowser = () => {
                 )}
               </li>
             ))}
-            <li className="group flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md bg-white px-6 py-4 shadow">
-              <button onClick={() => addModalState[1](true)}>
-                <div className="flex flex-col items-center justify-center rounded-md bg-white text-gray-600 group-hover:text-indigo-600 ">
-                  <PlusCircleIcon
-                    className="h-5 w-5 flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                </div>
+            <li className="flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md px-6 py-4 text-gray-600 hover:text-indigo-600">
+              <button
+                className="flex h-full w-full items-center justify-center"
+                onClick={() => addModalState[1](true)}
+              >
+                <PlusCircleIcon
+                  className="h-5 w-5 flex-shrink-0"
+                  aria-hidden="true"
+                />
               </button>
             </li>
           </ul>
