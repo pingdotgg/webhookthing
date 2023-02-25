@@ -60,27 +60,25 @@ export const FileBrowser = () => {
   }
 
   return (
-    <div className="flex min-h-0 flex-col gap-2 divide-y divide-gray-200 first-line:w-full">
+    <div className="flex min-h-0 flex-col divide-y divide-gray-200 first-line:w-full">
       {/* breadcrumbs */}
-      <nav className="flex justify-between" aria-label="Breadcrumb">
+      <nav
+        className="flex items-center justify-between pb-4"
+        aria-label="Breadcrumb"
+      >
         <ol role="list" className="flex items-center space-x-4">
-          <li>
-            <div>
-              <button
-                onClick={() => setPath([])}
-                className={classNames(
-                  "text-gray-400",
-                  path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
-                )}
-                disabled={path.length === 0}
-              >
-                <HomeIcon
-                  className="h-5 w-5 flex-shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="sr-only">{`root`}</span>
-              </button>
-            </div>
+          <li className="flex-items-center">
+            <button
+              onClick={() => setPath([])}
+              className={classNames(
+                "flex items-center text-gray-400",
+                path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
+              )}
+              disabled={path.length === 0}
+            >
+              <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <span className="sr-only">{`root`}</span>
+            </button>
           </li>
           {path.map((page) => (
             <li key={page}>
