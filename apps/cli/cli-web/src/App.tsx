@@ -31,25 +31,23 @@ export default function Example() {
             {() => (
               <>
                 <div className="mx-auto max-w-6xl sm:px-6 lg:px-8">
-                  <div className="border-b border-gray-700">
-                    <div className="flex h-16 items-center justify-between px-4 sm:px-0">
-                      <div className="flex items-center">
-                        <div className="flex flex-shrink-0 items-center text-gray-50">
-                          <h1 className="ml-2 text-4xl font-bold">
-                            <span className="tracking-tight">
-                              {`webhook`}
-                              <span className="text-indigo-500">{`thing`}</span>
-                            </span>
-                            <span className="text-lg">
-                              {`...by `}
-                              <a href="https://ping.gg">{`Ping`}</a>
-                            </span>
-                          </h1>
-                        </div>
+                  <div className="flex h-16 items-center justify-between px-4 sm:px-0">
+                    <div className="flex items-center">
+                      <div className="flex flex-shrink-0 items-center text-gray-50">
+                        <h1 className="ml-2 text-4xl font-bold">
+                          <span className="tracking-tight">
+                            {`webhook`}
+                            <span className="text-indigo-500">{`thing`}</span>
+                          </span>
+                          <span className="text-lg">
+                            {`...by `}
+                            <a href="https://ping.gg">{`Ping`}</a>
+                          </span>
+                        </h1>
                       </div>
-                      <div className="flex items-end justify-center px-2">
-                        <NavMenu />
-                      </div>
+                    </div>
+                    <div className="flex items-end justify-center px-2">
+                      <NavMenu />
                     </div>
                   </div>
                 </div>
