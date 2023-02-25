@@ -60,11 +60,9 @@ export default function Example() {
 
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-3/5 w-full max-w-6xl flex-col gap-2 px-4 pb-12 sm:px-6 md:h-full md:flex-row lg:px-8">
-            <div className="flex w-full rounded-lg bg-white px-5 py-6 shadow sm:px-6 md:w-3/5">
-              <div className="flex w-full flex-col gap-4 divide-y divide-gray-200 rounded-lg border-gray-200">
-                <FileBrowser />
-                <EndpointSetting />
-              </div>
+            <div className="dicide-gray-400 flex w-full flex-col divide-y rounded-lg bg-white px-5 py-6 shadow sm:px-6 md:w-3/5">
+              <FileBrowser />
+              <EndpointSetting />
             </div>
             <div className="flex h-2/5 w-full rounded-lg bg-white px-5 py-6 shadow sm:px-6 md:h-full md:w-2/5">
               <ResponseViewer />

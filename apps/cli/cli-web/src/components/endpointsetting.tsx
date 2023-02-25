@@ -6,7 +6,7 @@ export const EndpointSetting = () => {
   const [endpoint, setEndpoint] = useState<string>(storedEndpoint);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 py-2">
       <div>
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Settings`}
