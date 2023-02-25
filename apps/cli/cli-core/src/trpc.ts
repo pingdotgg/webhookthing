@@ -332,7 +332,7 @@ export const cliApiRouter = t.router({
         path: z.array(z.string()).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(({ input }) => {
       const { name } = input;
 
       const fullPath = input.path

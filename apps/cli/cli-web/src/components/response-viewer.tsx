@@ -1,5 +1,4 @@
 import { LogLevels } from "@captain/logger";
-import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import { useEffect, useRef, useState } from "react";
 
 import { cliApi } from "../utils/api";
