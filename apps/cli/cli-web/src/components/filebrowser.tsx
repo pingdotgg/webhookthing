@@ -19,6 +19,7 @@ import { Tooltip } from "./common/tooltip";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { generatePrefillFromConfig } from "../utils/configTransforms";
 import { WebhookFormModal } from "./webhook-form";
+import { FolderFormModal } from "./folder-form-modal";
 
 export const FileBrowser = () => {
   const [path, setPath] = useState<string[]>([]);
@@ -51,7 +52,8 @@ export const FileBrowser = () => {
   const [selectedHookName, setSelectedHook] = useState<string>("");
   const [storedEndpoint] = useCurrentUrl();
 
-  const addModalState = useState(false);
+  const addHookModalState = useState(false);
+  const addFolderModalState = useState(false);
 
   const selectedHook = blobData?.find((x) => x.name === selectedHookName);
 
@@ -115,6 +117,11 @@ export const FileBrowser = () => {
       </nav>
       {/* folders section */}
       <div className="py-2">
+        <FolderFormModal
+          openState={addFolderModalState}
+          type="create"
+          path={path}
+        />
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Folders`}
         </h3>
@@ -138,7 +145,7 @@ export const FileBrowser = () => {
           <div className="flex flex-col items-center justify-center rounded-md bg-white py-4 text-gray-600 hover:text-indigo-600">
             <button
               className="flex h-full w-full items-center justify-center"
-              onClick={() => addModalState[1](true)}
+              onClick={() => addFolderModalState[1](true)}
             >
               <PlusCircleIcon
                 className="h-5 w-5 flex-shrink-0"
@@ -150,7 +157,11 @@ export const FileBrowser = () => {
       </div>
       {/* files section */}
       <div className="flex min-h-0 grow flex-col py-2">
-        <WebhookFormModal type="create" openState={addModalState} path={path} />
+        <WebhookFormModal
+          type="create"
+          openState={addHookModalState}
+          path={path}
+        />
         {selectedHook && (
           <WebhookFormModal
             type="update"
@@ -279,7 +290,7 @@ export const FileBrowser = () => {
             <li className="flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md px-6 py-4 text-gray-600 hover:text-indigo-600">
               <button
                 className="flex h-full w-full items-center justify-center"
-                onClick={() => addModalState[1](true)}
+                onClick={() => addHookModalState[1](true)}
               >
                 <PlusCircleIcon
                   className="h-5 w-5 flex-shrink-0"

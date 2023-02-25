@@ -324,6 +324,25 @@ export const cliApiRouter = t.router({
         return await updateConfig({ name, config });
       }
     }),
+
+  createFolder: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        path: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { name } = input;
+
+      const fullPath = input.path
+        ? `${HOOK_PATH}/${input.path.join("/")}/${name}`
+        : `${HOOK_PATH}/${name}`;
+
+      logger.info(`Creating new folder: ${fullPath}`);
+
+      fs.mkdirSync(fullPath);
+    }),
 });
 
 // export type definition of API
