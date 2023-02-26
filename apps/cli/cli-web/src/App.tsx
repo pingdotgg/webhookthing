@@ -13,6 +13,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
 import { classNames } from "./utils/classnames";
+import { useFileRoute } from "./utils/useRoute";
+import { FileRunner } from "./components/filerunner";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -21,6 +23,8 @@ const SubscriptionsHelper = () => {
 };
 
 export default function AppCore() {
+  const location = useFileRoute();
+
   return (
     <>
       <Toaster />
@@ -59,8 +63,11 @@ export default function AppCore() {
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-2 px-2 lg:h-full lg:flex-row">
             <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 rounded-lg bg-white p-4 shadow lg:h-full lg:w-3/5">
-              <FileBrowser />
-              <EndpointSetting />
+              {location === "/" ? (
+                <FileBrowser />
+              ) : (
+                <FileRunner file={location.split("f/")[1]} />
+              )}
             </div>
             <div className="flex h-2/5 w-full rounded-lg bg-white p-4 shadow lg:h-full lg:w-2/5">
               <ResponseViewer />

@@ -12,6 +12,7 @@ import Highlight, { defaultProps } from "prism-react-renderer";
 import vsLight from "prism-react-renderer/themes/vsLight";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Link } from "wouter";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -46,8 +47,6 @@ export const FileBrowser = () => {
       toast.error(err.message);
     },
   });
-
-  const [expanded, setExpanded] = useState<number[]>([]);
 
   const [selectedHookName, setSelectedHook] = useState<string>("");
   const [storedEndpoint] = useCurrentUrl();
@@ -187,104 +186,28 @@ export const FileBrowser = () => {
         <div className="w-full overflow-y-auto">
           <ul role="list" className="flex flex-col space-y-3 py-2">
             {blobData?.map((blob, i) => (
-              <li
-                key={blob.name}
-                className="group flex flex-col items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-4 shadow-sm hover:bg-indigo-100/10 hover:shadow-md"
-              >
-                <div className="flex w-full flex-row items-center justify-between">
-                  <div className="flex flex-row items-center gap-1 text-xl ">
+              <li key={blob.name} className="flex w-full flex-row gap-2">
+                <Link href={`/f${path.join("/")}/${blob.name}`}>
+                  <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
                     {blob.name}
                     {(blob.config?.url || blob.config?.headers) && (
-                      <Tooltip content="This has a custom config">
-                        <InformationCircleIcon className="h-5 w-5 text-gray-800" />
+                      <Tooltip content="This hook has a custom config">
+                        <InformationCircleIcon className="h-5 w-5 text-gray-600" />
                       </Tooltip>
                     )}
                   </div>
-                  <div className=" flex flex-row items-center gap-x-4 ">
-                    <button
-                      className="invisible group-hover:visible"
-                      onClick={() => {
-                        setExpanded((prev) =>
-                          prev.includes(i)
-                            ? prev.filter((x) => x !== i)
-                            : [...prev, i]
-                        );
-                      }}
-                    >
-                      {expanded.includes(i) ? (
-                        <EyeSlashIcon className="h-4" />
-                      ) : (
-                        <EyeIcon className="h-4 hover:text-indigo-600" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => {
-                        runFile({
-                          file: `${path.join("/")}/${blob.name}`,
-                          url: storedEndpoint,
-                        });
-                      }}
-                    >
-                      <PlayIcon className="h-4 hover:text-indigo-600" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedHook(blob.name);
-                      }}
-                    >
-                      <CogIcon className="h-4 hover:text-indigo-600" />
-                    </button>
-                  </div>
-                </div>
-                {expanded.includes(i) && (
-                  <div className="flex w-full flex-col gap-2">
-                    {blob.config?.url && (
-                      <div className="flex flex-row items-center gap-2">
-                        <span className="text-gray-500">{`URL:`}</span>
-                        <span className="text-gray-800">{blob.config.url}</span>
-                      </div>
-                    )}
-                    {blob.config?.headers && (
-                      <div className="flex flex-row items-center gap-2">
-                        <span className="text-gray-500">{`Headers:`}</span>
-                        <span className="text-gray-800">
-                          {JSON.stringify(blob.config.headers)}
-                        </span>
-                      </div>
-                    )}
-                    <span className="text-gray-500">{`Body:`}</span>
-                    <Highlight
-                      {...defaultProps}
-                      code={blob.body}
-                      language="json"
-                      theme={vsLight}
-                    >
-                      {({
-                        className,
-                        style,
-                        tokens,
-                        getLineProps,
-                        getTokenProps,
-                      }) => (
-                        <pre
-                          className={classNames(
-                            className,
-                            "w-full overflow-auto rounded-md !bg-gray-200 p-4"
-                          )}
-                          style={style}
-                        >
-                          {tokens.map((line, i) => (
-                            <div {...getLineProps({ line, key: i })}>
-                              {line.map((token, key) => (
-                                <span {...getTokenProps({ token, key })} />
-                              ))}
-                            </div>
-                          ))}
-                        </pre>
-                      )}
-                    </Highlight>
-                  </div>
-                )}
+                </Link>
+                <button
+                  className="py- flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => {
+                    runFile({
+                      file: `${path.join("/")}/${blob.name}`,
+                      url: storedEndpoint,
+                    });
+                  }}
+                >
+                  <PlayIcon className="h-4" />
+                </button>
               </li>
             ))}
             <li className="flex flex-col items-center justify-center gap-2 overflow-hidden rounded-md px-6 py-4 text-gray-600 hover:text-indigo-600">
