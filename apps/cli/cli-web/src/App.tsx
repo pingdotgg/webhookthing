@@ -20,7 +20,7 @@ const SubscriptionsHelper = () => {
   return null;
 };
 
-export default function Example() {
+export default function AppCore() {
   return (
     <>
       <Toaster />

@@ -12,17 +12,16 @@ import logger from "@captain/logger";
 const PORT = 2033;
 const WS_PORT = 2034;
 
-
 const createServer = async () => {
   const server = fastify({
     maxParamLength: 5000,
   });
+  const devMode = process.env.NODE_ENV === "development";
   // Configure CORS
   await server.register(cors, {
-    origin:
-      process.env.NODE_ENV === "development"
-        ? "*"
-        : /^(https?:\/\/)?(127\.0\.0\.1|localhost|::1):2033$/gm,
+    origin: devMode
+      ? "*"
+      : /^(https?:\/\/)?(127\.0\.0\.1|localhost|::1):2033$/gm,
   });
 
   // Configure proxy for Plausible
@@ -36,8 +35,6 @@ const createServer = async () => {
     trpcOptions: { router: cliApiRouter },
   });
 
-  const devMode = process.env.NODE_ENV === "development";
-
   if (!devMode) {
     const webPath = path.join(__dirname, "web");
     await server.register(fastifyStatic, {
@@ -49,6 +46,23 @@ const createServer = async () => {
       await res.redirect("http://localhost:5173");
     });
   }
+
+  // Handle "not found"
+  server.setNotFoundHandler(async (req, res) => {
+    // API 404
+    if (req.raw.url && req.raw.url.startsWith("/api")) {
+      return res.status(404).send({
+        success: false,
+        error: {
+          kind: "user_input",
+          message: "Not Found",
+        },
+      });
+    }
+
+    // Redirect to our app if not an api call
+    await res.status(200).sendFile("index.html");
+  });
 
   return server;
 };
