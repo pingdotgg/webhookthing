@@ -131,6 +131,7 @@ importers:
       tailwindcss: ^3.1.8
       typescript: ^4.9.4
       vite: ^4.0.0
+      vite-plugin-rewrite-all: ^1.0.1
       wouter: ^2.10.0
       zod: ^3.19.1
     dependencies:
@@ -167,6 +168,7 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.21
       typescript: 4.9.4
       vite: 4.0.4
+      vite-plugin-rewrite-all: 1.0.1_vite@4.0.4
 
   apps/docs:
     specifiers:
@@ -2522,6 +2524,11 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  /connect-history-api-fallback/1.6.0:
+    resolution: {integrity: sha512-e54B99q/OUoH64zYYRf3HBP5z24G38h5D3qXu23JGRoigpX5Ss4r9ZnDk3g0Z8uQC2x2lPaJ+UlWBc1ZWBWdLg==}
+    engines: {node: '>=0.8'}
+    dev: true
 
   /content-disposition/0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -7593,6 +7600,16 @@ packages:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.3
     dev: false
+
+  /vite-plugin-rewrite-all/1.0.1_vite@4.0.4:
+    resolution: {integrity: sha512-W0DAchC8ynuQH0lYLIu5/5+JGfYlUTRD8GGNtHFXRJX4FzzB9MajtqHBp26zq/ly9sDt5BqrfdT08rv3RbB0LQ==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      vite: ^2.0.0 || ^3.0.0 || ^4.0.0
+    dependencies:
+      connect-history-api-fallback: 1.6.0
+      vite: 4.0.4
+    dev: true
 
   /vite/4.0.4:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
