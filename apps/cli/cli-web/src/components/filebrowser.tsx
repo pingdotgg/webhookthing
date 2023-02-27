@@ -110,7 +110,7 @@ export const FileBrowser = () => {
         </ol>
         <div className="flex flex-row gap-1">
           <button
-            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => openFolder({ path: path.join("/") })}
           >
             {`Open Folder`}
@@ -174,14 +174,17 @@ export const FileBrowser = () => {
                   <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
                     {blob.name}
                     {(blob.config?.url || blob.config?.headers) && (
-                      <Tooltip content="This hook has a custom config" placement="left">
+                      <Tooltip
+                        content="This hook has a custom config"
+                        placement="left"
+                      >
                         <InformationCircleIcon className="h-5 w-5 text-gray-600" />
                       </Tooltip>
                     )}
                   </div>
                 </Link>
                 <button
-                  className="py- flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   onClick={() => {
                     runFile({
                       file: `${path.join("/")}/${blob.name}`,
@@ -218,7 +221,7 @@ const CreateMenu = ({ path }: { path: string[] }) => {
       />
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <Menu.Button className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          <Menu.Button className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <span className="sr-only">{`Open create menu`}</span>
             <PlusIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
           </Menu.Button>
