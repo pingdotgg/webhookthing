@@ -30,7 +30,7 @@ export default function AppCore() {
       <Toaster />
       <SubscriptionsHelper />
       <div className="flex h-screen min-h-full flex-col">
-        <div className="pattern pb-32">
+        <div className="pattern pb-32 shadow-xl">
           <Disclosure as="nav">
             {() => (
               <>
