@@ -174,7 +174,7 @@ export const FileBrowser = () => {
                   <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
                     {blob.name}
                     {(blob.config?.url || blob.config?.headers) && (
-                      <Tooltip content="This hook has a custom config">
+                      <Tooltip content="This hook has a custom config" placement="left">
                         <InformationCircleIcon className="h-5 w-5 text-gray-600" />
                       </Tooltip>
                     )}
