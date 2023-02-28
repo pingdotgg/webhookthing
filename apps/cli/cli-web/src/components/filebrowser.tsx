@@ -65,7 +65,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         className="flex items-center justify-between pb-4"
         aria-label="Breadcrumb"
       >
-        <ol role="list" className="flex items-center space-x-4">
+        <ol role="list" className="flex items-center">
           <li className="flex-items-center">
             <Link
               href="/"
@@ -74,15 +74,15 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                 path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
               )}
             >
-              <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+              <HomeIcon className="h-5 flex-shrink-0" aria-hidden="true" />
               <span className="sr-only">{`root`}</span>
             </Link>
           </li>
-          {pathArr.map((page) => (
+          {pathArr.map((page, i) => (
             <li key={page}>
               <div className="flex items-center">
                 <svg
-                  className="h-5 w-5 flex-shrink-0 text-gray-300"
+                  className="h-5 flex-shrink-0 text-gray-300"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   aria-hidden="true"
@@ -93,10 +93,27 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                   href={pathArrToUrl(
                     pathArr.slice(0, pathArr.indexOf(page) + 1)
                   )}
-                  className="ml-4 text-sm font-medium text-gray-400 hover:text-indigo-600"
+                  className="text-sm font-medium text-gray-400 hover:text-indigo-600"
                   aria-current={page ? "page" : undefined}
                 >
-                  {page}
+                  <Tooltip content={page}>
+                    <FolderIcon
+                      className={classNames(
+                        "inline h-5 sm:hidden",
+                        i === pathArr.length - 1 ? "hidden" : ""
+                      )}
+                      aria-hidden="true"
+                    />
+                  </Tooltip>
+                  <p
+                    className={classNames(
+                      i === pathArr.length - 1
+                        ? "inline truncate"
+                        : "hidden sm:inline"
+                    )}
+                  >
+                    {page}
+                  </p>
                 </Link>
               </div>
             </li>
