@@ -47,7 +47,7 @@ const Home: NextPage = () => {
         <div className="container flex h-full w-full flex-col items-center justify-center gap-12 px-4 py-16">
           {!open ? (
             <button
-              className="flex items-center justify-center gap-2 rounded-md bg-white px-4 py-2 transition-colors hover:bg-indigo-600/80 hover:text-white"
+              className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               onClick={() => setOpen(true)}
             >
               {`Run`}
