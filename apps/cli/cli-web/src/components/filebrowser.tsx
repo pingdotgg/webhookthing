@@ -150,7 +150,9 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                       className="h-5 w-5 flex-shrink-0"
                       aria-hidden="true"
                     />
-                    <span className="w-full truncate">{folder}</span>
+                    <span className="w-full truncate text-center">
+                      {folder}
+                    </span>
                   </div>
                 </Link>
               </Tooltip>
