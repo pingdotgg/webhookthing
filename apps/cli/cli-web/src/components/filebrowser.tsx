@@ -119,20 +119,19 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         </h3>
         <div className="flex h-28 flex-row space-x-3 overflow-x-auto py-2">
           {data.folders.map((folder) => (
-            <Tooltip key={folder} content={folder} placement="bottom">
-              <Link href={pathArrToUrl(pathArr, folder)}>
-                <div
-                  key={folder}
-                  className="flex w-1/5 flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md"
-                >
-                  <FolderIcon
-                    className="h-5 w-5 flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                  <span className="w-full truncate">{folder}</span>
-                </div>
-              </Link>
-            </Tooltip>
+            <div key={folder} className="w-1/5 min-w-[8rem]">
+              <Tooltip content={folder} placement="bottom">
+                <Link href={pathArrToUrl(pathArr, folder)}>
+                  <div className="flex w-full flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
+                    <FolderIcon
+                      className="h-5 w-5 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                    <span className="w-full truncate">{folder}</span>
+                  </div>
+                </Link>
+              </Tooltip>
+            </div>
           ))}
         </div>
       </div>
