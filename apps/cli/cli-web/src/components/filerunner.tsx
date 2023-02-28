@@ -50,7 +50,13 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     path.shift();
   }
 
-  const { mutate: updateHook } = cliApi.updateHook.useMutation();
+  const ctx = cliApi.useContext();
+
+  const { mutate: updateHook } = cliApi.updateHook.useMutation({
+    onSuccess: async () => {
+      await ctx.parseUrl.invalidate();
+    },
+  });
 
   const { mutate: runFile } = cliApi.runFile.useMutation();
 
@@ -139,9 +145,21 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 disabled={!isValid}
                 onClick={() => {
-                  void submitHandler().then(() => {
+                  if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
+                    updateHook(
+                      {
+                        name: getValues("name"),
+                        body: getValues("body") ?? "",
+                        config: generateConfigFromState(
+                          getValues("config") ?? {}
+                        ),
+                        path,
+                      },
+                      { onSuccess: () => runFile({ file: decodeURI(file) }) }
+                    );
+                  } else {
                     runFile({ file: decodeURI(file) });
-                  });
+                  }
                 }}
               >
                 {`Run`}
