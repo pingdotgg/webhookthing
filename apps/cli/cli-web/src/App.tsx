@@ -27,15 +27,13 @@ const SubscriptionsHelper = () => {
 };
 
 const PageContent = ({
-  type,
   data,
 }: {
-  type: "file" | "folder" | "notFound";
   data: inferRouterOutputs<CliApiRouter>["parseUrl"];
 }) => {
-  if (type === "file") {
+  if (data.type === "file") {
     return <FileRunner path={data.path} data={data.data} />;
-  } else if (type === "folder") {
+  } else if (data.type === "folder") {
     return <FileBrowser path={data.path} data={data.data} />;
   } else {
     return (
@@ -108,7 +106,7 @@ export default function AppCore() {
                   />
                 </div>
               ) : (
-                <PageContent type={data.type} data={data} />
+                <PageContent data={data} />
               )}
             </div>
             <div className="flex h-2/5 w-full rounded-lg bg-white p-4 shadow lg:h-full lg:w-2/5">

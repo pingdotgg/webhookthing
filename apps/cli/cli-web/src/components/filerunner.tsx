@@ -11,7 +11,6 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
-import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 const jsonValidator = () =>
   z.string().refine(

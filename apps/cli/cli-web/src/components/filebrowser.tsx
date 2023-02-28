@@ -56,7 +56,6 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
   });
 
   const [selectedHookName, setSelectedHook] = useState<string>("");
-  const [storedEndpoint] = useCurrentUrl();
 
   const selectedHook = data.files?.find((x) => x.name === selectedHookName);
 
