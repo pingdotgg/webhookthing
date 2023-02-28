@@ -349,6 +349,12 @@ export const cliApiRouter = t.router({
       logger.info(`Creating new folder: ${fullPath}`);
 
       fs.mkdirSync(fullPath);
+
+      return {
+        route: encodeURI(
+          input.path ? `${input.path.join("/")}/${name}` : `${name}`
+        ),
+      };
     }),
 
   parseUrl: t.procedure

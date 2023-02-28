@@ -148,7 +148,7 @@ export const WebhookFormModal = (input: {
 
   return (
     <Modal openState={openState} onClose={onClose}>
-      <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 sm:pr-20">
+      <div className="relative m-2 flex h-3/4 w-full transform flex-col overflow-hidden rounded-lg bg-white p-6 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:pr-20 md:m-0 md:w-2/3">
         <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
           <button
             type="button"
