@@ -1,5 +1,6 @@
 import {
   DocumentPlusIcon,
+  ExclamationCircleIcon,
   FolderIcon,
   FolderPlusIcon,
   HomeIcon,
@@ -168,24 +169,33 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                 <Link href={pathArrToUrl(pathArr, file.name)}>
                   <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
                     {file.name}
-                    {(file.config?.url || file.config?.headers) && (
-                      <Tooltip
-                        content="This hook has a custom config"
-                        placement="left"
-                      >
-                        <InformationCircleIcon className="h-5 w-5 text-gray-600" />
-                      </Tooltip>
-                    )}
+                    <div className="flex flex-row gap-2">
+                      {!file.config?.url ? (
+                        <Tooltip content="Missing URL" placement="left">
+                          <ExclamationCircleIcon className="h-5 w-5 text-red-600" />
+                        </Tooltip>
+                      ) : (
+                        (file.config?.headers || file.config?.query) && (
+                          <Tooltip
+                            content="This hook has a custom config"
+                            placement="left"
+                          >
+                            <InformationCircleIcon className="h-5 w-5 text-gray-600" />
+                          </Tooltip>
+                        )
+                      )}
+                    </div>
                   </div>
                 </Link>
                 <button
-                  className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                    disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
                   onClick={() => {
                     runFile({
                       file: `${path}/${file.name}`,
-                      url: storedEndpoint,
                     });
                   }}
+                  disabled={!file.config?.url}
                 >
                   <PlayIcon className="h-4" />
                 </button>

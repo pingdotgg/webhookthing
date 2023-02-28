@@ -11,6 +11,7 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
+import { useCurrentUrl } from "../utils/useCurrentUrl";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -30,7 +31,7 @@ const formValidator = z.object({
   name: z.string().max(100).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
-    url: z.union([z.literal(""), z.string().trim().url()]).optional(),
+    url: z.string().trim().url(),
     headers: z
       .array(z.object({ key: z.string(), value: z.string() }))
       .optional(),
@@ -142,7 +143,9 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 disabled={!isValid}
                 onClick={() => {
-                  runFile({ file: decodeURI(file), url: "" });
+                  void submitHandler().then(() => {
+                    runFile({ file: decodeURI(file) });
+                  });
                 }}
               >
                 {`Run`}

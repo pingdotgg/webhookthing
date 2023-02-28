@@ -169,16 +169,14 @@ export const cliApiRouter = t.router({
     .input(
       z.object({
         file: z.string(),
-        url: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const { file, url } = input;
+      const { file } = input;
       let hasCustomConfig = false;
       logger.info(`Reading file ${file}`);
 
       let config = {
-        url,
         query: undefined,
         headers: undefined,
         method: "POST",
@@ -198,10 +196,11 @@ export const cliApiRouter = t.router({
         logger.info(`Found ${configName}, reading it`);
         const configFileContents = await fsPromises.readFile(
           path.join(HOOK_PATH, configName)
-        );
+        ).then((x) => JSON.parse(x.toString()));
+
         config = {
           ...config,
-          ...(JSON.parse(configFileContents.toString()) as {
+          ...(configFileContents as {
             url: string;
             query?: Record<string, string>;
             headers?: Record<string, string>;
@@ -219,6 +218,11 @@ export const cliApiRouter = t.router({
         }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
+
+      if(!config.url) {
+        logger.error(`Missing URL, please add it to the configuration for this hook`)
+        throw new Error(`Missing URL, please add it to the configuration for this hook`)
+      }
 
       try {
         logger.info(
@@ -306,13 +310,8 @@ export const cliApiRouter = t.router({
         "utf-8"
       );
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const parsedBody = JSON.parse(existingBody);
-
-      // TODO: Fix this
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const updatedBody = {
-        ...parsedBody,
+        ...JSON.parse(existingBody),
         ...JSON.parse(body),
       };
 
@@ -412,36 +411,36 @@ export const cliApiRouter = t.router({
           files: [],
         };
   
-        fs.readdirSync(fullPath).forEach(async (file) => {
-          if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
-            dirListing.folders.push(file);
+        const listingPromises = fs.readdirSync(fullPath).map(async (maybeFile) => {
+          if (fs.lstatSync(`${fullPath}/${maybeFile}`).isDirectory()) {
+            dirListing.folders.push(maybeFile);
           } else {
-            if (file.startsWith(".")) return; // skip hidden files
+            if (maybeFile.startsWith(".")) return; // skip hidden files
+            if(maybeFile.endsWith(".config.json")) return; // skip config files
+
+            const filePath = path.join(fullPath, maybeFile);
+            const configPath = filePath.replace(".json", "") + ".config.json";
             
             const bodyPromise = fsPromises.readFile(
-              path.join(fullPath, file),
+              filePath,
               "utf-8"
             );
-  
-            const configPath = file.replace(".json", "") + ".config.json";
-  
-            let config;
-            if (fs.existsSync(path.join(fullPath, configPath))) {
-              config = await fsPromises.readFile(
-                path.join(fullPath, configPath),
+    
+            let configPromise = fsPromises.readFile(
+                configPath,
                 "utf-8"
-              );
-            }
+              ).then((x) => JSON.parse(x) as ConfigValidatorType).catch(() => undefined);
+            
   
             dirListing.files.push({
-              name: file,
+              name: maybeFile,
               body: await bodyPromise,
-              config: config
-                ? (JSON.parse(config) as ConfigValidatorType)
-                : undefined,
+              config: await configPromise
             });
           }
         });
+
+        await Promise.allSettled(listingPromises);
 
         const d = {
           type: "folder" as const,

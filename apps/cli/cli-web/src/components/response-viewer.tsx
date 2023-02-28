@@ -41,31 +41,33 @@ export const ResponseViewer = () => {
 
       <div className="h-full w-full overflow-auto rounded-md !bg-gray-900 px-1 py-4">
         <table>
-          {messages.map((message, index) => (
-            <tr key={index}>
-              <Tooltip
-                content={new Date(message.ts).toLocaleString()}
-                placement="top"
-              >
+          <tbody>
+            {messages.map((message, index) => (
+              <tr key={index}>
+                <Tooltip
+                  content={new Date(message.ts).toLocaleString()}
+                  placement="top"
+                >
+                  <td
+                    className={classNames(
+                      "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
+                      colorMap[message.level].label
+                    )}
+                  >
+                    {`[${message.level.toUpperCase()}]`}
+                  </td>
+                </Tooltip>
                 <td
                   className={classNames(
-                    "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
-                    colorMap[message.level].label
+                    "px-1 font-mono text-sm font-medium text-gray-300",
+                    colorMap[message.level].body
                   )}
                 >
-                  {`[${message.level.toUpperCase()}]`}
+                  {message.message}
                 </td>
-              </Tooltip>
-              <td
-                className={classNames(
-                  "px-1 font-mono text-sm font-medium text-gray-300",
-                  colorMap[message.level].body
-                )}
-              >
-                {message.message}
-              </td>
-            </tr>
-          ))}
+              </tr>
+            ))}
+          </tbody>
         </table>
         <div ref={bottomRef} />
       </div>
