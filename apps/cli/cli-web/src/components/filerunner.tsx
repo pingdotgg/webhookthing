@@ -1,5 +1,7 @@
+import { CliApiRouter } from "@captain/cli-core";
 import { PlayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { inferRouterOutputs } from "@trpc/server";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 
@@ -37,19 +39,15 @@ const formValidator = z.object({
 });
 
 type FormValidatorType = z.infer<typeof formValidator>;
+type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
+export type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
-export const FileRunner = (input: { path: string }) => {
-  const { path: file } = input;
+export const FileRunner = (input: { path: string; data: FileDataType }) => {
+  const { path: file, data } = input;
 
   const path = decodeURI(file).split("/").slice(0, -1);
 
-  const fileName = file.split("/").pop()?.split(".")[0];
-
   const ctx = cliApi.useContext();
-
-  const { data: existing } = cliApi.getBlobs.useQuery({
-    path: file.split("/"),
-  });
 
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
     onSuccess: () => {
@@ -60,11 +58,9 @@ export const FileRunner = (input: { path: string }) => {
   const { mutate: runFile } = cliApi.runFile.useMutation();
 
   const prefill = {
-    name: fileName ?? "",
-    body: existing?.find((b) => b.name === fileName)?.body ?? "",
-    config: generatePrefillFromConfig(
-      existing?.find((b) => b.name === fileName)?.config ?? {}
-    ),
+    name: data.name,
+    body: data.body,
+    config: generatePrefillFromConfig(input.data.config ?? {}),
   };
 
   const {
@@ -134,8 +130,8 @@ export const FileRunner = (input: { path: string }) => {
         <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
-              <h3 className="font-medium leading-6 text-gray-900 ">
-                {`Settings: ${prefill?.name ?? "<insert name here>"}.json`}
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                {`Settings: ${prefill.name ?? "<insert name here>"}`}
               </h3>
               <div className="mt-2 flex flex-col gap-2">
                 <p className="text-sm text-gray-500">

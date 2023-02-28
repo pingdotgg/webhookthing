@@ -350,31 +350,57 @@ export const cliApiRouter = t.router({
         url: z.string(),
       })
     )
-    .query(({ input }) => {
+    .query(async ({ input }) => {
       const { url } = input;
 
-      const fullPath = `${HOOK_PATH}${decodeURI(url)}`;
+      const fullPath = path.join(
+        HOOK_PATH,
+        ...url.split("/").map((x) => decodeURI(x))
+      );
 
       if (!fs.existsSync(fullPath)) {
-        return {
+        const d = {
           type: "notFound",
           path: decodeURI(url),
           data: {},
         } as const;
+
+        return d;
       }
 
       if (url.endsWith(".json")) {
-        return {
-          type: "file",
-          path: decodeURI(url),
-          data: {},
+        const configPath = fullPath.replace(".json", "") + ".config.json";
+
+        const bodyPromise = fsPromises.readFile(fullPath, "utf-8");
+
+        const configPromise = fsPromises
+          .readFile(configPath, "utf-8")
+          .then((x) => JSON.parse(x) as ConfigValidatorType)
+          .catch(() => undefined);
+
+        const hookData = {
+          name: fullPath.split("/").pop(),
+          body: await bodyPromise,
+          config: await configPromise,
         } as const;
+
+        const d = {
+          type: "file" as const,
+          path: decodeURI(url),
+          data: hookData,
+        } as const;
+
+        return d;
       } else {
-        return {
-          type: "folder",
+        // get folders and files in folder
+
+        const d = {
+          type: "folder" as const,
           path: decodeURI(url),
           data: {},
         } as const;
+
+        return d;
       }
     }),
 });

@@ -9,6 +9,7 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
+import { inferRouterOutputs } from "@trpc/server";
 
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
@@ -17,6 +18,7 @@ import { classNames } from "./utils/classnames";
 import { useFileRoute } from "./utils/useRoute";
 import { FileRunner } from "./components/filerunner";
 import { cliApi } from "./utils/api";
+import { CliApiRouter } from "@captain/cli-core";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -29,10 +31,10 @@ const PageContent = ({
   data,
 }: {
   type: "file" | "folder" | "notFound";
-  data: { path: string };
+  data: inferRouterOutputs<CliApiRouter>["parseUrl"];
 }) => {
   if (type === "file") {
-    return <FileRunner path={data.path} />;
+    return <FileRunner path={data.path} data={data.data} />;
   } else if (type === "folder") {
     return <FileBrowser path={data.path} />;
   } else {
@@ -106,7 +108,7 @@ export default function AppCore() {
                   />
                 </div>
               ) : (
-                <PageContent type={data.type} data={{ path: data.path }} />
+                <PageContent type={data.type} data={data} />
               )}
             </div>
             <div className="flex h-2/5 w-full rounded-lg bg-white p-4 shadow lg:h-full lg:w-2/5">
