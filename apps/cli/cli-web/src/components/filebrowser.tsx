@@ -7,7 +7,8 @@ import {
   InformationCircleIcon,
   PlayIcon,
   PlusIcon,
-} from "@heroicons/react/20/solid";
+} from "@heroicons/react/24/solid";
+import { FolderPlusIcon as FolderPlusOutline } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "wouter";
@@ -55,6 +56,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
   });
 
   const [selectedHookName, setSelectedHook] = useState<string>("");
+  const addHookModalState = useState(false);
+  const addFolderModalState = useState(false);
 
   const selectedHook = data.files?.find((x) => x.name === selectedHookName);
 
@@ -132,7 +135,86 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
           >
             {`Open Folder`}
           </button>
-          <CreateMenu path={pathArr} />
+
+          <FolderFormModal
+            openState={addFolderModalState}
+            type="create"
+            path={pathArr}
+          />
+          <WebhookFormModal
+            type="create"
+            openState={addHookModalState}
+            path={pathArr}
+          />
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <span className="sr-only">{`Open create menu`}</span>
+                <PlusIcon
+                  className="h-5 w-5 flex-shrink-0"
+                  aria-hidden="true"
+                />
+              </Menu.Button>
+            </div>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="w-full py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <div className="flex w-full flex-row items-center justify-start">
+                        <button
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-indigo-700"
+                              : "text-gray-700",
+                            "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                          )}
+                          onClick={() => {
+                            addFolderModalState[1](true);
+                          }}
+                        >
+                          <FolderPlusIcon className="h-4" aria-hidden="true" />
+                          {`New Folder`}
+                        </button>
+                      </div>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <div className="flex flex-row items-center justify-start">
+                        <button
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-indigo-700"
+                              : "text-gray-700",
+                            "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                          )}
+                          onClick={() => {
+                            addHookModalState[1](true);
+                          }}
+                        >
+                          <DocumentPlusIcon
+                            className="h-4"
+                            aria-hidden="true"
+                          />
+                          {`New Hook`}
+                        </button>
+                      </div>
+                    )}
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
         </div>
       </nav>
       {/* folders section */}
@@ -158,6 +240,20 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
               </Tooltip>
             </div>
           ))}
+          <div className="w-1/5 min-w-[8rem]">
+            <button
+              className="flex w-full flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md"
+              onClick={() => addFolderModalState[1](true)}
+            >
+              <FolderPlusOutline
+                className="h-5 w-5 flex-shrink-0"
+                aria-hidden="true"
+              />
+              <span className="w-full truncate text-center">
+                {`New Folder`}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
       {/* files section */}
@@ -227,88 +323,5 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-const CreateMenu = ({ path }: { path: string[] }) => {
-  const addHookModalState = useState(false);
-  const addFolderModalState = useState(false);
-
-  return (
-    <>
-      <FolderFormModal
-        openState={addFolderModalState}
-        type="create"
-        path={path}
-      />
-      <WebhookFormModal
-        type="create"
-        openState={addHookModalState}
-        path={path}
-      />
-      <Menu as="div" className="relative inline-block text-left">
-        <div>
-          <Menu.Button className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            <span className="sr-only">{`Open create menu`}</span>
-            <PlusIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-          </Menu.Button>
-        </div>
-
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="w-full py-1">
-              <Menu.Item>
-                {({ active }) => (
-                  <div className="flex w-full flex-row items-center justify-start">
-                    <button
-                      className={classNames(
-                        active
-                          ? "bg-gray-100 text-indigo-700"
-                          : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
-                      )}
-                      onClick={() => {
-                        addFolderModalState[1](true);
-                      }}
-                    >
-                      <FolderPlusIcon className="h-4" aria-hidden="true" />
-                      {`Create Folder`}
-                    </button>
-                  </div>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <div className="flex flex-row items-center justify-start">
-                    <button
-                      className={classNames(
-                        active
-                          ? "bg-gray-100 text-indigo-700"
-                          : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
-                      )}
-                      onClick={() => {
-                        addHookModalState[1](true);
-                      }}
-                    >
-                      <DocumentPlusIcon className="h-4" aria-hidden="true" />
-                      {`Create Hook`}
-                    </button>
-                  </div>
-                )}
-              </Menu.Item>
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu>
-    </>
   );
 };
