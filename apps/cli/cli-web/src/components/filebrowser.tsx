@@ -11,6 +11,8 @@ import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "wouter";
 import { Menu, Transition } from "@headlessui/react";
+import { CliApiRouter } from "@captain/cli-core";
+import { inferRouterOutputs } from "@trpc/server";
 
 import { Tooltip } from "./common/tooltip";
 import { WebhookFormModal } from "./webhook-form";
@@ -29,21 +31,18 @@ const pathArrToUrl = (pathArr: string[], nav?: string) => {
   return url;
 };
 
-export const FileBrowser = ({ path }: { path: string }) => {
-  const pathArr = path.split("/").slice(1);
+type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
+export type FolderDataType = Extract<DataResponse, { type: "folder" }>["data"];
 
-  const { data } = cliApi.getFilesAndFolders.useQuery({
-    path: pathArr,
-  });
+export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
+  const { path, data } = input;
+
+  const pathArr = path.split("/").slice(1);
 
   const { mutate: openFolder } = cliApi.openFolder.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
-  });
-
-  const { data: blobData } = cliApi.getBlobs.useQuery({
-    path: pathArr,
   });
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
@@ -58,7 +57,7 @@ export const FileBrowser = ({ path }: { path: string }) => {
   const [selectedHookName, setSelectedHook] = useState<string>("");
   const [storedEndpoint] = useCurrentUrl();
 
-  const selectedHook = blobData?.find((x) => x.name === selectedHookName);
+  const selectedHook = data.files?.find((x) => x.name === selectedHookName);
 
   return (
     <div className="flex min-h-0 flex-col divide-y divide-gray-200 first-line:w-full">
@@ -120,7 +119,7 @@ export const FileBrowser = ({ path }: { path: string }) => {
           {`Folders`}
         </h3>
         <div className="flex h-28 flex-row space-x-3 overflow-x-auto py-2">
-          {data?.folders.map((folder) => (
+          {data.folders.map((folder) => (
             <Tooltip key={folder} content={folder} placement="bottom">
               <Link href={pathArrToUrl(pathArr, folder)}>
                 <div
@@ -164,12 +163,12 @@ export const FileBrowser = ({ path }: { path: string }) => {
         </h3>
         <div className="w-full overflow-y-auto">
           <ul role="list" className="flex flex-col space-y-3 py-2">
-            {blobData?.map((blob) => (
-              <li key={blob.name} className="flex w-full flex-row gap-2">
-                <Link href={pathArrToUrl(pathArr, blob.name)}>
+            {data.files.map((file) => (
+              <li key={file.name} className="flex w-full flex-row gap-2">
+                <Link href={pathArrToUrl(pathArr, file.name)}>
                   <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
-                    {blob.name}
-                    {(blob.config?.url || blob.config?.headers) && (
+                    {file.name}
+                    {(file.config?.url || file.config?.headers) && (
                       <Tooltip
                         content="This hook has a custom config"
                         placement="left"
@@ -183,7 +182,7 @@ export const FileBrowser = ({ path }: { path: string }) => {
                   className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   onClick={() => {
                     runFile({
-                      file: `${path}/${blob.name}`,
+                      file: `${path}/${file.name}`,
                       url: storedEndpoint,
                     });
                   }}

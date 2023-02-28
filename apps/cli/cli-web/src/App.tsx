@@ -36,7 +36,7 @@ const PageContent = ({
   if (type === "file") {
     return <FileRunner path={data.path} data={data.data} />;
   } else if (type === "folder") {
-    return <FileBrowser path={data.path} />;
+    return <FileBrowser path={data.path} data={data.data} />;
   } else {
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">

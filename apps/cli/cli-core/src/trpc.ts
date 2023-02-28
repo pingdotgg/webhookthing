@@ -400,11 +400,53 @@ export const cliApiRouter = t.router({
         return d;
       } else {
         // get folders and files in folder
+        const dirListing: {
+          folders: string[];
+          files: {
+            name: string;
+            body: string;
+            config: ConfigValidatorType | undefined;
+          }[];
+        } = {
+          folders: [],
+          files: [],
+        };
+  
+        fs.readdirSync(fullPath).forEach(async (file) => {
+          if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
+            dirListing.folders.push(file);
+          } else {
+            if (file.startsWith(".")) return; // skip hidden files
+            
+            const bodyPromise = fsPromises.readFile(
+              path.join(fullPath, file),
+              "utf-8"
+            );
+  
+            const configPath = file.replace(".json", "") + ".config.json";
+  
+            let config;
+            if (fs.existsSync(path.join(fullPath, configPath))) {
+              config = await fsPromises.readFile(
+                path.join(fullPath, configPath),
+                "utf-8"
+              );
+            }
+  
+            dirListing.files.push({
+              name: file,
+              body: await bodyPromise,
+              config: config
+                ? (JSON.parse(config) as ConfigValidatorType)
+                : undefined,
+            });
+          }
+        });
 
         const d = {
           type: "folder" as const,
           path: decodeURI(url),
-          data: {},
+          data: dirListing,
         } as const;
 
         return d;
