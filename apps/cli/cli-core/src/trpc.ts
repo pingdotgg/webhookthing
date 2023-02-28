@@ -343,6 +343,40 @@ export const cliApiRouter = t.router({
 
       fs.mkdirSync(fullPath);
     }),
+
+  parseUrl: t.procedure
+    .input(
+      z.object({
+        url: z.string(),
+      })
+    )
+    .query(({ input }) => {
+      const { url } = input;
+
+      const fullPath = `${HOOK_PATH}${decodeURI(url)}`;
+
+      if (!fs.existsSync(fullPath)) {
+        return {
+          type: "notFound",
+          path: decodeURI(url),
+          data: {},
+        } as const;
+      }
+
+      if (url.endsWith(".json")) {
+        return {
+          type: "file",
+          path: decodeURI(url),
+          data: {},
+        } as const;
+      } else {
+        return {
+          type: "folder",
+          path: decodeURI(url),
+          data: {},
+        } as const;
+      }
+    }),
 });
 
 // export type definition of API

@@ -1,40 +1,39 @@
 import {
-  ArchiveBoxIcon,
-  BookOpenIcon,
-  CogIcon,
   DocumentPlusIcon,
-  EllipsisVerticalIcon,
-  EyeIcon,
-  EyeSlashIcon,
   FolderIcon,
   FolderPlusIcon,
   HomeIcon,
   InformationCircleIcon,
   PlayIcon,
-  PlusCircleIcon,
   PlusIcon,
-  QuestionMarkCircleIcon,
 } from "@heroicons/react/20/solid";
-import Highlight, { defaultProps } from "prism-react-renderer";
-import vsLight from "prism-react-renderer/themes/vsLight";
 import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "wouter";
+import { Menu, Transition } from "@headlessui/react";
+
+import { Tooltip } from "./common/tooltip";
+import { WebhookFormModal } from "./webhook-form";
+import { FolderFormModal } from "./folder-form-modal";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
-import { Tooltip } from "./common/tooltip";
 import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { generatePrefillFromConfig } from "../utils/configTransforms";
-import { WebhookFormModal } from "./webhook-form";
-import { FolderFormModal } from "./folder-form-modal";
-import { Menu, Transition } from "@headlessui/react";
 
-export const FileBrowser = () => {
-  const [path, setPath] = useState<string[]>([]);
+const pathArrToUrl = (pathArr: string[], nav?: string) => {
+  const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
+
+  // make sure we always have a leading slash
+  if (!url.startsWith("/")) return `/${url}`;
+  return url;
+};
+
+export const FileBrowser = ({ path }: { path: string }) => {
+  const pathArr = path.split("/").slice(1);
 
   const { data } = cliApi.getFilesAndFolders.useQuery({
-    path,
+    path: pathArr,
   });
 
   const { mutate: openFolder } = cliApi.openFolder.useMutation({
@@ -44,7 +43,7 @@ export const FileBrowser = () => {
   });
 
   const { data: blobData } = cliApi.getBlobs.useQuery({
-    path,
+    path: pathArr,
   });
 
   const { mutate: runFile } = cliApi.runFile.useMutation({
@@ -70,19 +69,18 @@ export const FileBrowser = () => {
       >
         <ol role="list" className="flex items-center space-x-4">
           <li className="flex-items-center">
-            <button
-              onClick={() => setPath([])}
+            <Link
+              href="/"
               className={classNames(
                 "flex items-center text-gray-400",
                 path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
               )}
-              disabled={path.length === 0}
             >
               <HomeIcon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <span className="sr-only">{`root`}</span>
-            </button>
+            </Link>
           </li>
-          {path.map((page) => (
+          {pathArr.map((page) => (
             <li key={page}>
               <div className="flex items-center">
                 <svg
@@ -93,17 +91,15 @@ export const FileBrowser = () => {
                 >
                   <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                 </svg>
-                <button
-                  onClick={() =>
-                    setPath((p) => {
-                      return p.slice(0, p.indexOf(page) + 1);
-                    })
-                  }
+                <Link
+                  href={pathArrToUrl(
+                    pathArr.slice(0, pathArr.indexOf(page) + 1)
+                  )}
                   className="ml-4 text-sm font-medium text-gray-400 hover:text-indigo-600"
                   aria-current={page ? "page" : undefined}
                 >
                   {page}
-                </button>
+                </Link>
               </div>
             </li>
           ))}
@@ -111,11 +107,11 @@ export const FileBrowser = () => {
         <div className="flex flex-row gap-1">
           <button
             className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={() => openFolder({ path: path.join("/") })}
+            onClick={() => openFolder({ path })}
           >
             {`Open Folder`}
           </button>
-          <CreateMenu path={path} />
+          <CreateMenu path={pathArr} />
         </div>
       </nav>
       {/* folders section */}
@@ -126,10 +122,10 @@ export const FileBrowser = () => {
         <div className="flex h-28 flex-row space-x-3 overflow-x-auto py-2">
           {data?.folders.map((folder) => (
             <Tooltip key={folder} content={folder} placement="bottom">
-              <button onClick={() => setPath((p) => [...p, folder])}>
+              <Link href={pathArrToUrl(pathArr, folder)}>
                 <div
                   key={folder}
-                  className="flex w-28 flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md"
+                  className="flex w-1/5 flex-col items-center justify-center space-y-1 truncate rounded-md border border-gray-50 px-6 py-4 text-sm font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md"
                 >
                   <FolderIcon
                     className="h-5 w-5 flex-shrink-0"
@@ -137,7 +133,7 @@ export const FileBrowser = () => {
                   />
                   <span className="w-full truncate">{folder}</span>
                 </div>
-              </button>
+              </Link>
             </Tooltip>
           ))}
         </div>
@@ -160,7 +156,7 @@ export const FileBrowser = () => {
             onClose={() => {
               setSelectedHook("");
             }}
-            path={path}
+            path={pathArr}
           />
         )}
         <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -168,9 +164,9 @@ export const FileBrowser = () => {
         </h3>
         <div className="w-full overflow-y-auto">
           <ul role="list" className="flex flex-col space-y-3 py-2">
-            {blobData?.map((blob, i) => (
+            {blobData?.map((blob) => (
               <li key={blob.name} className="flex w-full flex-row gap-2">
-                <Link href={`/f${path.join("/")}/${blob.name}`}>
+                <Link href={pathArrToUrl(pathArr, blob.name)}>
                   <div className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md border border-gray-50 px-6 py-2 font-medium text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md">
                     {blob.name}
                     {(blob.config?.url || blob.config?.headers) && (
@@ -187,7 +183,7 @@ export const FileBrowser = () => {
                   className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   onClick={() => {
                     runFile({
-                      file: `${path.join("/")}/${blob.name}`,
+                      file: `${path}/${blob.name}`,
                       url: storedEndpoint,
                     });
                   }}

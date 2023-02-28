@@ -38,8 +38,8 @@ const formValidator = z.object({
 
 type FormValidatorType = z.infer<typeof formValidator>;
 
-export const FileRunner = (input: { file: string }) => {
-  const { file } = input;
+export const FileRunner = (input: { path: string }) => {
+  const { path: file } = input;
 
   const path = decodeURI(file).split("/").slice(0, -1);
 
@@ -119,7 +119,7 @@ export const FileRunner = (input: { file: string }) => {
 
     // construct new url with query
     const newUrl = `${url}?${query
-      .map((q) => `${q.key}=${q.value}`)
+      .map((q) => `${q.key}=${q.value as string}`)
       .join("&")}`;
 
     // set new url
@@ -244,7 +244,7 @@ export const FileRunner = (input: { file: string }) => {
                             {...register(
                               `config.headers.${index}.value` as const
                             )}
-                            defaultValue={item.value}
+                            defaultValue={item.value as string}
                             placeholder="Value"
                           />
                         </div>
@@ -338,7 +338,7 @@ export const FileRunner = (input: { file: string }) => {
                                 },
                               }
                             )}
-                            defaultValue={item.value}
+                            defaultValue={item.value as string}
                             placeholder="Value"
                           />
                         </div>
