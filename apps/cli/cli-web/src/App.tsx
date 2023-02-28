@@ -74,13 +74,18 @@ export default function AppCore() {
                     <div className="flex items-center">
                       <div className="flex flex-shrink-0 items-center text-gray-50">
                         <h1 className="ml-2 text-4xl font-bold">
-                          <span className="tracking-tight">
-                            {`webhook`}
-                            <span className="text-indigo-500">{`thing`}</span>
-                          </span>
+                          <Link href="/">
+                            <span className="tracking-tight hover:cursor-pointer">
+                              {`webhook`}
+                              <span className="text-indigo-500">{`thing`}</span>
+                            </span>
+                          </Link>
                           <span className="text-lg">
                             {`...by `}
-                            <a href="https://ping.gg">{`Ping`}</a>
+                            <a
+                              href="https://ping.gg"
+                              className="hover:text-[#DB1D70]"
+                            >{`Ping`}</a>
                           </span>
                         </h1>
                       </div>
