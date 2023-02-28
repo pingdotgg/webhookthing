@@ -99,8 +99,12 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                   <Tooltip content={page}>
                     <FolderIcon
                       className={classNames(
-                        "inline h-5 sm:hidden",
-                        i === pathArr.length - 1 ? "hidden" : ""
+                        "inline h-5",
+                        i === pathArr.length - 1
+                          ? "hidden"
+                          : pathArr.join().length > 48
+                          ? ""
+                          : "sm:hidden"
                       )}
                       aria-hidden="true"
                     />
@@ -109,6 +113,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                     className={classNames(
                       i === pathArr.length - 1
                         ? "inline truncate"
+                        : pathArr.join().length > 48
+                        ? "hidden"
                         : "hidden sm:inline"
                     )}
                   >

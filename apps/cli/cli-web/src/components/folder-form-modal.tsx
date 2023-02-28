@@ -27,12 +27,8 @@ export const FolderFormModal = (input: {
   });
 
   const { mutate: addFolder } = cliApi.createFolder.useMutation({
-    onSuccess: () => {
-      void ctx.getBlobs.invalidate().then(() => {
-        void ctx.getFilesAndFolders.invalidate().then(() => {
-          openState[1](false);
-        });
-      });
+    onSuccess: async () => {
+      await ctx.parseUrl.invalidate();
     },
   });
 
