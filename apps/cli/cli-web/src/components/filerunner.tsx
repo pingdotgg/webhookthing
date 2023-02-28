@@ -40,20 +40,18 @@ const formValidator = z.object({
 
 type FormValidatorType = z.infer<typeof formValidator>;
 type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
-export type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
+type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
 export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { path: file, data } = input;
 
   const path = decodeURI(file).split("/").slice(0, -1);
 
-  const ctx = cliApi.useContext();
+  if (path[0] === "") {
+    path.shift();
+  }
 
-  const { mutate: updateHook } = cliApi.updateHook.useMutation({
-    onSuccess: () => {
-      void ctx.getBlobs.invalidate();
-    },
-  });
+  const { mutate: updateHook } = cliApi.updateHook.useMutation();
 
   const { mutate: runFile } = cliApi.runFile.useMutation();
 

@@ -12,13 +12,13 @@ export const configValidator = z.object({
 
 export type ConfigValidatorType = z.infer<typeof configValidator>;
 
-export const updateConfig = async ({
-  name,
-  config,
-}: {
+export const updateConfig = async (input: {
   name: string;
   config?: ConfigValidatorType;
+  path?: string;
 }) => {
+  const { name, config } = input;
+
   if (!config) {
     return;
   }
@@ -37,16 +37,19 @@ export const updateConfig = async ({
     }
   });
 
+  // Generate config file path
+  const configPath = path.join(input.path ?? "",`${name}.config.json`)
+
   // Create config file if it doesn't exist
-  if (!fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))) {
+  if (!fs.existsSync(configPath)) {
     await fsPromises.writeFile(
-      path.join(HOOK_PATH, `${name}.config.json`),
+      configPath,
       JSON.stringify(config, null, 2)
     );
   } else {
     // Otherwise, update existing config file
     const existingConfig = await fsPromises.readFile(
-      path.join(HOOK_PATH, `${name}.config.json`),
+      configPath,
       "utf-8"
     );
 
@@ -66,7 +69,7 @@ export const updateConfig = async ({
     });
 
     await fsPromises.writeFile(
-      path.join(HOOK_PATH, `${name}.config.json`),
+      configPath,
       JSON.stringify(updatedConfig, null, 2)
     );
   }

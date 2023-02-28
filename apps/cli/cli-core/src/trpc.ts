@@ -283,19 +283,26 @@ export const cliApiRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
+
+      console.log(input.path)
+
       const { body, config } = input;
       const fullPath = input.path
         ? `${HOOK_PATH}/${input.path.join("/")}`
         : HOOK_PATH;
 
+      console.log(fullPath)
+
       const name = input.name.split(".json")[0];
 
       if (!name) throw new Error("No name");
 
-      logger.info(`Updating ${name}.json`);
+      const bodyPath = path.join(fullPath, `${name}.json`);
+
+      logger.info(`Updating ${bodyPath}`);
 
       const existingBody = await fsPromises.readFile(
-        path.join(fullPath, `${name}.json`),
+        bodyPath,
         "utf-8"
       );
 
@@ -310,7 +317,7 @@ export const cliApiRouter = t.router({
       };
 
       await fsPromises.writeFile(
-        path.join(fullPath, `${name}.json`),
+        bodyPath,
         JSON.stringify(updatedBody, null, 2)
       );
 
@@ -321,7 +328,7 @@ export const cliApiRouter = t.router({
         fs.existsSync(path.join(fullPath, `${name}.config.json`))
       ) {
         logger.info(`Config specified, updating ${name}.config.json`);
-        return await updateConfig({ name, config });
+        return await updateConfig({ name, config, path: fullPath });
       }
     }),
 
