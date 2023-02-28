@@ -193,19 +193,24 @@ export const cliApiRouter = t.router({
 
       if (fs.existsSync(path.join(HOOK_PATH, configName))) {
         hasCustomConfig = true;
+
         logger.info(`Found ${configName}, reading it`);
-        const configFileContents = await fsPromises.readFile(
-          path.join(HOOK_PATH, configName)
-        ).then((x) => JSON.parse(x.toString()));
+
+        const configFileContents = await fsPromises
+          .readFile(path.join(HOOK_PATH, configName))
+          .then(
+            (x) =>
+              JSON.parse(x.toString()) as {
+                url: string;
+                query?: Record<string, string>;
+                headers?: Record<string, string>;
+                method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
+              }
+          );
 
         config = {
           ...config,
-          ...(configFileContents as {
-            url: string;
-            query?: Record<string, string>;
-            headers?: Record<string, string>;
-            method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
-          }),
+          ...configFileContents,
         };
 
         // template substitution for header values
@@ -219,9 +224,13 @@ export const cliApiRouter = t.router({
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
 
-      if(!config.url) {
-        logger.error(`Missing URL, please add it to the configuration for this hook`)
-        throw new Error(`Missing URL, please add it to the configuration for this hook`)
+      if (!config.url) {
+        logger.error(
+          `Missing URL, please add it to the configuration for this hook`
+        );
+        throw new Error(
+          `Missing URL, please add it to the configuration for this hook`
+        );
       }
 
       try {
@@ -242,13 +251,12 @@ export const cliApiRouter = t.router({
         );
         return fetchedResult;
       } catch (e) {
-        logger.error("FAILED TO SEND");
         if ((e as { code: string }).code === "ECONNREFUSED") {
           logger.error("Connection refused. Is the server running?");
         } else {
-          logger.error("Unknown error", e);
+          logger.error(e);
         }
-        throw new Error("Connection refused. Is the server running?");
+        throw e;
       }
     }),
 
@@ -287,15 +295,10 @@ export const cliApiRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-
-      console.log(input.path)
-
       const { body, config } = input;
       const fullPath = input.path
         ? `${HOOK_PATH}/${input.path.join("/")}`
         : HOOK_PATH;
-
-      console.log(fullPath)
 
       const name = input.name.split(".json")[0];
 
@@ -305,11 +308,9 @@ export const cliApiRouter = t.router({
 
       logger.info(`Updating ${bodyPath}`);
 
-      const existingBody = await fsPromises.readFile(
-        bodyPath,
-        "utf-8"
-      );
+      const existingBody = await fsPromises.readFile(bodyPath, "utf-8");
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const updatedBody = {
         ...JSON.parse(existingBody),
         ...JSON.parse(body),
@@ -410,35 +411,33 @@ export const cliApiRouter = t.router({
           folders: [],
           files: [],
         };
-  
-        const listingPromises = fs.readdirSync(fullPath).map(async (maybeFile) => {
-          if (fs.lstatSync(`${fullPath}/${maybeFile}`).isDirectory()) {
-            dirListing.folders.push(maybeFile);
-          } else {
-            if (maybeFile.startsWith(".")) return; // skip hidden files
-            if(maybeFile.endsWith(".config.json")) return; // skip config files
 
-            const filePath = path.join(fullPath, maybeFile);
-            const configPath = filePath.replace(".json", "") + ".config.json";
-            
-            const bodyPromise = fsPromises.readFile(
-              filePath,
-              "utf-8"
-            );
-    
-            let configPromise = fsPromises.readFile(
-                configPath,
-                "utf-8"
-              ).then((x) => JSON.parse(x) as ConfigValidatorType).catch(() => undefined);
-            
-  
-            dirListing.files.push({
-              name: maybeFile,
-              body: await bodyPromise,
-              config: await configPromise
-            });
-          }
-        });
+        const listingPromises = fs
+          .readdirSync(fullPath)
+          .map(async (maybeFile) => {
+            if (fs.lstatSync(`${fullPath}/${maybeFile}`).isDirectory()) {
+              dirListing.folders.push(maybeFile);
+            } else {
+              if (maybeFile.startsWith(".")) return; // skip hidden files
+              if (maybeFile.endsWith(".config.json")) return; // skip config files
+
+              const filePath = path.join(fullPath, maybeFile);
+              const configPath = filePath.replace(".json", "") + ".config.json";
+
+              const bodyPromise = fsPromises.readFile(filePath, "utf-8");
+
+              const configPromise = fsPromises
+                .readFile(configPath, "utf-8")
+                .then((x) => JSON.parse(x) as ConfigValidatorType)
+                .catch(() => undefined);
+
+              dirListing.files.push({
+                name: maybeFile,
+                body: await bodyPromise,
+                config: await configPromise,
+              });
+            }
+          });
 
         await Promise.allSettled(listingPromises);
 

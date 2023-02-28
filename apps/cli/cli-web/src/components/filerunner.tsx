@@ -30,7 +30,13 @@ const formValidator = z.object({
   name: z.string().max(100).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
-    url: z.string().trim().url(),
+    url: z
+      .string()
+      .trim()
+      .url()
+      .refine((v) => v.match(/^https?:\/\//), {
+        message: "Must start with http(s):// ",
+      }),
     headers: z
       .array(z.object({ key: z.string(), value: z.string() }))
       .optional(),
