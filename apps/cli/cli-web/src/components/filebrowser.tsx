@@ -21,7 +21,6 @@ import { FolderFormModal } from "./folder-form-modal";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
-import { useCurrentUrl } from "../utils/useCurrentUrl";
 import { generatePrefillFromConfig } from "../utils/configTransforms";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {

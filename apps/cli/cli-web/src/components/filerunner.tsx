@@ -38,7 +38,6 @@ const formValidator = z.object({
   }),
 });
 
-type FormValidatorType = z.infer<typeof formValidator>;
 type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
 type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
@@ -56,7 +55,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { mutate: runFile } = cliApi.runFile.useMutation();
 
   const prefill = {
-    name: data.name,
+    name: data.name ?? "",
     body: data.body,
     config: generatePrefillFromConfig(input.data.config ?? {}),
   };
@@ -92,15 +91,6 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     name: "config.query",
   });
 
-  const onSubmit = (data: FormValidatorType) => {
-    updateHook({
-      name: data.name,
-      body: data.body ?? "",
-      config: generateConfigFromState(data.config),
-      path,
-    });
-  };
-
   const updateQuery = () => {
     // get url & query from config
     const url = getValues("config.url")?.split("?")[0] ?? "";
@@ -120,7 +110,14 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     setValue("config.url", newUrl);
   };
 
-  const submitHandler = handleSubmit(onSubmit);
+  const submitHandler = handleSubmit((data) =>
+    updateHook({
+      name: data.name,
+      body: data.body ?? "",
+      config: generateConfigFromState(data.config ?? {}),
+      path,
+    })
+  );
 
   return (
     <>
@@ -129,7 +126,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
-                {`Settings: ${prefill.name ?? "<insert name here>"}`}
+                {`Settings: ${prefill.name}`}
               </h3>
               <div className="mt-2 flex flex-col gap-2">
                 <p className="text-sm text-gray-500">

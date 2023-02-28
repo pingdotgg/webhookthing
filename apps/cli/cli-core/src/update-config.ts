@@ -2,10 +2,9 @@ import { z } from "zod";
 import fsPromises from "fs/promises";
 import fs from "fs";
 import path from "path";
-import { HOOK_PATH } from "./constants";
 
 export const configValidator = z.object({
-  url: z.string().optional(),
+  url: z.string().url().optional(),
   query: z.record(z.string()).optional(),
   headers: z.record(z.string()).optional(),
 });
