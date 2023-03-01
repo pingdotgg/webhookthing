@@ -88,59 +88,60 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
               href="/"
               className={classNames(
                 "flex items-center text-gray-400",
-                path.length > 0 ? "hover:text-indigo-600" : "cursor-default"
+                path.length > 1 ? "hover:text-indigo-600" : "cursor-default"
               )}
             >
               <HomeIcon className="h-5 flex-shrink-0" aria-hidden="true" />
               <span className="sr-only">{`root`}</span>
             </Link>
           </li>
-          {pathArr.map((page, i) => (
-            <li key={page}>
-              <div className="flex items-center">
-                <svg
-                  className="h-5 flex-shrink-0 text-gray-300"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                >
-                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                </svg>
-                <Link
-                  href={pathArrToUrl(
-                    pathArr.slice(0, pathArr.indexOf(page) + 1)
-                  )}
-                  className="text-sm font-medium text-gray-400 hover:text-indigo-600"
-                  aria-current={page ? "page" : undefined}
-                >
-                  <Tooltip content={page}>
-                    <FolderIcon
-                      className={classNames(
-                        "inline h-5",
-                        i === pathArr.length - 1
-                          ? "hidden"
-                          : pathArr.join().length > 48
-                          ? ""
-                          : "sm:hidden"
-                      )}
-                      aria-hidden="true"
-                    />
-                  </Tooltip>
-                  <p
-                    className={classNames(
-                      i === pathArr.length - 1
-                        ? "inline truncate"
-                        : pathArr.join().length > 48
-                        ? "hidden"
-                        : "hidden sm:inline"
-                    )}
+          {path.length > 1 &&
+            pathArr.map((page, i) => (
+              <li key={page}>
+                <div className="flex items-center">
+                  <svg
+                    className="h-5 flex-shrink-0 text-gray-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
                   >
-                    {page}
-                  </p>
-                </Link>
-              </div>
-            </li>
-          ))}
+                    <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                  </svg>
+                  <Link
+                    href={pathArrToUrl(
+                      pathArr.slice(0, pathArr.indexOf(page) + 1)
+                    )}
+                    className="text-sm font-medium text-gray-400 hover:text-indigo-600"
+                    aria-current={page ? "page" : undefined}
+                  >
+                    <Tooltip content={page}>
+                      <FolderIcon
+                        className={classNames(
+                          "inline h-5",
+                          i === pathArr.length - 1
+                            ? "hidden"
+                            : pathArr.join().length > 48
+                            ? ""
+                            : "sm:hidden"
+                        )}
+                        aria-hidden="true"
+                      />
+                    </Tooltip>
+                    <p
+                      className={classNames(
+                        i === pathArr.length - 1
+                          ? "inline truncate"
+                          : pathArr.join().length > 48
+                          ? "hidden"
+                          : "hidden sm:inline"
+                      )}
+                    >
+                      {page}
+                    </p>
+                  </Link>
+                </div>
+              </li>
+            ))}
         </ol>
         <div className="flex flex-row gap-1">
           <button
