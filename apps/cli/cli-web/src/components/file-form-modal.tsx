@@ -85,7 +85,7 @@ export const FileFormModal = (input: {
           </div>
           <div className="h-full w-full grow pt-3 text-left">
             <h3 className="text-center font-medium leading-6 text-gray-900">
-              {`Create a new folder`}
+              {`Create a new hook`}
             </h3>
             <div className="my-5">
               <form onSubmit={(e) => void submitHandler(e)} id="form">
@@ -104,10 +104,13 @@ export const FileFormModal = (input: {
                   <input
                     type="text"
                     id="name"
-                    className="block w-full min-w-0 flex-1 rounded-md border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder="my_new_folder"
+                    className="block w-full min-w-0 flex-1 rounded-none rounded-l-md border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    placeholder="my_webhook"
                     {...register("name")}
                   />
+                  <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">
+                    {`.json`}
+                  </span>
                 </div>
               </form>
             </div>
@@ -120,7 +123,7 @@ export const FileFormModal = (input: {
             className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80"
             disabled={!isValid}
           >
-            {`Create Folder`}
+            {`Create Hook`}
           </button>
           <button
             type="button"
