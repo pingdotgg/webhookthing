@@ -32,6 +32,7 @@ const formValidator = z.object({
   config: z.object({
     url: z
       .string()
+      .min(1, { message: "Required" })
       .trim()
       .url()
       .refine((v) => v.match(/^https?:\/\//), {
