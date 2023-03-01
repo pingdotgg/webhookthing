@@ -33,6 +33,9 @@ export const FolderFormModal = (input: {
       onClose && onClose();
       setLocation(route);
     },
+    onError: (err) => {
+      toast.error(err.message);
+    },
   });
 
   const { openState, onClose, prefill } = input;

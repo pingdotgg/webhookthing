@@ -35,6 +35,9 @@ export const FileFormModal = (input: {
       onClose && onClose();
       setLocation(route);
     },
+    onError: (err) => {
+      toast.error(err.message);
+    },
   });
 
   const {
