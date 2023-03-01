@@ -149,8 +149,8 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
             <div className="flex h-full flex-col items-start justify-start">
               <button
                 className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                disabled={!isValid}
                 onClick={() => {
+                  void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
                     updateHook(
                       {
