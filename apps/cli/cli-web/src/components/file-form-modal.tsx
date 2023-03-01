@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DocumentPlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
-import { useLocation } from "wouter";
 
 import { cliApi } from "../utils/api";
 import { Modal } from "./common/modal";
@@ -23,7 +22,6 @@ export const FileFormModal = (input: {
   const { openState, onClose, prefill } = input;
 
   const ctx = cliApi.useContext();
-  const [, setLocation] = useLocation();
 
   const { data: existing } = cliApi.getFilesAndFolders.useQuery({
     path: input.path,
@@ -33,8 +31,9 @@ export const FileFormModal = (input: {
     onSuccess: async ({ route }) => {
       await ctx.parseUrl.invalidate();
       onClose && onClose();
-      setLocation(route);
+      openState[1](false);
       reset();
+      window.open(route, "_blank");
     },
     onError: (err) => {
       toast.error(err.message);

@@ -31,8 +31,9 @@ export const FolderFormModal = (input: {
     onSuccess: async ({ route }) => {
       await ctx.parseUrl.invalidate();
       onClose && onClose();
-      setLocation(route);
+      openState[1](false);
       reset();
+      setLocation(route);
     },
     onError: (err) => {
       toast.error(err.message);
