@@ -102,7 +102,7 @@ export default function AppCore() {
 
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-2 px-2 lg:h-full lg:flex-row">
-            <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 rounded-lg bg-white p-4 shadow lg:h-full lg:w-3/5">
+            <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-white p-4 shadow lg:h-full lg:w-3/5 ">
               {isLoading || !data ? (
                 <div className="flex h-full flex-row items-center justify-center text-gray-500">
                   <ArrowPathIcon
