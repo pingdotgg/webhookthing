@@ -53,7 +53,7 @@ export const FolderFormModal = (input: {
       return toast.error("Folder with that name already exists");
     }
     addFolder({
-      name: data.name,
+      name: data.name.trim(),
       path: input.path,
     });
 
