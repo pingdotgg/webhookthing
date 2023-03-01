@@ -19,12 +19,10 @@ import { CliApiRouter } from "@captain/cli-core";
 import { inferRouterOutputs } from "@trpc/server";
 
 import { Tooltip } from "./common/tooltip";
-import { WebhookFormModal } from "./webhook-form";
 import { FolderFormModal } from "./folder-form-modal";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
-import { generatePrefillFromConfig } from "../utils/configTransforms";
 import { useFileRoute } from "../utils/useRoute";
 import { FileFormModal } from "./file-form-modal";
 
@@ -41,6 +39,7 @@ export type FolderDataType = Extract<DataResponse, { type: "folder" }>["data"];
 
 export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
   const { path, data } = input;
+  const location = useFileRoute();
 
   const pathArr = path.split("/").slice(1);
 
@@ -67,13 +66,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
     },
   });
 
-  const [selectedHookName, setSelectedHook] = useState<string>("");
   const addHookModalState = useState(false);
   const addFolderModalState = useState(false);
-
-  const location = useFileRoute();
-
-  const selectedHook = data.files?.find((x) => x.name === selectedHookName);
 
   return (
     <div className="flex min-h-0 flex-col divide-y divide-gray-200 first-line:w-full">
@@ -270,25 +264,6 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
       </div>
       {/* files section */}
       <div className="flex min-h-0 grow flex-col py-2">
-        {selectedHook && (
-          <WebhookFormModal
-            type="update"
-            openState={[
-              true,
-              () => {
-                setSelectedHook("");
-              },
-            ]}
-            prefill={{
-              ...selectedHook,
-              config: generatePrefillFromConfig(selectedHook.config ?? {}),
-            }}
-            onClose={() => {
-              setSelectedHook("");
-            }}
-            path={pathArr}
-          />
-        )}
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
