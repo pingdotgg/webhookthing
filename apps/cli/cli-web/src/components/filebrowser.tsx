@@ -113,7 +113,9 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                     )}
                     className={classNames(
                       "text-sm font-medium text-gray-400 ",
-                      i !== pathArr.length - 1 && "hover:text-indigo-600"
+                      i !== pathArr.length - 1
+                        ? "hover:text-indigo-600"
+                        : "cursor-default"
                     )}
                     aria-current={page ? "page" : undefined}
                   >
