@@ -32,6 +32,7 @@ export const FolderFormModal = (input: {
       await ctx.parseUrl.invalidate();
       onClose && onClose();
       setLocation(route);
+      reset();
     },
     onError: (err) => {
       toast.error(err.message);
@@ -59,10 +60,6 @@ export const FolderFormModal = (input: {
       name: data.name.trim(),
       path: input.path,
     });
-
-    reset();
-
-    return "";
   };
 
   const submitHandler = handleSubmit(onSubmit);

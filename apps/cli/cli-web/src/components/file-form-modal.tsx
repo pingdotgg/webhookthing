@@ -34,6 +34,7 @@ export const FileFormModal = (input: {
       await ctx.parseUrl.invalidate();
       onClose && onClose();
       setLocation(route);
+      reset();
     },
     onError: (err) => {
       toast.error(err.message);
@@ -60,8 +61,6 @@ export const FileFormModal = (input: {
       name: data.name.trim(),
       path: input.path,
     });
-
-    reset();
   };
 
   const submitHandler = handleSubmit(onSubmit);
