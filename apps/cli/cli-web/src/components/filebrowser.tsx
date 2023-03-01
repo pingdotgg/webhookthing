@@ -1,6 +1,6 @@
 import {
   CloudArrowDownIcon,
-  DocumentArrowDownIcon,
+  DocumentDuplicateIcon,
   DocumentPlusIcon,
   ExclamationCircleIcon,
   FolderIcon,
@@ -9,11 +9,8 @@ import {
   InformationCircleIcon,
   PlayIcon,
   PlusIcon,
-} from "@heroicons/react/24/solid";
-import {
-  FolderPlusIcon as FolderPlusOutline,
-  DocumentPlusIcon as DocumentPlusOutline,
-} from "@heroicons/react/24/outline";
+} from "@heroicons/react/20/solid";
+import { FolderPlusIcon as FolderPlusOutline } from "@heroicons/react/24/outline";
 import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "wouter";
@@ -29,6 +26,7 @@ import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
 import { generatePrefillFromConfig } from "../utils/configTransforms";
 import { useFileRoute } from "../utils/useRoute";
+import { FileFormModal } from "./file-form-modal";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {
   const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
@@ -152,16 +150,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
             {`Open Folder`}
           </button>
 
-          <FolderFormModal
-            openState={addFolderModalState}
-            type="create"
-            path={pathArr}
-          />
-          <WebhookFormModal
-            type="create"
-            openState={addHookModalState}
-            path={pathArr}
-          />
+          <FolderFormModal openState={addFolderModalState} path={pathArr} />
+          <FileFormModal openState={addHookModalState} path={pathArr} />
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -299,7 +289,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         <div className="w-full overflow-y-auto">
           {data.files.length === 0 ? (
             <div className="text-center">
-              <DocumentPlusOutline className="mx-auto h-12 w-12 text-gray-400" />
+              <DocumentDuplicateIcon className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-semibold text-gray-900">
                 {`No hook files found!`}
               </h3>

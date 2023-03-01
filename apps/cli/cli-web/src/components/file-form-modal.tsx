@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FolderPlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { DocumentPlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 import { useLocation } from "wouter";
 
@@ -14,12 +14,14 @@ const formValidator = z.object({
 
 type FormValidatorType = z.infer<typeof formValidator>;
 
-export const FolderFormModal = (input: {
+export const FileFormModal = (input: {
   openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   prefill?: FormValidatorType;
   onClose?: () => void;
   path: string[];
 }) => {
+  const { openState, onClose, prefill } = input;
+
   const ctx = cliApi.useContext();
   const [, setLocation] = useLocation();
 
@@ -27,7 +29,7 @@ export const FolderFormModal = (input: {
     path: input.path,
   });
 
-  const { mutate: addFolder } = cliApi.createFolder.useMutation({
+  const { mutate: createFile } = cliApi.createFile.useMutation({
     onSuccess: async ({ route }) => {
       await ctx.parseUrl.invalidate();
       onClose && onClose();
@@ -35,7 +37,6 @@ export const FolderFormModal = (input: {
     },
   });
 
-  const { openState, onClose, prefill } = input;
   const {
     register,
     handleSubmit,
@@ -52,14 +53,12 @@ export const FolderFormModal = (input: {
     if (existing?.folders.find((b) => b === data.name)) {
       return toast.error("Folder with that name already exists");
     }
-    addFolder({
+    createFile({
       name: data.name,
       path: input.path,
     });
 
     reset();
-
-    return "";
   };
 
   const submitHandler = handleSubmit(onSubmit);
@@ -79,7 +78,7 @@ export const FolderFormModal = (input: {
         </div>
         <div className="min-h-0 w-full grow overflow-y-scroll px-4">
           <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100">
-            <FolderPlusIcon
+            <DocumentPlusIcon
               className="h-6 w-6 text-indigo-600"
               aria-hidden="true"
             />

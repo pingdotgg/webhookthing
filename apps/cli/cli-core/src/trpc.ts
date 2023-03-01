@@ -357,6 +357,31 @@ export const cliApiRouter = t.router({
       };
     }),
 
+  createFile: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        path: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(({ input }) => {
+      const { name } = input;
+
+      const fullPath = input.path
+        ? `${HOOK_PATH}/${input.path.join("/")}/${name}.json`
+        : `${HOOK_PATH}/${name}.json`;
+
+      logger.info(`Creating new file: ${fullPath}`);
+
+      fs.writeFileSync(fullPath, "{}");
+
+      return {
+        route: encodeURI(
+          input.path ? `${input.path.join("/")}/${name}.json` : `${name}.json`
+        ),
+      };
+    }),
+
   parseUrl: t.procedure
     .input(
       z.object({
