@@ -177,6 +177,7 @@ export const cliApiRouter = t.router({
       logger.info(`Reading file ${file}`);
 
       let config = {
+        url: "",
         query: undefined,
         headers: {
           "Content-Type": "application/json",
