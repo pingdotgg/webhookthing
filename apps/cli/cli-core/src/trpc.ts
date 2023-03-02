@@ -19,6 +19,7 @@ import logger from "@captain/logger";
 import { observable } from "@trpc/server/observable";
 
 import type { LogLevels } from "@captain/logger";
+import { getFullPath, getRoute } from "./utils/get-full-path";
 
 export const t = initTRPC.create({
   transformer: superjson,
@@ -51,7 +52,7 @@ export const cliApiRouter = t.router({
       })
     )
     .query(async ({ input }) => {
-      const fullPath = `${HOOK_PATH}/${input.path.join("/")}`;
+      const fullPath = getFullPath(input.path);
 
       logger.debug(`Getting blobs from ${fullPath}`);
 
@@ -102,8 +103,7 @@ export const cliApiRouter = t.router({
       })
     )
     .query(({ input }) => {
-      const { path } = input;
-      const fullPath = `${HOOK_PATH}/${path.join("/")}`;
+      const fullPath = getFullPath(input.path);
 
       const dirListing: { folders: string[]; files: string[] } = {
         folders: [],
@@ -272,9 +272,7 @@ export const cliApiRouter = t.router({
     .mutation(async ({ input }) => {
       const { name, body, config } = input;
 
-      const fullPath = input.path
-        ? `${HOOK_PATH}/${input.path.join("/")}`
-        : HOOK_PATH;
+      const fullPath = getFullPath(input.path);
 
       logger.info(`Creating ${name}.json`);
 
@@ -296,9 +294,7 @@ export const cliApiRouter = t.router({
     )
     .mutation(async ({ input }) => {
       const { body, config } = input;
-      const fullPath = input.path
-        ? `${HOOK_PATH}/${input.path.join("/")}`
-        : HOOK_PATH;
+      const fullPath = getFullPath(input.path);
 
       const name = input.name.split(".json")[0];
 
@@ -340,20 +336,17 @@ export const cliApiRouter = t.router({
       })
     )
     .mutation(({ input }) => {
-      const { name } = input;
+      const pathArr = input.path ? [...input.path, input.name] : [input.name];
 
-      const fullPath = input.path
-        ? `${HOOK_PATH}/${input.path.join("/")}/${name}`
-        : `${HOOK_PATH}/${name}`;
+      const fullPath = getFullPath(pathArr);
+      const route = getRoute(pathArr);
 
       logger.info(`Creating new folder: ${fullPath}`);
 
       fs.mkdirSync(fullPath);
 
       return {
-        route: encodeURI(
-          input.path ? `${input.path.join("/")}/${name}` : `${name}`
-        ),
+        route,
       };
     }),
 
@@ -365,20 +358,19 @@ export const cliApiRouter = t.router({
       })
     )
     .mutation(({ input }) => {
-      const { name } = input;
+      const pathArr = input.path
+        ? [...input.path, `${input.name}.json`]
+        : [`${input.name}.json`];
 
-      const fullPath = input.path
-        ? `${HOOK_PATH}/${input.path.join("/")}/${name}.json`
-        : `${HOOK_PATH}/${name}.json`;
+      const fullPath = getFullPath(pathArr);
+      const route = getRoute(pathArr);
 
       logger.info(`Creating new file: ${fullPath}`);
 
       fs.writeFileSync(fullPath, "{}");
 
       return {
-        route: encodeURI(
-          input.path ? `${input.path.join("/")}/${name}.json` : `${name}.json`
-        ),
+        route,
       };
     }),
 
