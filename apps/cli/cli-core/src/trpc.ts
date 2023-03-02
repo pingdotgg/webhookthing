@@ -138,7 +138,9 @@ export const cliApiRouter = t.router({
       let config = {
         url,
         query: undefined,
-        headers: undefined,
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
       } as {
         url: string;
