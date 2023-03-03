@@ -1,17 +1,16 @@
-import { useForm, useFieldArray } from "react-hook-form";
+import { CliApiRouter } from "@captain/cli-core";
+import { PlayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { inferRouterOutputs } from "@trpc/server";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
-import {
-  CogIcon,
-  PlusIcon,
-  TrashIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+
 import { cliApi } from "../utils/api";
-import { Modal } from "./common/modal";
 import { classNames } from "../utils/classnames";
-import { generateConfigFromState } from "../utils/configTransforms";
-import toast from "react-hot-toast";
+import {
+  generateConfigFromState,
+  generatePrefillFromConfig,
+} from "../utils/configTransforms";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -31,7 +30,14 @@ const formValidator = z.object({
   name: z.string().max(100).min(1, { message: "Required" }),
   body: z.optional(jsonValidator()),
   config: z.object({
-    url: z.union([z.literal(""), z.string().trim().url()]).optional(),
+    url: z
+      .string()
+      .min(1, { message: "Required" })
+      .trim()
+      .url()
+      .refine((v) => v.match(/^https?:\/\//), {
+        message: "Must start with http(s):// ",
+      }),
     headers: z
       .array(z.object({ key: z.string(), value: z.string() }))
       .optional(),
@@ -39,34 +45,34 @@ const formValidator = z.object({
   }),
 });
 
-type FormValidatorType = z.infer<typeof formValidator>;
+type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
+type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
-export const WebhookFormModal = (input: {
-  type: "create" | "update";
-  prefill?: FormValidatorType;
-  openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  onClose?: () => void;
-}) => {
+export const FileRunner = (input: { path: string; data: FileDataType }) => {
+  const { path: file, data } = input;
+
+  const path = decodeURI(file).split("/").slice(0, -1);
+
+  if (path[0] === "") {
+    path.shift();
+  }
+
   const ctx = cliApi.useContext();
 
-  const { data: existing } = cliApi.getBlobs.useQuery();
-
   const { mutate: updateHook } = cliApi.updateHook.useMutation({
-    onSuccess: () => {
-      void ctx.getBlobs.invalidate().then(() => {
-        openState[1](false);
-      });
-    },
-  });
-  const { mutate: addHook } = cliApi.createHook.useMutation({
-    onSuccess: () => {
-      void ctx.getBlobs.invalidate().then(() => {
-        openState[1](false);
-      });
+    onSuccess: async () => {
+      await ctx.parseUrl.invalidate();
     },
   });
 
-  const { type, prefill, openState, onClose } = input;
+  const { mutate: runFile } = cliApi.runFile.useMutation();
+
+  const prefill = {
+    name: data.name ?? "",
+    body: data.body,
+    config: generatePrefillFromConfig(input.data.config ?? {}),
+  };
+
   const {
     register,
     control,
@@ -75,7 +81,6 @@ export const WebhookFormModal = (input: {
     getValues,
     setValue,
     trigger,
-    reset,
   } = useForm({
     defaultValues: prefill,
     resolver: zodResolver(formValidator),
@@ -99,29 +104,6 @@ export const WebhookFormModal = (input: {
     name: "config.query",
   });
 
-  const onSubmit = (data: FormValidatorType) => {
-    if (type === "create") {
-      // Don't allow duplicate names (this overwrites the existing hook)
-      if (existing?.find((b) => b.name.split(".json")[0] === data.name)) {
-        return toast.error("Hook with that name already exists");
-      }
-      addHook({
-        name: data.name,
-        body: data.body ?? "",
-        config: generateConfigFromState(data.config),
-      });
-    } else {
-      updateHook({
-        name: data.name,
-        body: data.body ?? "",
-        config: generateConfigFromState(data.config),
-      });
-    }
-    reset();
-
-    return "";
-  };
-
   const updateQuery = () => {
     // get url & query from config
     const url = getValues("config.url")?.split("?")[0] ?? "";
@@ -134,101 +116,71 @@ export const WebhookFormModal = (input: {
 
     // construct new url with query
     const newUrl = `${url}?${query
-      .map((q) => `${q.key}=${q.value}`)
+      .map((q) => `${q.key}=${q.value as string}`)
       .join("&")}`;
 
     // set new url
     setValue("config.url", newUrl);
   };
 
-  const submitHandler = handleSubmit(onSubmit);
+  const submitHandler = handleSubmit((data) =>
+    updateHook({
+      name: data.name,
+      body: data.body ?? "",
+      config: generateConfigFromState(data.config ?? {}),
+      path,
+    })
+  );
 
   return (
-    <Modal openState={openState} onClose={onClose}>
-      <div className="relative flex h-full w-full grow transform flex-col overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 sm:pr-20">
-        <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-          <button
-            type="button"
-            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={() => openState[1](false)}
-          >
-            <span className="sr-only">{`Close`}</span>
-            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </div>
-        <div className="min-h-0 w-full grow overflow-y-scroll px-4 sm:flex sm:items-start">
-          <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
-            {type === "update" ? (
-              <CogIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
-            ) : (
-              <PlusIcon
-                className="h-6 w-6 text-indigo-600"
-                aria-hidden="true"
-              />
-            )}
-          </div>
-          <div className="h-full w-full grow pt-3 text-left sm:ml-4 sm:pt-0">
-            <h3 className="text-center font-medium leading-6 text-gray-900 sm:text-left">
-              {type === "update" ? (
-                <>{`Settings: ${prefill?.name ?? "<insert name here>"}`}</>
-              ) : (
-                <>{`Add a new webhook`}</>
-              )}
-            </h3>
-            <div className="mt-2">
-              <p className="text-sm text-gray-500">
-                {type === "update" ? (
-                  <>{`Update your webhook's settings below.`}</>
-                ) : (
-                  <>
-                    {`Give your webhook a name and paste the body contents below.`}
-                  </>
-                )}
-              </p>
+    <>
+      <div className="flex h-full w-full flex-col">
+        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-col">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                {`Settings: ${prefill.name}`}
+              </h3>
+              <div className="mt-2 flex flex-col gap-2">
+                <p className="text-sm text-gray-500">
+                  {`Configure your webhook below.`}
+                </p>
+              </div>
             </div>
-            <div className="mt-5">
-              <form onSubmit={(e) => void submitHandler(e)} id="form">
-                {type === "create" && (
-                  <>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      {`Name`}
-                    </label>
-                    {errors.name && (
-                      <p className="text-sm text-red-500">
-                        {errors.name?.message ?? errors.name.type}
-                      </p>
-                    )}
-                    <div className="mt-1 flex rounded-md shadow-sm">
-                      <input
-                        type="text"
-                        id="name"
-                        className="block w-full min-w-0 flex-1 rounded-none rounded-l-md border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        placeholder="my_webhook"
-                        {...register("name")}
-                      />
-                      <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">
-                        {`.json`}
-                      </span>
-                    </div>
-                  </>
-                )}
-                <label
-                  htmlFor="body"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {`Body`}
-                </label>
-                {errors.body && (
-                  <p className="text-sm text-red-500">{errors.body.message}</p>
-                )}
-                <textarea
-                  id="body"
-                  className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  {...register("body", {})}
-                />
+            <div className="flex h-full flex-col items-start justify-start">
+              <button
+                className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => {
+                  void trigger();
+                  if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
+                    updateHook(
+                      {
+                        name: getValues("name"),
+                        body: getValues("body") ?? "",
+                        config: generateConfigFromState(
+                          getValues("config") ?? {}
+                        ),
+                        path,
+                      },
+                      { onSuccess: () => runFile({ file: decodeURI(file) }) }
+                    );
+                  } else {
+                    runFile({ file: decodeURI(file) });
+                  }
+                }}
+              >
+                {`Run`}
+                <PlayIcon className="h-4" />
+              </button>
+            </div>
+          </div>
+          <div className="mt-5">
+            <form
+              onSubmit={(e) => void submitHandler(e)}
+              id="form"
+              className="space-y-3 py-2"
+            >
+              <div>
                 <label
                   htmlFor="url"
                   className="block text-sm font-medium text-gray-700"
@@ -258,6 +210,24 @@ export const WebhookFormModal = (input: {
                     },
                   })}
                 />
+              </div>
+              <div>
+                <label
+                  htmlFor="body"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  {`Body`}
+                </label>
+                {errors.body && (
+                  <p className="text-sm text-red-500">{errors.body.message}</p>
+                )}
+                <textarea
+                  id="body"
+                  className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  {...register("body", {})}
+                />
+              </div>
+              <div>
                 <fieldset>
                   <legend className="block text-sm font-medium text-gray-700">
                     {`Headers`}
@@ -302,7 +272,7 @@ export const WebhookFormModal = (input: {
                               {...register(
                                 `config.headers.${index}.value` as const
                               )}
-                              defaultValue={item.value}
+                              defaultValue={item.value as string}
                               placeholder="Value"
                             />
                           </div>
@@ -334,6 +304,8 @@ export const WebhookFormModal = (input: {
                     <span>{`Add Header`}</span>
                   </button>
                 </fieldset>
+              </div>
+              <div>
                 <fieldset>
                   <legend className="block text-sm font-medium text-gray-700">
                     {`Query Parameters`}
@@ -398,7 +370,7 @@ export const WebhookFormModal = (input: {
                                   },
                                 }
                               )}
-                              defaultValue={item.value}
+                              defaultValue={item.value as string}
                               placeholder="Value"
                             />
                           </div>
@@ -433,30 +405,21 @@ export const WebhookFormModal = (input: {
                     <span>{`Add Query Param`}</span>
                   </button>
                 </fieldset>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
-        <div className="mt-5 px-4 sm:mt-4 sm:flex sm:flex-row-reverse">
+        <div className="flex flex-row justify-end pt-4">
           <button
             type="submit"
             form="form"
-            className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:ml-3 sm:w-auto sm:text-sm"
+            className="flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:text-sm"
             disabled={!isValid}
           >
             {`Save Changes`}
           </button>
-          <button
-            type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
-            onClick={() => {
-              openState[1](false);
-            }}
-          >
-            {`Cancel`}
-          </button>
         </div>
       </div>
-    </Modal>
+    </>
   );
 };
