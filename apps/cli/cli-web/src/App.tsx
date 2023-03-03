@@ -9,7 +9,6 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
-import { inferRouterOutputs } from "@trpc/server";
 
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
 import { ResponseViewer } from "./components/response-viewer";
@@ -18,7 +17,6 @@ import { classNames } from "./utils/classnames";
 import { useFileRoute } from "./utils/useRoute";
 import { FileRunner } from "./components/filerunner";
 import { cliApi } from "./utils/api";
-import { CliApiRouter } from "@captain/cli-core";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -26,16 +24,23 @@ const SubscriptionsHelper = () => {
   return null;
 };
 
-const PageContent = ({
-  data,
-}: {
-  data: inferRouterOutputs<CliApiRouter>["parseUrl"];
-}) => {
-  if (data.type === "file") {
+const PageContent = () => {
+  const location = useFileRoute();
+
+  const { data, isLoading } = cliApi.parseUrl.useQuery({ url: location });
+
+  if (isLoading || !data)
+    return (
+      <div className="flex h-full flex-row items-center justify-center text-gray-500">
+        <ArrowPathIcon className="h-20 animate-spin" aria-hidden="true" />
+      </div>
+    );
+
+  if (data.type === "file")
     return <FileRunner path={data.path} data={data.data} />;
-  } else if (data.type === "folder") {
+  if (data.type === "folder")
     return <FileBrowser path={data.path} data={data.data} />;
-  } else {
+  if (data.type === "notFound")
     return (
       <div className="flex h-full flex-col items-center justify-center text-center">
         <p className="text-base font-semibold text-indigo-600">{`404`}</p>
@@ -52,14 +57,11 @@ const PageContent = ({
         </div>
       </div>
     );
-  }
+
+  throw new Error("unreachable");
 };
 
 export default function AppCore() {
-  const location = useFileRoute();
-
-  const { data, isLoading } = cliApi.parseUrl.useQuery({ url: location });
-
   return (
     <>
       <Toaster />
@@ -103,18 +105,11 @@ export default function AppCore() {
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-2 px-2 lg:h-full lg:flex-row">
             <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-white p-4 shadow lg:h-full lg:w-3/5 ">
-              {isLoading || !data ? (
-                <div className="flex h-full flex-row items-center justify-center text-gray-500">
-                  <ArrowPathIcon
-                    className="h-20 animate-spin"
-                    aria-hidden="true"
-                  />
-                </div>
-              ) : (
-                <PageContent data={data} />
-              )}
+              {/* File browser / Hook Editor / 404 */}
+              <PageContent />
             </div>
             <div className="flex h-2/5 w-full rounded-lg bg-white p-4 shadow lg:h-full lg:w-2/5">
+              {/* Logs */}
               <ResponseViewer />
             </div>
           </div>
