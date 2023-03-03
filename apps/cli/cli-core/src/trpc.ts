@@ -14,11 +14,15 @@ import { configValidator, updateConfig } from "./update-config";
 import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
+type ExtendedConfigValidatorType = ConfigValidatorType & {
+  method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
+};
 
 import logger from "@captain/logger";
 import { observable } from "@trpc/server/observable";
 
 import type { LogLevels } from "@captain/logger";
+import { getFullPath, getRoute } from "./utils/get-full-path";
 
 export const t = initTRPC.create({
   transformer: superjson,
@@ -44,46 +48,87 @@ export const cliApiRouter = t.router({
     );
   }),
 
-  getBlobs: t.procedure.query(async () => {
-    if (!fs.existsSync(HOOK_PATH)) {
-      // TODO: this should probably be an error, and the frontend should handle it
-      return [];
-    }
+  getBlobs: t.procedure
+    .input(
+      z.object({
+        path: z.array(z.string()),
+      })
+    )
+    .query(async ({ input }) => {
+      const fullPath = getFullPath(input.path);
 
-    const hooks = await fsPromises.readdir(HOOK_PATH);
+      logger.debug(`Getting blobs from ${fullPath}`);
 
-    const res = hooks
-      .filter(
-        (hookFile) =>
-          hookFile.includes(".json") && !hookFile.includes(".config.json")
-      )
-      .map(async (hook) => {
-        const bodyPromise = fsPromises.readFile(
-          path.join(HOOK_PATH, hook),
-          "utf-8"
-        );
+      if (!fs.existsSync(fullPath)) {
+        // TODO: this should probably be an error, and the frontend should handle it
+        return [];
+      }
 
-        const configPath = hook.replace(".json", "") + ".config.json";
+      const hooks = await fsPromises.readdir(fullPath);
 
-        let config;
-        if (fs.existsSync(path.join(HOOK_PATH, configPath))) {
-          config = await fsPromises.readFile(
-            path.join(HOOK_PATH, configPath),
+      const res = hooks
+        .filter(
+          (hookFile) =>
+            hookFile.includes(".json") && !hookFile.includes(".config.json")
+        )
+        .map(async (hook) => {
+          const bodyPromise = fsPromises.readFile(
+            path.join(fullPath, hook),
             "utf-8"
           );
-        }
 
-        return {
-          name: hook,
-          body: await bodyPromise,
-          config: config
-            ? (JSON.parse(config) as ConfigValidatorType)
-            : undefined,
-        };
+          const configPath = hook.replace(".json", "") + ".config.json";
+
+          let config;
+          if (fs.existsSync(path.join(fullPath, configPath))) {
+            config = await fsPromises.readFile(
+              path.join(fullPath, configPath),
+              "utf-8"
+            );
+          }
+
+          return {
+            name: hook,
+            body: await bodyPromise,
+            config: config // TODO: validate config
+              ? (JSON.parse(config) as ConfigValidatorType)
+              : undefined,
+          };
+        });
+
+      return Promise.all(res);
+    }),
+
+  getFilesAndFolders: t.procedure
+    .input(
+      z.object({
+        path: z.array(z.string()),
+      })
+    )
+    .query(({ input }) => {
+      const fullPath = getFullPath(input.path);
+
+      const dirListing: { folders: string[]; files: string[] } = {
+        folders: [],
+        files: [],
+      };
+
+      if (!fs.existsSync(fullPath)) {
+        logger.warn(`Path ${fullPath} does not exist`);
+        return dirListing;
+      }
+
+      fs.readdirSync(fullPath).forEach((file) => {
+        if (fs.lstatSync(`${fullPath}/${file}`).isDirectory()) {
+          dirListing.folders.push(file);
+        } else {
+          if (file.startsWith(".")) return; // skip hidden files
+          dirListing.files.push(file);
+        }
       });
 
-    return Promise.all(res);
-  }),
+      return dirListing;
+    }),
 
   openFolder: t.procedure
     .input(z.object({ path: z.string() }))
@@ -127,25 +172,21 @@ export const cliApiRouter = t.router({
     .input(
       z.object({
         file: z.string(),
-        url: z.string(),
       })
     )
     .mutation(async ({ input }) => {
-      const { file, url } = input;
+      const { file } = input;
       let hasCustomConfig = false;
       logger.info(`Reading file ${file}`);
 
       let config = {
-        url,
+        url: "",
         query: undefined,
-        headers: undefined,
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
-      } as {
-        url: string;
-        query?: Record<string, string>;
-        headers?: Record<string, string>;
-        method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
-      };
+      } as ExtendedConfigValidatorType;
 
       const fileName = file.replace(".json", "");
 
@@ -153,18 +194,20 @@ export const cliApiRouter = t.router({
 
       if (fs.existsSync(path.join(HOOK_PATH, configName))) {
         hasCustomConfig = true;
+
         logger.info(`Found ${configName}, reading it`);
-        const configFileContents = await fsPromises.readFile(
-          path.join(HOOK_PATH, configName)
-        );
+
+        const configFileContents = await fsPromises
+          .readFile(path.join(HOOK_PATH, configName))
+          .then(
+            (x) =>
+              // TODO: validate config
+              JSON.parse(x.toString()) as ExtendedConfigValidatorType
+          );
+
         config = {
           ...config,
-          ...(JSON.parse(configFileContents.toString()) as {
-            url: string;
-            query?: Record<string, string>;
-            headers?: Record<string, string>;
-            method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
-          }),
+          ...configFileContents,
         };
 
         // template substitution for header values
@@ -177,6 +220,15 @@ export const cliApiRouter = t.router({
         }
       }
       const data = await fsPromises.readFile(path.join(HOOK_PATH, file));
+
+      if (!config.url) {
+        logger.error(
+          `Missing URL, please add it to the configuration for this hook`
+        );
+        throw new Error(
+          `Missing URL, please add it to the configuration for this hook`
+        );
+      }
 
       try {
         logger.info(
@@ -196,13 +248,12 @@ export const cliApiRouter = t.router({
         );
         return fetchedResult;
       } catch (e) {
-        logger.error("FAILED TO SEND");
         if ((e as { code: string }).code === "ECONNREFUSED") {
           logger.error("Connection refused. Is the server running?");
         } else {
-          logger.error("Unknown error", e);
+          logger.error(e);
         }
-        throw new Error("Connection refused. Is the server running?");
+        throw e;
       }
     }),
 
@@ -212,13 +263,17 @@ export const cliApiRouter = t.router({
         name: z.string(),
         body: z.string(),
         config: configValidator.optional(),
+        path: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input }) => {
       const { name, body, config } = input;
+
+      const fullPath = getFullPath(input.path);
+
       logger.info(`Creating ${name}.json`);
 
-      await fsPromises.writeFile(path.join(HOOK_PATH, `${name}.json`), body);
+      await fsPromises.writeFile(path.join(fullPath, `${name}.json`), body);
       if (config?.url || config?.query || config?.headers) {
         logger.info(`Config specified, creating ${name}.config.json`);
         return await updateConfig({ name, config });
@@ -231,33 +286,31 @@ export const cliApiRouter = t.router({
         name: z.string(),
         body: z.string(),
         config: configValidator.optional(),
+        path: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input }) => {
       const { body, config } = input;
+      const fullPath = getFullPath(input.path);
+
       const name = input.name.split(".json")[0];
 
       if (!name) throw new Error("No name");
 
-      logger.info(`Updating ${name}.json`);
+      const bodyPath = path.join(fullPath, `${name}.json`);
 
-      const existingBody = await fsPromises.readFile(
-        path.join(HOOK_PATH, `${name}.json`),
-        "utf-8"
-      );
+      logger.info(`Updating ${bodyPath}`);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const parsedBody = JSON.parse(existingBody);
+      const existingBody = await fsPromises.readFile(bodyPath, "utf-8");
 
-      // TODO: Fix this
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const updatedBody = {
-        ...parsedBody,
+        ...JSON.parse(existingBody),
         ...JSON.parse(body),
       };
 
       await fsPromises.writeFile(
-        path.join(HOOK_PATH, `${name}.json`),
+        bodyPath,
         JSON.stringify(updatedBody, null, 2)
       );
 
@@ -265,10 +318,157 @@ export const cliApiRouter = t.router({
         config?.url ||
         config?.query ||
         config?.headers ||
-        fs.existsSync(path.join(HOOK_PATH, `${name}.config.json`))
+        fs.existsSync(path.join(fullPath, `${name}.config.json`))
       ) {
         logger.info(`Config specified, updating ${name}.config.json`);
-        return await updateConfig({ name, config });
+        return await updateConfig({ name, config, path: fullPath });
+      }
+    }),
+
+  createFolder: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        path: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(({ input }) => {
+      const pathArr = input.path ? [...input.path, input.name] : [input.name];
+
+      const fullPath = getFullPath(pathArr);
+      const route = getRoute(pathArr);
+
+      logger.info(`Creating new folder: ${fullPath}`);
+
+      fs.mkdirSync(fullPath);
+
+      return {
+        route,
+      };
+    }),
+
+  createFile: t.procedure
+    .input(
+      z.object({
+        name: z.string(),
+        path: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(({ input }) => {
+      const pathArr = input.path
+        ? [...input.path, `${input.name}.json`]
+        : [`${input.name}.json`];
+
+      const fullPath = getFullPath(pathArr);
+      const route = getRoute(pathArr);
+
+      logger.info(`Creating new file: ${fullPath}`);
+
+      fs.writeFileSync(fullPath, "{}");
+
+      return {
+        route,
+      };
+    }),
+
+  parseUrl: t.procedure
+    .input(
+      z.object({
+        url: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { url } = input;
+
+      const fullPath = path.join(
+        HOOK_PATH,
+        ...url.split("/").map((x) => decodeURI(x))
+      );
+
+      if (!fs.existsSync(fullPath)) {
+        const d = {
+          type: "notFound",
+          path: decodeURI(url),
+          data: {},
+        } as const;
+
+        return d;
+      }
+
+      if (url.endsWith(".json")) {
+        const configPath = fullPath.replace(".json", "") + ".config.json";
+
+        const bodyPromise = fsPromises.readFile(fullPath, "utf-8");
+
+        const configPromise = fsPromises
+          .readFile(configPath, "utf-8")
+          // TODO: validate config
+          .then((x) => JSON.parse(x) as ConfigValidatorType)
+          .catch(() => undefined);
+
+        const hookData = {
+          name: fullPath.split("/").pop(),
+          body: await bodyPromise,
+          config: await configPromise,
+        } as const;
+
+        const d = {
+          type: "file" as const,
+          path: decodeURI(url),
+          data: hookData,
+        } as const;
+
+        return d;
+      } else {
+        // get folders and files in folder
+        const dirListing: {
+          folders: string[];
+          files: {
+            name: string;
+            body: string;
+            config: ConfigValidatorType | undefined;
+          }[];
+        } = {
+          folders: [],
+          files: [],
+        };
+
+        const listingPromises = fs
+          .readdirSync(fullPath)
+          .map(async (maybeFile) => {
+            if (fs.lstatSync(`${fullPath}/${maybeFile}`).isDirectory()) {
+              dirListing.folders.push(maybeFile);
+            } else {
+              if (maybeFile.startsWith(".")) return; // skip hidden files
+              if (maybeFile.endsWith(".config.json")) return; // skip config files
+
+              const filePath = path.join(fullPath, maybeFile);
+              const configPath = filePath.replace(".json", "") + ".config.json";
+
+              const bodyPromise = fsPromises.readFile(filePath, "utf-8");
+
+              const configPromise = fsPromises
+                .readFile(configPath, "utf-8")
+                .then((x) => JSON.parse(x) as ConfigValidatorType)
+                .catch(() => undefined);
+
+              dirListing.files.push({
+                name: maybeFile,
+                body: await bodyPromise,
+                config: await configPromise,
+              });
+            }
+          });
+
+        await Promise.allSettled(listingPromises);
+
+        const d = {
+          type: "folder" as const,
+          path: decodeURI(url),
+          data: dirListing,
+        } as const;
+
+        return d;
       }
     }),
 });

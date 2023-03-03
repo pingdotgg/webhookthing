@@ -20,9 +20,15 @@ export async function getSampleHooks() {
     download_url: string;
   }[];
 
-  logger.info(`Downloading ${files.length} sample hooks.`);
+  const filteredFiles = files.filter((file) => file.name.endsWith(".json"));
 
-  const promiseMap = files.map(async (file) => {
+  const hookCount = filteredFiles.filter(
+    (file) => !file.name.endsWith(".config.json")
+  ).length;
+
+  logger.info(`Downloading ${hookCount} sample hooks.`);
+
+  const promiseMap = filteredFiles.map(async (file) => {
     logger.info(`Downloading ${file.name}`);
     const fileContent = await fetch(file.download_url).then((res) =>
       res.text()
