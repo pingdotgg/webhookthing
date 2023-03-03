@@ -14,6 +14,9 @@ import { configValidator, updateConfig } from "./update-config";
 import { substituteTemplate } from "./templateSubstitution";
 
 export type { ConfigValidatorType } from "./update-config";
+type ExtendedConfigValidatorType = ConfigValidatorType & {
+  method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
+};
 
 import logger from "@captain/logger";
 import { observable } from "@trpc/server/observable";
@@ -87,7 +90,7 @@ export const cliApiRouter = t.router({
           return {
             name: hook,
             body: await bodyPromise,
-            config: config
+            config: config // TODO: validate config
               ? (JSON.parse(config) as ConfigValidatorType)
               : undefined,
           };
@@ -183,12 +186,7 @@ export const cliApiRouter = t.router({
           "Content-Type": "application/json",
         },
         method: "POST",
-      } as {
-        url: string;
-        query?: Record<string, string>;
-        headers?: Record<string, string>;
-        method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
-      };
+      } as ExtendedConfigValidatorType;
 
       const fileName = file.replace(".json", "");
 
@@ -203,12 +201,8 @@ export const cliApiRouter = t.router({
           .readFile(path.join(HOOK_PATH, configName))
           .then(
             (x) =>
-              JSON.parse(x.toString()) as {
-                url: string;
-                query?: Record<string, string>;
-                headers?: Record<string, string>;
-                method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
-              }
+              // TODO: validate config
+              JSON.parse(x.toString()) as ExtendedConfigValidatorType
           );
 
         config = {
@@ -408,6 +402,7 @@ export const cliApiRouter = t.router({
 
         const configPromise = fsPromises
           .readFile(configPath, "utf-8")
+          // TODO: validate config
           .then((x) => JSON.parse(x) as ConfigValidatorType)
           .catch(() => undefined);
 
