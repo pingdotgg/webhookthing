@@ -82,6 +82,7 @@ const openInBrowser = async () => {
 
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import ws from "ws";
+import forceThingExists from "./utils/forceThingExists";
 
 export const startSocketServer = () => {
   const wss = new ws.Server({
@@ -108,6 +109,7 @@ export const startSocketServer = () => {
 
 export const startServer = async () => {
   const server = await createServer();
+  await forceThingExists();
   server.listen({ port: PORT }, (err) => {
     if (err) {
       logger.error(err);

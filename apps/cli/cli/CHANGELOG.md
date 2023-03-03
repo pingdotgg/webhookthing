@@ -1,5 +1,11 @@
 # webhookthing
 
+## 0.6.1
+
+### Patch Changes
+
+- Fix default state
+
 ## 0.6.0
 
 ### Minor Changes
