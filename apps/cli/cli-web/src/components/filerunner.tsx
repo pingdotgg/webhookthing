@@ -147,9 +147,10 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
               </div>
             </div>
-            <div className="flex h-full flex-col items-start justify-start">
+            <div className="flex h-full flex-col items-start justify-start p-1">
               <button
-                className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
                 onClick={() => {
                   void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
@@ -192,7 +193,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
                 <input
                   id="url"
-                  className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   {...register("config.url", {
                     onBlur: (e: React.FormEvent<HTMLInputElement>) => {
                       void trigger();
@@ -249,7 +250,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.headers.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...register(
@@ -268,7 +269,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.headers.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.headers.${index}.value` as const
                               )}
@@ -294,7 +295,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       headerFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"
@@ -327,7 +328,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.query.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...(register(
@@ -355,7 +356,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.query.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.query.${index}.value` as const,
                                 {
@@ -395,7 +396,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       queryFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"

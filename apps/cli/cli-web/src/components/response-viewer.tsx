@@ -6,11 +6,11 @@ import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
 
 const colorMap = {
-  trace: { label: "text-gray-600", body: "text-gray-700" }, // gray
-  debug: { label: "text-cyan-600", body: "text-cyan-700" }, // cyan
-  info: { label: "text-white", body: "text-gray-100" }, // white
-  warn: { label: "text-yellow-600", body: "text-yellow-700" }, // yellow
-  error: { label: "text-red-600", body: "text-red-700" }, // red
+  trace: { label: "text-gray-500", body: "text-gray-500" }, // gray
+  debug: { label: "text-cyan-500", body: "text-cyan-500" }, // cyan
+  info: { label: "text-white", body: "text-gray-50" }, // white
+  warn: { label: "text-yellow-500", body: "text-yellow-500" }, // yellow
+  error: { label: "text-red-400", body: "text-red-400" }, // red
 } as const;
 
 export const ResponseViewer = () => {
@@ -39,7 +39,7 @@ export const ResponseViewer = () => {
         <h3 className="text-lg font-medium leading-6 text-gray-900">{`Log`}</h3>
       </div>
 
-      <div className="h-full w-full overflow-auto rounded-md !bg-gray-900 px-1 py-4">
+      <div className="h-full w-full overflow-auto rounded-md !bg-gray-800 px-1 py-4">
         <table>
           <tbody>
             {messages.map((message, index) => (
