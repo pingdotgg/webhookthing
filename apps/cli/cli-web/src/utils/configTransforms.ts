@@ -23,7 +23,7 @@ export const generateConfigFromState = (state: {
   query?: { key: string; value: string }[];
 }) => {
   const config: ConfigValidatorType = {};
-  if (state.url) config.url = state.url;
+  config.url = state.url;
   if (state.query?.length)
     config.query = convertArrayStateToObject(state.query ?? []);
   if (state.headers?.length)
