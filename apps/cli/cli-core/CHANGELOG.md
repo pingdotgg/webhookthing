@@ -1,5 +1,11 @@
 # @captain/cli-core
 
+## 0.3.0
+
+### Minor Changes
+
+- UI overhaul, folder support
+
 ## 0.2.2
 
 ### Patch Changes
