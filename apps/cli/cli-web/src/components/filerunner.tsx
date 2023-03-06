@@ -1,9 +1,19 @@
 import { CliApiRouter } from "@captain/cli-core";
-import { PlayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import {
+  PlayIcon,
+  PlusIcon,
+  TrashIcon,
+  FolderIcon,
+  HomeIcon,
+} from "@heroicons/react/20/solid";
+import toast from "react-hot-toast";
+import { Link } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inferRouterOutputs } from "@trpc/server";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
+
+import { Tooltip } from "./common/tooltip";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -11,6 +21,15 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
+import { useFileRoute } from "../utils/useRoute";
+
+const pathArrToUrl = (pathArr: string[], nav?: string) => {
+  const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
+
+  // make sure we always have a leading slash
+  if (!url.startsWith("/")) return `/${url}`;
+  return url;
+};
 
 const jsonValidator = () =>
   z.string().refine(
@@ -51,11 +70,15 @@ type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { path: file, data } = input;
 
+  const pathArr = file.split("/").slice(1);
+  console.log(pathArr);
   const path = decodeURI(file).split("/").slice(0, -1);
 
   if (path[0] === "") {
     path.shift();
   }
+
+  const location = useFileRoute();
 
   const ctx = cliApi.useContext();
 
@@ -132,9 +155,96 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     })
   );
 
+  const { mutate: openFolder } = cliApi.openFolder.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   return (
     <>
       <div className="flex h-full w-full flex-col">
+        {/* breadcrumbs */}
+        <nav
+          className="flex items-center justify-between pb-4"
+          aria-label="Breadcrumb"
+        >
+          <ol role="list" className="flex items-center">
+            <li className="flex-items-center">
+              <Link
+                href="/"
+                className={classNames(
+                  "flex items-center text-gray-400",
+                  file.length > 1 ? "hover:text-indigo-600" : "cursor-default"
+                )}
+              >
+                <HomeIcon className="h-5 flex-shrink-0" aria-hidden="true" />
+                <span className="sr-only">{`root`}</span>
+              </Link>
+            </li>
+            {file.length > 1 &&
+              pathArr.map((page, i) => (
+                <li key={page}>
+                  <div className="flex items-center">
+                    <svg
+                      className="h-5 flex-shrink-0 text-gray-300"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                    >
+                      <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                    </svg>
+                    <Link
+                      href={pathArrToUrl(
+                        pathArr.slice(0, pathArr.indexOf(page) + 1)
+                      )}
+                      className={classNames(
+                        "text-sm font-medium text-gray-400 ",
+                        i !== pathArr.length - 1
+                          ? "hover:text-indigo-600"
+                          : "cursor-default"
+                      )}
+                      aria-current={page ? "page" : undefined}
+                    >
+                      <Tooltip content={page}>
+                        <FolderIcon
+                          className={classNames(
+                            "inline h-5",
+                            i === pathArr.length - 1
+                              ? "hidden"
+                              : pathArr.join().length > 48
+                              ? ""
+                              : "sm:hidden"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </Tooltip>
+                      <p
+                        className={classNames(
+                          i === pathArr.length - 1
+                            ? "inline truncate"
+                            : pathArr.join().length > 48
+                            ? "hidden"
+                            : "hidden sm:inline"
+                        )}
+                      >
+                        {page}
+                      </p>
+                    </Link>
+                  </div>
+                </li>
+              ))}
+          </ol>
+          <div className="flex flex-row gap-1">
+            <button
+              className="flex items-center justify-center rounded-md bg-white px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm  hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              onClick={() => openFolder({ path: file })}
+            >
+              {`Open File`}
+            </button>
+          </div>
+        </nav>
+
         <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
@@ -147,9 +257,10 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
               </div>
             </div>
-            <div className="flex h-full flex-col items-start justify-start">
+            <div className="flex h-full flex-col items-start justify-start p-1">
               <button
-                className="flex items-center justify-center gap-2 rounded-md border border-transparent border-gray-50 px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
                 onClick={() => {
                   void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
@@ -192,7 +303,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
                 <input
                   id="url"
-                  className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   {...register("config.url", {
                     onBlur: (e: React.FormEvent<HTMLInputElement>) => {
                       void trigger();
@@ -249,7 +360,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.headers.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...register(
@@ -268,7 +379,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.headers.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.headers.${index}.value` as const
                               )}
@@ -294,7 +405,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       headerFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"
@@ -327,7 +438,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.query.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...(register(
@@ -355,7 +466,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.query.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.query.${index}.value` as const,
                                 {
@@ -395,7 +506,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       queryFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"
