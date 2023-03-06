@@ -245,7 +245,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           </div>
         </nav>
 
-        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
+        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
