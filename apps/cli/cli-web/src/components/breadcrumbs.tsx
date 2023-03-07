@@ -131,7 +131,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           return (
             <Link
               className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              key={`{i}-${item.label}`}
+              key={`${i}-breadcrumb}`}
               href={item.href}
             >
               {item.label}
@@ -141,7 +141,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           return (
             <button
               className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              key={`${i}-${item.label}`}
+              key={`${i}-breadcrumb}`}
               onClick={item.onClick}
               disabled={item.disabled}
             >
