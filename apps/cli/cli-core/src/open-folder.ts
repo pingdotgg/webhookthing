@@ -21,6 +21,7 @@ const getCommand = () => {
   throw new Error("Idk what os this is");
 };
 
+// TODO: IGOR add openFile, or a flag to create file instead of dir if it doesn't exist. Trying to "Open .config file" in fileRunner brought me here 💀
 // Ripped from https://www.npmjs.com/package/open-file-explorer
 export async function openInExplorer(path: string) {
   // Create the directory if it doesn't exist
@@ -31,3 +32,4 @@ export async function openInExplorer(path: string) {
 
   return await promisifiedExecFile(getCommand(), [path]);
 }
+
