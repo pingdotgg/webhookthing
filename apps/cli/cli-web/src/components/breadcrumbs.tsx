@@ -1,6 +1,7 @@
 import { FolderIcon, HomeIcon } from "@heroicons/react/20/solid";
 import { Link } from "wouter";
 import { Tooltip } from "./common/tooltip";
+import SplitButtonDropdown from "./common/button";
 
 import { classNames } from "../utils/classnames";
 
@@ -110,18 +111,27 @@ type ActionsItemCommon = {
 };
 
 type ActionsItemButton = ActionsItemCommon & {
+  type: "button";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
-  href?: never;
+};
+
+type ActionsItemSplitButton = ActionsItemCommon & {
+  type: "splitButton";
+  items: {
+    name: string;
+    action: () => void;
+  }[];
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 };
 
 type ActionsItemLink = ActionsItemCommon & {
+  type: "link";
   href?: string;
-  onClick?: never;
-  disabled?: never;
 };
 
-type ActionsItem = ActionsItemLink | ActionsItemButton;
+type ActionsItem = ActionsItemLink | ActionsItemButton | ActionsItemSplitButton;
 
 // TODO: some better way to have icons here, ping code had `dropdownItemWithIcon`
 export type ActionItems = ActionsItem[];
@@ -130,7 +140,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
   return (
     <div className="flex flex-row gap-1">
       {input.items.map((item, i) => {
-        if (item?.href)
+        if (item.type === "link")
           return (
             <Link
               className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -140,7 +150,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
               {item.label}
             </Link>
           );
-        if (item?.onClick)
+        if (item.type === "button")
           return (
             <button
               className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -150,6 +160,14 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
             >
               {item.label}
             </button>
+          );
+        if (item.type === "splitButton")
+          return (
+            <SplitButtonDropdown
+              items={item.items}
+              label={item.label}
+              onClick={item.onClick as () => void}
+            />
           );
       })}
       {input.stuff}
