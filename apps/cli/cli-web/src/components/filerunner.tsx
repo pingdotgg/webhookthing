@@ -150,11 +150,6 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           path={file}
           actions={[
             {
-              type: "button",
-              label: "Open File",
-              onClick: () => openFolder({ path: file }),
-            },
-            {
               type: "splitButton",
               label: "Open File",
               onClick: () => openFolder({ path: file }),
@@ -171,6 +166,33 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 },
               ],
             },
+            {
+              type: "button",
+              label: (
+                <>
+                  {`Run`}
+                  <PlayIcon className="h-4" />
+                </>
+              ),
+              onClick: () => {
+                void trigger();
+                if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
+                  updateHook(
+                    {
+                      name: getValues("name"),
+                      body: getValues("body") ?? "",
+                      config: generateConfigFromState(
+                        getValues("config") ?? {}
+                      ),
+                      path,
+                    },
+                    { onSuccess: () => runFile({ file: decodeURI(file) }) }
+                  );
+                } else {
+                  runFile({ file: decodeURI(file) });
+                }
+              },
+            },
           ]}
         />
 
@@ -186,35 +208,6 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                     {`Configure your webhook below.`}
                   </p>
                 </div>
-              </div>
-              <div className="flex h-full flex-col items-start justify-start p-1">
-                <button
-                  className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
-                  onClick={() => {
-                    void trigger();
-                    if (
-                      JSON.stringify(prefill) !== JSON.stringify(getValues())
-                    ) {
-                      updateHook(
-                        {
-                          name: getValues("name"),
-                          body: getValues("body") ?? "",
-                          config: generateConfigFromState(
-                            getValues("config") ?? {}
-                          ),
-                          path,
-                        },
-                        { onSuccess: () => runFile({ file: decodeURI(file) }) }
-                      );
-                    } else {
-                      runFile({ file: decodeURI(file) });
-                    }
-                  }}
-                >
-                  {`Run`}
-                  <PlayIcon className="h-4" />
-                </button>
               </div>
             </div>
             <div className="mt-5">
