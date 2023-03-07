@@ -150,30 +150,29 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           path={file}
           actions={[
             {
+              type: "button",
               label: "Open File",
               onClick: () => openFolder({ path: file }),
             },
+            {
+              type: "splitButton",
+              label: "Open File",
+              onClick: () => openFolder({ path: file }),
+              items: [
+                {
+                  name: "hookname.json",
+                  action: () => openFolder({ path: file }),
+                },
+                {
+                  name: "hookname.config.json",
+                  action: () =>
+                    // this is creating a folder instead of a file on windows
+                    openFolder({ path: file.replace(".json", ".config.json") }),
+                },
+              ],
+            },
           ]}
         />
-
-        <div className="flex justify-end">
-          <SplitButtonDropdown
-            label="Open File"
-            onClick={() => openFolder({ path: file })}
-            items={[
-              {
-                name: "hookname.json",
-                action: () => openFolder({ path: file }),
-              },
-              {
-                name: "hookname.config.json",
-                action: () =>
-                  // this is creating a folder instead of a file on windows
-                  openFolder({ path: file.replace(".json", ".config.json") }),
-              },
-            ]}
-          />
-        </div>
 
         <div>
           <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
