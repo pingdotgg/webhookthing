@@ -14,6 +14,7 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
+import SplitButtonDropdown from "./common/button";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -135,7 +136,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     })
   );
 
-  const { mutate: openFile } = cliApi.openFolder.useMutation({
+  const { mutate: openFolder } = cliApi.openFolder.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -150,10 +151,29 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           actions={[
             {
               label: "Open File",
-              onClick: () => openFile({ path: file }),
+              onClick: () => openFolder({ path: file }),
             },
           ]}
         />
+
+        <div className="flex justify-end">
+          <SplitButtonDropdown
+            label="Open File"
+            onClick={() => openFolder({ path: file })}
+            items={[
+              {
+                name: "hookname.json",
+                action: () => openFolder({ path: file }),
+              },
+              {
+                name: "hookname.config.json",
+                action: () =>
+                  // this is creating a folder instead of a file on windows
+                  openFolder({ path: file.replace(".json", ".config.json") }),
+              },
+            ]}
+          />
+        </div>
 
         <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
           <div className="flex flex-row items-center justify-between">
