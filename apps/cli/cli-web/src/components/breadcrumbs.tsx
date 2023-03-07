@@ -112,10 +112,13 @@ type ActionsItemCommon = {
 type ActionsItemButton = ActionsItemCommon & {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
+  href?: never;
 };
 
 type ActionsItemLink = ActionsItemCommon & {
   href?: string;
+  onClick?: never;
+  disabled?: never;
 };
 
 type ActionsItem = ActionsItemLink | ActionsItemButton;
