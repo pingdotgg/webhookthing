@@ -175,290 +175,298 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           />
         </div>
 
-        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-col">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                {`Settings: ${prefill.name}`}
-              </h3>
-              <div className="mt-2 flex flex-col gap-2">
-                <p className="text-sm text-gray-500">
-                  {`Configure your webhook below.`}
-                </p>
+        <div>
+          <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  {`Settings: ${prefill.name}`}
+                </h3>
+                <div className="mt-2 flex flex-col gap-2">
+                  <p className="text-sm text-gray-500">
+                    {`Configure your webhook below.`}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex h-full flex-col items-start justify-start p-1">
-              <button
-                className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+              <div className="flex h-full flex-col items-start justify-start p-1">
+                <button
+                  className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
                 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
-                onClick={() => {
-                  void trigger();
-                  if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
-                    updateHook(
-                      {
-                        name: getValues("name"),
-                        body: getValues("body") ?? "",
-                        config: generateConfigFromState(
-                          getValues("config") ?? {}
-                        ),
-                        path,
-                      },
-                      { onSuccess: () => runFile({ file: decodeURI(file) }) }
-                    );
-                  } else {
-                    runFile({ file: decodeURI(file) });
-                  }
-                }}
-              >
-                {`Run`}
-                <PlayIcon className="h-4" />
-              </button>
+                  onClick={() => {
+                    void trigger();
+                    if (
+                      JSON.stringify(prefill) !== JSON.stringify(getValues())
+                    ) {
+                      updateHook(
+                        {
+                          name: getValues("name"),
+                          body: getValues("body") ?? "",
+                          config: generateConfigFromState(
+                            getValues("config") ?? {}
+                          ),
+                          path,
+                        },
+                        { onSuccess: () => runFile({ file: decodeURI(file) }) }
+                      );
+                    } else {
+                      runFile({ file: decodeURI(file) });
+                    }
+                  }}
+                >
+                  {`Run`}
+                  <PlayIcon className="h-4" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="mt-5">
-            <form
-              onSubmit={(e) => void submitHandler(e)}
-              id="form"
-              className="space-y-3 py-2"
-            >
-              <div>
-                <label
-                  htmlFor="url"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {`URL`}
-                </label>
-                <p className="text-sm text-red-500">
-                  {errors.config?.url?.message}
-                </p>
-                <input
-                  id="url"
-                  className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  {...register("config.url", {
-                    onBlur: (e: React.FormEvent<HTMLInputElement>) => {
-                      void trigger();
-                      const value = e.currentTarget.value;
-                      if (value) {
-                        const url = new URL(value);
-                        const queryFields = Array.from(
-                          url.searchParams.entries()
-                        ).map(([key, value]) => ({
-                          key,
-                          value,
-                        }));
-                        setValue("config.query", queryFields);
-                      }
-                    },
-                  })}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="body"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {`Body`}
-                </label>
-                {errors.body && (
-                  <p className="text-sm text-red-500">{errors.body.message}</p>
-                )}
-                <textarea
-                  id="body"
-                  className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  {...register("body", {})}
-                />
-              </div>
-              <div>
-                <fieldset>
-                  <legend className="block text-sm font-medium text-gray-700">
-                    {`Headers`}
-                  </legend>
-                  <p className="text-sm text-red-500">
-                    {errors.config?.headers?.message}
-                  </p>
-                  <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
-                    <div className="flex flex-col -space-y-px">
-                      {headerFields.map((item, index) => (
-                        <div className="flex -space-x-px" key={item.id}>
-                          <div className="w-1/4 min-w-0 flex-1">
-                            <label
-                              htmlFor={`config.headers.${index}.key`}
-                              className="sr-only"
-                            >
-                              {`Key`}
-                            </label>
-                            <input
-                              id={`config.headers.${index}.key`}
-                              className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                                index === 0 ? "rounded-tl-md" : ""
-                              )}
-                              {...register(
-                                `config.headers.${index}.key` as const
-                              )}
-                              defaultValue={item.key}
-                              placeholder="Key"
-                            />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <label
-                              htmlFor={`config.headers.${index}.value`}
-                              className="sr-only"
-                            >
-                              {`Value`}
-                            </label>
-                            <input
-                              id={`config.headers.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                              {...register(
-                                `config.headers.${index}.value` as const
-                              )}
-                              defaultValue={item.value as string}
-                              placeholder="Value"
-                            />
-                          </div>
-                          <div className="flex items-center">
-                            <button
-                              className={classNames(
-                                "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
-                                index === 0 ? "rounded-tr-md" : ""
-                              )}
-                              type="button"
-                              onClick={() => removeHeader(index)}
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <button
-                    className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
-                      headerFields.length !== 0 ? "rounded-b-md" : "rounded-md"
-                    )}
-                    type="button"
-                    onClick={() => appendHeader({ key: "", value: "" })}
+            <div className="mt-5">
+              <form
+                onSubmit={(e) => void submitHandler(e)}
+                id="form"
+                className="space-y-3 py-2"
+              >
+                <div>
+                  <label
+                    htmlFor="url"
+                    className="block text-sm font-medium text-gray-700"
                   >
-                    <PlusIcon className="h-4 w-4" />
-                    <span>{`Add Header`}</span>
-                  </button>
-                </fieldset>
-              </div>
-              <div>
-                <fieldset>
-                  <legend className="block text-sm font-medium text-gray-700">
-                    {`Query Parameters`}
-                  </legend>
+                    {`URL`}
+                  </label>
                   <p className="text-sm text-red-500">
-                    {errors.config?.query?.message}
+                    {errors.config?.url?.message}
                   </p>
-                  <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
-                    <div className="flex flex-col -space-y-px">
-                      {queryFields.map((item, index) => (
-                        <div className="flex -space-x-px" key={item.id}>
-                          <div className="w-1/4 min-w-0 flex-1">
-                            <label
-                              htmlFor={`config.query.${index}.key`}
-                              className="sr-only"
-                            >
-                              {`Key`}
-                            </label>
-                            <input
-                              id={`config.query.${index}.key`}
-                              className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                                index === 0 ? "rounded-tl-md" : ""
-                              )}
-                              {...(register(
-                                `config.query.${index}.key` as const
-                              ),
-                              {
-                                onBlur: (e) => {
-                                  setValue(
-                                    `config.query.${index}.key`,
-                                    e.target.value
-                                  );
-                                  updateQuery();
-                                },
-                              })}
-                              defaultValue={item.key}
-                              placeholder="Key"
-                            />
+                  <input
+                    id="url"
+                    className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    {...register("config.url", {
+                      onBlur: (e: React.FormEvent<HTMLInputElement>) => {
+                        void trigger();
+                        const value = e.currentTarget.value;
+                        if (value) {
+                          const url = new URL(value);
+                          const queryFields = Array.from(
+                            url.searchParams.entries()
+                          ).map(([key, value]) => ({
+                            key,
+                            value,
+                          }));
+                          setValue("config.query", queryFields);
+                        }
+                      },
+                    })}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="body"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {`Body`}
+                  </label>
+                  {errors.body && (
+                    <p className="text-sm text-red-500">
+                      {errors.body.message}
+                    </p>
+                  )}
+                  <textarea
+                    id="body"
+                    className="mt-1 block h-96 w-full rounded-md border-gray-300 font-mono shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    {...register("body", {})}
+                  />
+                </div>
+                <div>
+                  <fieldset>
+                    <legend className="block text-sm font-medium text-gray-700">
+                      {`Headers`}
+                    </legend>
+                    <p className="text-sm text-red-500">
+                      {errors.config?.headers?.message}
+                    </p>
+                    <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
+                      <div className="flex flex-col -space-y-px">
+                        {headerFields.map((item, index) => (
+                          <div className="flex -space-x-px" key={item.id}>
+                            <div className="w-1/4 min-w-0 flex-1">
+                              <label
+                                htmlFor={`config.headers.${index}.key`}
+                                className="sr-only"
+                              >
+                                {`Key`}
+                              </label>
+                              <input
+                                id={`config.headers.${index}.key`}
+                                className={classNames(
+                                  "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                  index === 0 ? "rounded-tl-md" : ""
+                                )}
+                                {...register(
+                                  `config.headers.${index}.key` as const
+                                )}
+                                defaultValue={item.key}
+                                placeholder="Key"
+                              />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <label
+                                htmlFor={`config.headers.${index}.value`}
+                                className="sr-only"
+                              >
+                                {`Value`}
+                              </label>
+                              <input
+                                id={`config.headers.${index}.value`}
+                                className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                {...register(
+                                  `config.headers.${index}.value` as const
+                                )}
+                                defaultValue={item.value as string}
+                                placeholder="Value"
+                              />
+                            </div>
+                            <div className="flex items-center">
+                              <button
+                                className={classNames(
+                                  "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
+                                  index === 0 ? "rounded-tr-md" : ""
+                                )}
+                                type="button"
+                                onClick={() => removeHeader(index)}
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </button>
+                            </div>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <label
-                              htmlFor={`config.query.${index}.value`}
-                              className="sr-only"
-                            >
-                              {`Value`}
-                            </label>
-                            <input
-                              id={`config.query.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                              {...register(
-                                `config.query.${index}.value` as const,
+                        ))}
+                      </div>
+                    </div>
+                    <button
+                      className={classNames(
+                        "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                        headerFields.length !== 0
+                          ? "rounded-b-md"
+                          : "rounded-md"
+                      )}
+                      type="button"
+                      onClick={() => appendHeader({ key: "", value: "" })}
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                      <span>{`Add Header`}</span>
+                    </button>
+                  </fieldset>
+                </div>
+                <div>
+                  <fieldset>
+                    <legend className="block text-sm font-medium text-gray-700">
+                      {`Query Parameters`}
+                    </legend>
+                    <p className="text-sm text-red-500">
+                      {errors.config?.query?.message}
+                    </p>
+                    <div className="mt-1 -space-y-px rounded-md bg-white shadow-sm">
+                      <div className="flex flex-col -space-y-px">
+                        {queryFields.map((item, index) => (
+                          <div className="flex -space-x-px" key={item.id}>
+                            <div className="w-1/4 min-w-0 flex-1">
+                              <label
+                                htmlFor={`config.query.${index}.key`}
+                                className="sr-only"
+                              >
+                                {`Key`}
+                              </label>
+                              <input
+                                id={`config.query.${index}.key`}
+                                className={classNames(
+                                  "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                  index === 0 ? "rounded-tl-md" : ""
+                                )}
+                                {...(register(
+                                  `config.query.${index}.key` as const
+                                ),
                                 {
-                                  onBlur: (
-                                    e: React.FormEvent<HTMLInputElement>
-                                  ) => {
+                                  onBlur: (e) => {
                                     setValue(
-                                      `config.query.${index}.value`,
-                                      e.currentTarget.value
+                                      `config.query.${index}.key`,
+                                      e.target.value
                                     );
                                     updateQuery();
                                   },
-                                }
-                              )}
-                              defaultValue={item.value as string}
-                              placeholder="Value"
-                            />
+                                })}
+                                defaultValue={item.key}
+                                placeholder="Key"
+                              />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <label
+                                htmlFor={`config.query.${index}.value`}
+                                className="sr-only"
+                              >
+                                {`Value`}
+                              </label>
+                              <input
+                                id={`config.query.${index}.value`}
+                                className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                {...register(
+                                  `config.query.${index}.value` as const,
+                                  {
+                                    onBlur: (
+                                      e: React.FormEvent<HTMLInputElement>
+                                    ) => {
+                                      setValue(
+                                        `config.query.${index}.value`,
+                                        e.currentTarget.value
+                                      );
+                                      updateQuery();
+                                    },
+                                  }
+                                )}
+                                defaultValue={item.value as string}
+                                placeholder="Value"
+                              />
+                            </div>
+                            <div className="flex items-center">
+                              <button
+                                className={classNames(
+                                  "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
+                                  index === 0 ? "rounded-tr-md" : ""
+                                )}
+                                type="button"
+                                onClick={() => {
+                                  removeQuery(index);
+                                  updateQuery();
+                                }}
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </button>
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <button
-                              className={classNames(
-                                "relative inline-flex h-full items-center rounded-none border border-gray-300 bg-white px-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-red-600 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500",
-                                index === 0 ? "rounded-tr-md" : ""
-                              )}
-                              type="button"
-                              onClick={() => {
-                                removeQuery(index);
-                                updateQuery();
-                              }}
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <button
-                    className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
-                      queryFields.length !== 0 ? "rounded-b-md" : "rounded-md"
-                    )}
-                    type="button"
-                    onClick={() => appendQuery({ key: "", value: "" })}
-                  >
-                    <PlusIcon className="h-4 w-4" />
-                    <span>{`Add Query Param`}</span>
-                  </button>
-                </fieldset>
-              </div>
-            </form>
+                    <button
+                      className={classNames(
+                        "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                        queryFields.length !== 0 ? "rounded-b-md" : "rounded-md"
+                      )}
+                      type="button"
+                      onClick={() => appendQuery({ key: "", value: "" })}
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                      <span>{`Add Query Param`}</span>
+                    </button>
+                  </fieldset>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-row justify-end pt-4">
-          <button
-            type="submit"
-            form="form"
-            className="flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:text-sm"
-            disabled={!isValid}
-          >
-            {`Save Changes`}
-          </button>
+          <div className="flex flex-row justify-end pt-4">
+            <button
+              type="submit"
+              form="form"
+              className="flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:text-sm"
+              disabled={!isValid}
+            >
+              {`Save Changes`}
+            </button>
+          </div>
         </div>
       </div>
     </>
