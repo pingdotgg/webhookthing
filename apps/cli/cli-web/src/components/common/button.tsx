@@ -23,11 +23,11 @@ export type HTMLAnchorProps = React.DetailedHTMLProps<
 >;
 
 export const BUTTON_CLASSES =
-  "inline-flex items-center border font-medium relative";
+  "inline-flex items-center border font-medium justify-center border-transparent relative focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2";
 
-export type ButtonVariant = "primary" | "primary-inverted" | "text";
+export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 
-type ButtonSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+type ButtonSize = keyof typeof BUTTON_SIZES;
 
 type ButtonIconPosition = "start" | "end";
 
@@ -44,12 +44,7 @@ export type ButtonProps = {
 } & ButtonStyle;
 
 export const BUTTON_SIZES = {
-  xs: "text-xs px-2.5 py-1.5 rounded",
-  sm: "text-sm px-3 py-2 leading-4 rounded",
-  base: "text-sm px-4 py-2 rounded",
-  lg: "text-base px-4 py-2 rounded-md",
-  xl: "text-lg px-6 py-3 rounded-md",
-  "2xl": "text-xl px-8 py-3 md:py-4 md:text-2xl md:px-8 rounded-lg",
+  base: "text-sm px-2 py-1 leading-4 rounded-md",
 };
 
 export const ICON_SIZE_CLASSES = {
@@ -79,7 +74,7 @@ export const ICON_END_CLASSES = {
 
 export const BUTTON_VARIANTS = {
   primary:
-    "text-white border-pink-700 bg-pink-600 hover:bg-pink-700 hover:border-pink-800 shadow-sm",
+    "bg-white border-gray-50 text-gray-600 hover:bg-indigo-100/10 hover:text-indigo-600 shadow-sm hover:shadow-md",
   "primary-inverted":
     "text-pink-600 border-transparent bg-white hover:bg-pink-50 shadow-sm",
   text: "text-white border-transparent hover:text-gray-300",
@@ -89,7 +84,7 @@ export const getButtonClasses = (
   style: ButtonStyle = {},
   ...rest: string[]
 ) => {
-  const { disabled, size = "base", variant = "secondary" } = style;
+  const { disabled, size = "base", variant = "primary" } = style;
   return classNames(
     BUTTON_CLASSES,
     disabled && "pointer-events-none",
@@ -294,38 +289,52 @@ export const SplitButtonDropdownTheSequel = ({
   onClick?: () => void;
 }) => {
   return (
-    <Menu as="div" className="relative inline-block text-left">
-      <div>
-        <Menu.Button variant="primary" as={Button}>
+    <div className="inline-flex rounded-md shadow-sm">
+      {onClick ? (
+        <Button className="rounded-r-none" onClick={onClick}>
           {label}
           {icon}
-        </Menu.Button>
-      </div>
+        </Button>
+      ) : (
+        <div className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
+          {label}
+          {icon}
+        </div>
+      )}
 
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          {items.map((item) => (
-            <Menu.Item key={item.name}>
-              {({ active }) => (
-                <Button
-                  onClick={item.action}
-                  className={classNames(active ? "" : "text-gray-700")}
-                >
-                  {item.name}
-                </Button>
-              )}
-            </Menu.Item>
-          ))}
-        </Menu.Items>
-      </Transition>
-    </Menu>
+      <Menu as="div" className="relative inline-block text-left">
+        <Menu.Button className="rounded-l-none" variant="primary" as={Button}>
+          <span className="sr-only">{`Open options`}</span>
+          <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+        </Menu.Button>
+
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            {items.map((item) => (
+              <Menu.Item key={item.name}>
+                {({ active }) => (
+                  <div className="flex w-full flex-row items-center justify-start">
+                    <Button
+                      onClick={item.action}
+                      className={classNames(active ? "" : "text-gray-700")}
+                    >
+                      {item.name}
+                    </Button>
+                  </div>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Items>
+        </Transition>
+      </Menu>
+    </div>
   );
 };
