@@ -14,7 +14,6 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
-import SplitButtonDropdown from "./common/button";
 
 const jsonValidator = () =>
   z.string().refine(
