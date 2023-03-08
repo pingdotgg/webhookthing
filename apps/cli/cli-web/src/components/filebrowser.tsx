@@ -76,6 +76,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         path={path}
         actions={[
           {
+            type: "button",
             label: "Open Folder",
             onClick: () => openFolder({ path }),
           },
