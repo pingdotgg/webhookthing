@@ -1,7 +1,7 @@
 import { FolderIcon, HomeIcon } from "@heroicons/react/20/solid";
 import { Link } from "wouter";
 import { Tooltip } from "./common/tooltip";
-import SplitButtonDropdown from "./common/button";
+import { SplitButtonDropdownTheSequel } from "./common/button";
 
 import { classNames } from "../utils/classnames";
 
@@ -163,7 +163,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           );
         if (item.type === "splitButton")
           return (
-            <SplitButtonDropdown
+            <SplitButtonDropdownTheSequel
               items={item.items}
               label={item.label}
               onClick={item.onClick as () => void}
