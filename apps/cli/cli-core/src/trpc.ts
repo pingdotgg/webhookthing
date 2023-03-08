@@ -343,7 +343,7 @@ export const cliApiRouter = t.router({
       fs.mkdirSync(fullPath);
 
       return {
-        route,
+        route: `/${route}/`,
       };
     }),
 
