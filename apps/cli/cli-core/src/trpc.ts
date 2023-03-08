@@ -367,7 +367,7 @@ export const cliApiRouter = t.router({
       fs.writeFileSync(fullPath, "{}");
 
       return {
-        route,
+        route: `/${route}`,
       };
     }),
 
