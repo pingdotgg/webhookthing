@@ -45,6 +45,7 @@ export type ButtonProps = {
 
 export const BUTTON_SIZES = {
   base: "text-sm px-2 py-1 leading-4 rounded-md",
+  lg: "text-base px-4 py-2 rounded-md",
 };
 
 export const ICON_SIZE_CLASSES = {
@@ -73,8 +74,7 @@ export const ICON_END_CLASSES = {
 };
 
 export const BUTTON_VARIANTS = {
-  primary:
-    "bg-white border-gray-50 text-gray-600 hover:bg-indigo-100/10 hover:text-indigo-600 shadow-sm hover:shadow-md",
+  primary: "bg-white border-gray-50 text-gray-600 hover:text-indigo-600",
   "primary-inverted":
     "text-pink-600 border-transparent bg-white hover:bg-pink-50 shadow-sm",
   text: "text-white border-transparent hover:text-gray-300",
@@ -252,7 +252,7 @@ export function SplitButtonDropdown({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 -mr-1 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               {items.map((item) => (
                 <Menu.Item key={item.name}>
@@ -289,7 +289,7 @@ export const SplitButtonDropdownTheSequel = ({
   onClick?: () => void;
 }) => {
   return (
-    <div className="inline-flex rounded-md shadow-sm">
+    <div className="inline-flex rounded-md shadow-sm hover:shadow-md">
       {onClick ? (
         <Button className="rounded-r-none" onClick={onClick}>
           {label}
@@ -305,7 +305,10 @@ export const SplitButtonDropdownTheSequel = ({
       <Menu as="div" className="relative inline-block text-left">
         <Menu.Button className="rounded-l-none" variant="primary" as={Button}>
           <span className="sr-only">{`Open options`}</span>
-          <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+          <ChevronDownIcon
+            className={ICON_SIZE_CLASSES["base"]}
+            aria-hidden="true"
+          />
         </Menu.Button>
 
         <Transition
@@ -317,14 +320,20 @@ export const SplitButtonDropdownTheSequel = ({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             {items.map((item) => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
                   <div className="flex w-full flex-row items-center justify-start">
                     <Button
                       onClick={item.action}
-                      className={classNames(active ? "" : "text-gray-700")}
+                      size="lg"
+                      className={classNames(
+                        active
+                          ? "bg-gray-100 text-indigo-700"
+                          : "text-gray-700",
+                        "flex w-full flex-row items-center justify-start gap-2 text-left text-sm"
+                      )}
                     >
                       {item.name}
                     </Button>
