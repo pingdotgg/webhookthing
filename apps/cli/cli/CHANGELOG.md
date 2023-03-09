@@ -1,5 +1,11 @@
 # webhookthing
 
+## 0.6.2
+
+### Patch Changes
+
+- Fix nested folder creation on open, ui tidying and contrast improvements
+
 ## 0.6.1
 
 ### Patch Changes
