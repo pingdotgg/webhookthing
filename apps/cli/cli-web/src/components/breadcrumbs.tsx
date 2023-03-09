@@ -1,7 +1,11 @@
 import { FolderIcon, HomeIcon } from "@heroicons/react/20/solid";
 import { Link } from "wouter";
 import { Tooltip } from "./common/tooltip";
-import { SplitButtonDropdownTheSequel } from "./common/button";
+import Button, {
+  ButtonDropdown,
+  SplitButtonDropdownTheSequel,
+  type ListItemWithIcon,
+} from "./common/button";
 
 import { classNames } from "../utils/classnames";
 
@@ -118,12 +122,14 @@ type ActionsItemButton = ActionsItemCommon & {
 
 type ActionsItemSplitButton = ActionsItemCommon & {
   type: "splitButton";
-  items: {
-    name: string;
-    action: () => void;
-  }[];
+  items: ListItemWithIcon[];
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
+};
+
+type ActionsItemDropdownButton = ActionsItemCommon & {
+  type: "dropdownButton";
+  items: ListItemWithIcon[];
 };
 
 type ActionsItemLink = ActionsItemCommon & {
@@ -131,7 +137,11 @@ type ActionsItemLink = ActionsItemCommon & {
   href?: string;
 };
 
-type ActionsItem = ActionsItemLink | ActionsItemButton | ActionsItemSplitButton;
+type ActionsItem =
+  | ActionsItemLink
+  | ActionsItemButton
+  | ActionsItemSplitButton
+  | ActionsItemDropdownButton;
 
 // TODO: some better way to have icons here, ping code had `dropdownItemWithIcon`
 export type ActionItems = ActionsItem[];
@@ -152,14 +162,13 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           );
         if (item.type === "button")
           return (
-            <button
-              className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            <Button
               key={`${i}-breadcrumb}`}
               onClick={item.onClick}
               disabled={item.disabled}
             >
               {item.label}
-            </button>
+            </Button>
           );
         if (item.type === "splitButton")
           return (
@@ -169,6 +178,8 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
               onClick={item.onClick as () => void}
             />
           );
+        if (item.type === "dropdownButton")
+          return <ButtonDropdown items={item.items} label={item.label} />;
       })}
       {input.stuff}
     </div>

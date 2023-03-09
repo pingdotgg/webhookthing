@@ -81,10 +81,33 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
             label: "Open Folder",
             onClick: () => openFolder({ path }),
           },
+          {
+            type: "dropdownButton",
+            label: (
+              <>
+                <span className="sr-only">{`Open create menu`}</span>
+                <PlusIcon
+                  className="h-4 w-4 flex-shrink-0"
+                  aria-hidden="true"
+                />
+              </>
+            ),
+            items: [
+              {
+                name: "New Folder",
+                action: () => addFolderModalState[1](true),
+                icon: <FolderPlusIcon />,
+              },
+              {
+                name: "New Hook",
+                action: () => addHookModalState[1](true),
+                icon: <DocumentPlusIcon />,
+              },
+            ],
+          },
         ]}
         arbitraryStuffImTooTiredToMakeNice={
           <>
-            <Button></Button>
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button

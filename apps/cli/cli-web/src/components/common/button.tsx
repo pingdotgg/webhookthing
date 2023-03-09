@@ -23,7 +23,7 @@ export type HTMLAnchorProps = React.DetailedHTMLProps<
 >;
 
 export const BUTTON_CLASSES =
-  "inline-flex items-center border font-medium justify-center border-transparent relative focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2";
+  "inline-flex items-center border font-medium border-transparent relative focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2";
 
 export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 
@@ -31,10 +31,16 @@ type ButtonSize = keyof typeof BUTTON_SIZES;
 
 type ButtonIconPosition = "start" | "end";
 
+type ButtonWidth = keyof typeof BUTTON_WIDTHS;
+
+type ButtonAlignment = keyof typeof BUTTON_ALIGNMENTS;
+
 type ButtonStyle = {
   disabled?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
+  width?: ButtonWidth;
+  alignment?: ButtonAlignment;
 };
 
 export type ButtonProps = {
@@ -46,6 +52,17 @@ export type ButtonProps = {
 export const BUTTON_SIZES = {
   base: "text-sm px-2 py-1 leading-4 rounded-md",
   lg: "text-base px-4 py-2 rounded-md",
+};
+
+export const BUTTON_WIDTHS = {
+  full: "w-full",
+  auto: "w-auto",
+};
+
+export const BUTTON_ALIGNMENTS = {
+  left: "justify-start",
+  center: "justify-center",
+  right: "justify-end",
 };
 
 export const ICON_SIZE_CLASSES = {
@@ -84,12 +101,20 @@ export const getButtonClasses = (
   style: ButtonStyle = {},
   ...rest: string[]
 ) => {
-  const { disabled, size = "base", variant = "primary" } = style;
+  const {
+    disabled,
+    size = "base",
+    variant = "primary",
+    width = "auto",
+    alignment = "center",
+  } = style;
   return classNames(
     BUTTON_CLASSES,
-    disabled && "pointer-events-none",
+    (disabled && "pointer-events-none") || "",
     BUTTON_SIZES[size],
     BUTTON_VARIANTS[variant],
+    BUTTON_WIDTHS[width],
+    BUTTON_ALIGNMENTS[alignment],
     ...rest
   );
 };
@@ -111,7 +136,6 @@ const ButtonContent: React.FC<{
       {icon && iconPosition === "start" && (
         <span
           className={classNames(
-            { invisible: loading },
             ICON_SIZE_CLASSES[size],
             ICON_START_CLASSES[size]
           )}
@@ -119,11 +143,10 @@ const ButtonContent: React.FC<{
           {icon}
         </span>
       )}
-      <span className={classNames({ invisible: loading })}>{children}</span>
+      <span>{children}</span>
       {icon && iconPosition === "end" && (
         <span
           className={classNames(
-            { invisible: loading },
             ICON_SIZE_CLASSES[size],
             ICON_END_CLASSES[size]
           )}
@@ -150,6 +173,8 @@ export const ButtonLink = React.forwardRef<
     disabled,
     size,
     variant,
+    width,
+    alignment,
     icon,
     iconPosition,
     loading,
@@ -157,7 +182,10 @@ export const ButtonLink = React.forwardRef<
   } = props;
   return (
     <a
-      className={getButtonClasses({ disabled, size, variant }, className)}
+      className={getButtonClasses(
+        { disabled, size, variant, width, alignment },
+        className
+      )}
       ref={ref}
       aria-disabled={disabled}
       {...rest}
@@ -183,6 +211,8 @@ export const Button = React.forwardRef<
     disabled,
     size,
     variant,
+    width,
+    alignment,
     icon,
     iconPosition,
     loading,
@@ -190,7 +220,10 @@ export const Button = React.forwardRef<
   } = props;
   return (
     <button
-      className={getButtonClasses({ disabled, size, variant }, className)}
+      className={getButtonClasses(
+        { disabled, size, variant, width, alignment },
+        className
+      )}
       ref={ref}
       type="button"
       aria-disabled={disabled}
@@ -208,6 +241,10 @@ export default Button;
 type ListItem = {
   name: string;
   action: () => void;
+};
+
+export type ListItemWithIcon = ListItem & {
+  icon?: React.ReactNode;
 };
 
 export function SplitButtonDropdown({
@@ -302,7 +339,7 @@ export const SplitButtonDropdownTheSequel = ({
         </div>
       )}
 
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative inline-block">
         <Menu.Button className="rounded-l-none" variant="primary" as={Button}>
           <span className="sr-only">{`Open options`}</span>
           <ChevronDownIcon
@@ -332,7 +369,7 @@ export const SplitButtonDropdownTheSequel = ({
                         active
                           ? "bg-gray-100 text-indigo-700"
                           : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 text-left text-sm"
+                        "w-full items-center justify-start gap-2"
                       )}
                     >
                       {item.name}
@@ -345,5 +382,66 @@ export const SplitButtonDropdownTheSequel = ({
         </Transition>
       </Menu>
     </div>
+  );
+};
+
+export const ButtonDropdown = ({
+  items,
+  label,
+  icon,
+  buttonOptions,
+}: {
+  buttonOptions?: ButtonProps;
+  items: ListItemWithIcon[];
+  label: string;
+  icon?: React.ReactNode;
+}) => {
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button as={Button} {...buttonOptions}>
+          {label}
+          {icon}
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="w-full py-1">
+            {items.map((item) => (
+              <Menu.Item key={item.name}>
+                {({ active }) => (
+                  <div className="flex w-full flex-row items-center justify-start">
+                    <Button
+                      className={classNames(
+                        active
+                          ? "bg-gray-100 text-indigo-700"
+                          : "text-gray-700",
+                        "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                      )}
+                      width="full"
+                      size="lg"
+                      alignment="left"
+                      onClick={item.action}
+                      icon={item.icon}
+                    >
+                      {item.name}
+                    </Button>
+                  </div>
+                )}
+              </Menu.Item>
+            ))}
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
   );
 };
