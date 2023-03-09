@@ -120,7 +120,12 @@ class logger implements Logger {
   private log(level: LogLevels, message: string, optionalParams: any[]) {
     const ts = Date.now();
 
-    console[level](consoleFormat(level, message), ...optionalParams);
+    const defaultLevel =
+      process.env.NODE_ENV === "development" ? "trace" : "info";
+
+    if (getLogLevels(defaultLevel).includes(level)) {
+      console[level](consoleFormat(level, message), ...optionalParams);
+    }
 
     this.subscriptions.forEach(({ fn, level: subLevel }) => {
       if (getLogLevels(subLevel).includes(level)) fn({ message, level, ts });
