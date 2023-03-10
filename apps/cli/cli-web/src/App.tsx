@@ -104,11 +104,11 @@ export default function AppCore() {
 
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-2 px-2 lg:h-full lg:flex-row">
-            <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-white p-4 shadow lg:h-full lg:w-3/5 ">
+            <div className="flex h-3/5 w-full flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow lg:h-full lg:w-3/5 ">
               {/* File browser / Hook Editor / 404 */}
               <PageContent />
             </div>
-            <div className="flex h-2/5 w-full rounded-lg bg-white p-4 shadow lg:h-full lg:w-2/5">
+            <div className="flex h-2/5 w-full rounded-lg bg-gray-100 p-4 shadow lg:h-full lg:w-2/5">
               {/* Logs */}
               <ResponseViewer />
             </div>
