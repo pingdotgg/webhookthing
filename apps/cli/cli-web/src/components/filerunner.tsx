@@ -1,9 +1,12 @@
 import { CliApiRouter } from "@captain/cli-core";
 import { PlayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inferRouterOutputs } from "@trpc/server";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
+
+import { Nav } from "./breadcrumbs";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -11,6 +14,7 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
+import { useFileRoute } from "../utils/useRoute";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -46,16 +50,20 @@ const formValidator = z.object({
 });
 
 type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
-type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
+export type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
 export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { path: file, data } = input;
 
+  const pathArr = file.split("/").slice(1);
+  console.log(pathArr);
   const path = decodeURI(file).split("/").slice(0, -1);
 
   if (path[0] === "") {
     path.shift();
   }
+
+  const location = useFileRoute();
 
   const ctx = cliApi.useContext();
 
@@ -132,26 +140,48 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     })
   );
 
+  const { mutate: openFolder } = cliApi.openFolder.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   return (
     <>
       <div className="flex h-full w-full flex-col">
         <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-col">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                {`Settings: ${prefill.name}`}
-              </h3>
-              <div className="mt-2 flex flex-col gap-2">
-                <p className="text-sm text-gray-500">
-                  {`Configure your webhook below.`}
-                </p>
-              </div>
-            </div>
-            <div className="flex h-full flex-col items-start justify-start p-1">
-              <button
-                className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
-                onClick={() => {
+          {/* breadcrumbs */}
+          <Nav
+            path={file}
+            actions={[
+              {
+                type: "splitButton",
+                label: "Open File",
+                onClick: () => openFolder({ path: file }),
+                items: [
+                  {
+                    name: "hookname.json",
+                    action: () => openFolder({ path: file }),
+                  },
+                  {
+                    name: "hookname.config.json",
+                    action: () =>
+                      // this is creating a folder instead of a file on windows
+                      openFolder({
+                        path: file.replace(".json", ".config.json"),
+                      }),
+                  },
+                ],
+              },
+              {
+                type: "button",
+                label: (
+                  <>
+                    {`Run`}
+                    <PlayIcon className="h-4" />
+                  </>
+                ),
+                onClick: () => {
                   void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
                     updateHook(
@@ -168,11 +198,25 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   } else {
                     runFile({ file: decodeURI(file) });
                   }
-                }}
-              >
-                {`Run`}
-                <PlayIcon className="h-4" />
-              </button>
+                },
+              },
+            ]}
+          />
+
+          <div>
+            <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
+              <div className="flex flex-row items-center justify-between">
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">
+                    {`Settings: ${prefill.name}`}
+                  </h3>
+                  <div className="mt-2 flex flex-col gap-2">
+                    <p className="text-sm text-gray-500">
+                      {`Configure your webhook below.`}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="mt-5">
@@ -193,7 +237,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
                 <input
                   id="url"
-                  className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   {...register("config.url", {
                     onBlur: (e: React.FormEvent<HTMLInputElement>) => {
                       void trigger();
@@ -250,7 +294,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.headers.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...register(
@@ -269,7 +313,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.headers.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.headers.${index}.value` as const
                               )}
@@ -295,7 +339,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       headerFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"
@@ -328,7 +372,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.query.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...(register(
@@ -356,7 +400,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.query.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.query.${index}.value` as const,
                                 {
