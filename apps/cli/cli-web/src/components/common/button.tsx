@@ -70,7 +70,7 @@ export const BUTTON_ALIGNMENTS = {
 
 export const BUTTON_SHADOW_CLASSES = {
   false: "",
-  true: "shadow-sm hover:shadow-md",
+  true: "shadow-sm hover:shadow-md aria-disabled:hover:shadow-sm",
 };
 
 export const ICON_SIZE_CLASSES = {
@@ -100,7 +100,8 @@ export const ICON_END_CLASSES = {
 
 export const BUTTON_VARIANTS = {
   // TODO igor: ask for feedback: Should this include hover:bg-indigo-100/10?
-  primary: "bg-white border-gray-50 text-gray-600 hover:text-indigo-600",
+  primary:
+    "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400",
   "primary-inverted":
     "text-pink-600 border-transparent bg-white hover:bg-pink-50",
   text: "text-white border-transparent hover:text-gray-300",
@@ -120,6 +121,7 @@ export const getButtonClasses = (
   } = style;
   return classNames(
     BUTTON_CLASSES,
+    // TODO igor: ask for feedback: pointer events none here prevents the cursor from being showed as not allowed
     (disabled && "pointer-events-none") || "",
     BUTTON_SIZES[size],
     BUTTON_VARIANTS[variant],
