@@ -5,7 +5,7 @@ import Button, {
   ButtonDropdown,
   ButtonLink,
   ButtonProps,
-  SplitButtonDropdownTheSequel,
+  SplitButtonDropdown,
   type ListItemWithIcon,
 } from "./common/button";
 
@@ -168,7 +168,7 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           );
         if (item.type === "splitButton")
           return (
-            <SplitButtonDropdownTheSequel
+            <SplitButtonDropdown
               // TODO igor:  TS is mad because the onClick doesn't have the same type
               {...item}
             />
