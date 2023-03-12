@@ -368,28 +368,7 @@ export const SplitButtonDropdownTheSequel = ({
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            {items.map((item) => (
-              <Menu.Item key={item.name}>
-                {({ active }) => (
-                  <div className="flex w-full flex-row items-center justify-start">
-                    <Button
-                      onClick={item.action}
-                      size="lg"
-                      className={classNames(
-                        active
-                          ? "bg-gray-100 text-indigo-700"
-                          : "text-gray-700",
-                        "w-full items-center justify-start gap-2"
-                      )}
-                    >
-                      {item.name}
-                    </Button>
-                  </div>
-                )}
-              </Menu.Item>
-            ))}
-          </Menu.Items>
+          <DropdownList items={items} />
         </Transition>
       </Menu>
     </div>
@@ -425,35 +404,39 @@ export const ButtonDropdown = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right  rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="w-full">
-            {items.map((item) => (
-              <Menu.Item key={item.name}>
-                {({ active }) => (
-                  <div className="flex w-full flex-row items-center justify-start overflow-clip first:rounded-t-lg last:rounded-b-lg">
-                    <Button
-                      className={classNames(
-                        active
-                          ? "bg-gray-100 text-indigo-700"
-                          : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-indigo-400/10"
-                      )}
-                      width="full"
-                      size="lg"
-                      alignment="left"
-                      onClick={item.action}
-                      shadow="false"
-                      icon={item.icon}
-                    >
-                      {item.name}
-                    </Button>
-                  </div>
-                )}
-              </Menu.Item>
-            ))}
-          </div>
-        </Menu.Items>
+        <DropdownList items={items} />
       </Transition>
     </Menu>
+  );
+};
+
+const DropdownList = ({ items }: { items: ListItemWithIcon[] }) => {
+  return (
+    <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right  rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+      <div className="w-full">
+        {items.map((item) => (
+          <Menu.Item key={item.name}>
+            {({ active }) => (
+              <div className="flex w-full flex-row items-center justify-start overflow-clip first:rounded-t-lg last:rounded-b-lg">
+                <Button
+                  className={classNames(
+                    active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+                    "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-indigo-400/10"
+                  )}
+                  width="full"
+                  size="lg"
+                  alignment="left"
+                  onClick={item.action}
+                  shadow="false"
+                  icon={item.icon}
+                >
+                  {item.name}
+                </Button>
+              </div>
+            )}
+          </Menu.Item>
+        ))}
+      </div>
+    </Menu.Items>
   );
 };
