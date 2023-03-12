@@ -415,17 +415,16 @@ export const ButtonDropdown = ({
   items,
   label,
   icon,
-  buttonOptions,
+  ...rest
 }: {
-  buttonOptions?: ButtonProps;
   items: ListItemWithIcon[];
   label: string;
   icon?: React.ReactNode;
-}) => {
+} & ButtonProps) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button as={Button} {...buttonOptions}>
+        <Menu.Button as={Button} {...rest}>
           {label}
           {icon}
         </Menu.Button>

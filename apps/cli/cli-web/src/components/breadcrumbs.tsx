@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { Tooltip } from "./common/tooltip";
 import Button, {
   ButtonDropdown,
+  ButtonLink,
+  ButtonProps,
   SplitButtonDropdownTheSequel,
   type ListItemWithIcon,
 } from "./common/button";
@@ -111,31 +113,33 @@ const Breadcrumbs = (input: { path: string; pathArr: string[] }) => {
 };
 
 type ActionsItemCommon = {
-  label: string | JSX.Element;
+  label: string;
 };
 
-type ActionsItemButton = ActionsItemCommon & {
-  type: "button";
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-};
+type ActionsItemButton = ActionsItemCommon &
+  ButtonProps & {
+    type: "button";
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  };
 
-type ActionsItemSplitButton = ActionsItemCommon & {
-  type: "splitButton";
-  items: ListItemWithIcon[];
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-};
+type ActionsItemSplitButton = ActionsItemCommon &
+  ButtonProps & {
+    type: "splitButton";
+    items: ListItemWithIcon[];
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  };
 
-type ActionsItemDropdownButton = ActionsItemCommon & {
-  type: "dropdownButton";
-  items: ListItemWithIcon[];
-};
+type ActionsItemDropdownButton = ActionsItemCommon &
+  ButtonProps & {
+    type: "dropdownButton";
+    items: ListItemWithIcon[];
+  };
 
-type ActionsItemLink = ActionsItemCommon & {
-  type: "link";
-  href?: string;
-};
+type ActionsItemLink = ActionsItemCommon &
+  ButtonProps & {
+    type: "link";
+    href?: string;
+  };
 
 type ActionsItem =
   | ActionsItemLink
@@ -152,34 +156,24 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
       {input.items.map((item, i) => {
         if (item.type === "link")
           return (
-            <Link
-              className="flex items-center justify-center rounded-md border border-transparent border-gray-50 px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:bg-indigo-100/10 hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              key={`${i}-breadcrumb}`}
-              href={item.href}
-            >
+            <ButtonLink key={`${i}-breadcrumb}`} {...item}>
               {item.label}
-            </Link>
+            </ButtonLink>
           );
         if (item.type === "button")
           return (
-            <Button
-              key={`${i}-breadcrumb}`}
-              onClick={item.onClick}
-              disabled={item.disabled}
-            >
+            <Button key={`${i}-breadcrumb}`} {...item}>
               {item.label}
             </Button>
           );
         if (item.type === "splitButton")
           return (
             <SplitButtonDropdownTheSequel
-              items={item.items}
-              label={item.label}
-              onClick={item.onClick as () => void}
+              // TODO igor:  TS is mad because the onClick doesn't have the same type
+              {...item}
             />
           );
-        if (item.type === "dropdownButton")
-          return <ButtonDropdown items={item.items} label={item.label} />;
+        if (item.type === "dropdownButton") return <ButtonDropdown {...item} />;
       })}
       {input.stuff}
     </div>

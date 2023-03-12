@@ -175,12 +175,9 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
               },
               {
                 type: "button",
-                label: (
-                  <>
-                    {`Run`}
-                    <PlayIcon className="h-4" />
-                  </>
-                ),
+                label: `Run`,
+                iconPosition: "end",
+                icon: <PlayIcon />,
                 onClick: () => {
                   void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
