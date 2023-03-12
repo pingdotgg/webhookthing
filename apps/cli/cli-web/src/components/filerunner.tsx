@@ -149,7 +149,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
   return (
     <>
       <div className="flex h-full w-full flex-col">
-        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
+        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
           {/* breadcrumbs */}
           <Nav
             path={file}
