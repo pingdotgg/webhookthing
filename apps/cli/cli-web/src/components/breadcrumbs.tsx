@@ -19,12 +19,8 @@ const pathArrToUrl = (pathArr: string[], nav?: string) => {
   return url;
 };
 
-export const Nav = (input: {
-  path: string;
-  actions?: ActionItems;
-  arbitraryStuffImTooTiredToMakeNice?: React.ReactNode;
-}) => {
-  const { path, actions, arbitraryStuffImTooTiredToMakeNice } = input;
+export const Nav = (input: { path: string; actions?: ActionItems }) => {
+  const { path, actions } = input;
 
   const pathArr = path.split("/").slice(1);
 
@@ -34,9 +30,7 @@ export const Nav = (input: {
       aria-label="Breadcrumb"
     >
       <Breadcrumbs path={path} pathArr={pathArr} />
-      {actions && (
-        <Actions items={actions} stuff={arbitraryStuffImTooTiredToMakeNice} />
-      )}
+      {actions && <Actions items={actions} />}
     </nav>
   );
 };
@@ -150,7 +144,7 @@ type ActionsItem =
 // TODO: some better way to have icons here, ping code had `dropdownItemWithIcon`
 export type ActionItems = ActionsItem[];
 
-const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
+const Actions = (input: { items: ActionItems }) => {
   return (
     <div className="flex flex-row gap-1">
       {input.items.map((item, i) => {
@@ -175,7 +169,6 @@ const Actions = (input: { items: ActionItems; stuff: React.ReactNode }) => {
           );
         if (item.type === "dropdownButton") return <ButtonDropdown {...item} />;
       })}
-      {input.stuff}
     </div>
   );
 };
