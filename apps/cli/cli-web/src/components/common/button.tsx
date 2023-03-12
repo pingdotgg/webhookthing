@@ -255,7 +255,7 @@ type ListItem = {
 };
 
 export type ListItemWithIcon = ListItem & {
-  icon?: React.ReactNode;
+  icon?: React.ReactElement;
 };
 
 export const SplitButtonDropdown = ({
