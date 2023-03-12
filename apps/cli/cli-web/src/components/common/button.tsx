@@ -99,6 +99,7 @@ export const ICON_END_CLASSES = {
 };
 
 export const BUTTON_VARIANTS = {
+  // TODO igor: ask for feedback: Should this include hover:bg-indigo-100/10?
   primary: "bg-white border-gray-50 text-gray-600 hover:text-indigo-600",
   "primary-inverted":
     "text-pink-600 border-transparent bg-white hover:bg-pink-50",
