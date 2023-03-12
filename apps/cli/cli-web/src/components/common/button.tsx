@@ -339,9 +339,13 @@ export const SplitButtonDropdownTheSequel = ({
   return (
     <div className="inline-flex rounded-md shadow-sm hover:shadow-md">
       {onClick ? (
-        <Button className="rounded-r-none" onClick={onClick}>
+        <Button
+          shadow="false"
+          className="rounded-r-none"
+          icon={icon}
+          onClick={onClick}
+        >
           {label}
-          {icon}
         </Button>
       ) : (
         <div className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
@@ -351,7 +355,12 @@ export const SplitButtonDropdownTheSequel = ({
       )}
 
       <Menu as="div" className="relative inline-block">
-        <Menu.Button className="rounded-l-none" variant="primary" as={Button}>
+        <Menu.Button
+          className="rounded-l-none"
+          variant="primary"
+          shadow="false"
+          as={Button}
+        >
           <span className="sr-only">{`Open options`}</span>
           <ChevronDownIcon
             className={ICON_SIZE_CLASSES["base"]}
@@ -379,7 +388,7 @@ export const SplitButtonDropdownTheSequel = ({
                           active
                             ? "bg-gray-100 text-indigo-700"
                             : "text-gray-700",
-                          "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-indigo-400/10"
+                          "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm hover:bg-indigo-400/10"
                         )}
                         width="full"
                         size="lg"
