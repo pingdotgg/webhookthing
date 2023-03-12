@@ -10,10 +10,9 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import { FolderPlusIcon as FolderPlusOutline } from "@heroicons/react/24/outline";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "wouter";
-import { Menu, Transition } from "@headlessui/react";
 import { CliApiRouter } from "@captain/cli-core";
 import { inferRouterOutputs } from "@trpc/server";
 
@@ -22,10 +21,8 @@ import { Tooltip } from "./common/tooltip";
 import { FolderFormModal } from "./folder-form-modal";
 
 import { cliApi } from "../utils/api";
-import { classNames } from "../utils/classnames";
 import { useFileRoute } from "../utils/useRoute";
 import { FileFormModal } from "./file-form-modal";
-import Button from "./common/button";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {
   const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
