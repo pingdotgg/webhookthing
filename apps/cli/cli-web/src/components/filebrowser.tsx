@@ -86,12 +86,12 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
             label: (
               <>
                 <span className="sr-only">{`Open create menu`}</span>
-                <PlusIcon
-                  className="h-4 w-4 flex-shrink-0"
-                  aria-hidden="true"
-                />
               </>
             ),
+            icon: (
+              <PlusIcon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            ),
+            iconPosition: "end",
             items: [
               {
                 name: "New Folder",
