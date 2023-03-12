@@ -55,15 +55,11 @@ export type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { path: file, data } = input;
 
-  const pathArr = file.split("/").slice(1);
-  console.log(pathArr);
   const path = decodeURI(file).split("/").slice(0, -1);
 
   if (path[0] === "") {
     path.shift();
   }
-
-  const location = useFileRoute();
 
   const ctx = cliApi.useContext();
 
@@ -149,7 +145,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
   return (
     <>
       <div className="flex h-full w-full flex-col">
-        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
+        <div className="flex w-full flex-col">
           {/* breadcrumbs */}
           <Nav
             path={file}
@@ -199,19 +195,16 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
               },
             ]}
           />
-
-          <div>
-            <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll">
-              <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-col">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    {`Settings: ${prefill.name}`}
-                  </h3>
-                  <div className="mt-2 flex flex-col gap-2">
-                    <p className="text-sm text-gray-500">
-                      {`Configure your webhook below.`}
-                    </p>
-                  </div>
+          <div className="flex min-h-0 w-full grow flex-col items-start overflow-y-scroll ">
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  {`Settings: ${prefill.name}`}
+                </h3>
+                <div className="mt-2 flex min-h-0 flex-col gap-2">
+                  <p className="text-sm text-gray-500">
+                    {`Configure your webhook below.`}
+                  </p>
                 </div>
               </div>
             </div>
@@ -451,7 +444,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
             </form>
           </div>
         </div>
-        <div className="flex flex-row justify-end pt-4">
+        <div className="mt-auto flex flex-row justify-end pt-4">
           <button
             type="submit"
             form="form"

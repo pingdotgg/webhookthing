@@ -53,8 +53,8 @@ export type ButtonProps = {
 } & ButtonStyle;
 
 export const BUTTON_SIZES = {
-  base: "text-sm px-2 py-1 leading-4 rounded-md",
-  lg: "text-base px-4 py-2 rounded-md",
+  base: "text-sm px-2 py-1 h-8 leading-4 rounded-md",
+  lg: "text-base px-4 py-2 h-10 rounded-md",
 };
 
 export const BUTTON_WIDTHS = {

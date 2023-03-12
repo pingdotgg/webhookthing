@@ -71,7 +71,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
   const addFolderModalState = useState(false);
 
   return (
-    <div className="flex min-h-0 flex-col divide-y divide-gray-200 first-line:w-full">
+    <div className="flex min-h-0 flex-col first-line:w-full">
       {/* breadcrumbs */}
       <Nav
         path={path}
@@ -110,7 +110,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
       <FolderFormModal openState={addFolderModalState} path={pathArr} />
       <FileFormModal openState={addHookModalState} path={pathArr} />
       {/* folders section */}
-      <div className="py-2">
+      <div className="">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Folders`}
         </h3>
@@ -149,7 +149,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         </div>
       </div>
       {/* files section */}
-      <div className="flex min-h-0 grow flex-col py-2">
+      <div className="flex min-h-0 grow flex-col">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
