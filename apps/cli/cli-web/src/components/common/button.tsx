@@ -35,12 +35,15 @@ type ButtonWidth = keyof typeof BUTTON_WIDTHS;
 
 type ButtonAlignment = keyof typeof BUTTON_ALIGNMENTS;
 
+type ButtonShadow = keyof typeof BUTTON_SHADOW_CLASSES;
+
 type ButtonStyle = {
   disabled?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
   width?: ButtonWidth;
   alignment?: ButtonAlignment;
+  shadow?: ButtonShadow;
 };
 
 export type ButtonProps = {
@@ -63,6 +66,11 @@ export const BUTTON_ALIGNMENTS = {
   left: "justify-start",
   center: "justify-center",
   right: "justify-end",
+};
+
+export const BUTTON_SHADOW_CLASSES = {
+  false: "",
+  true: "shadow-sm hover:shadow-md",
 };
 
 export const ICON_SIZE_CLASSES = {
@@ -93,7 +101,7 @@ export const ICON_END_CLASSES = {
 export const BUTTON_VARIANTS = {
   primary: "bg-white border-gray-50 text-gray-600 hover:text-indigo-600",
   "primary-inverted":
-    "text-pink-600 border-transparent bg-white hover:bg-pink-50 shadow-sm",
+    "text-pink-600 border-transparent bg-white hover:bg-pink-50",
   text: "text-white border-transparent hover:text-gray-300",
 };
 
@@ -107,6 +115,7 @@ export const getButtonClasses = (
     variant = "primary",
     width = "auto",
     alignment = "center",
+    shadow = "true",
   } = style;
   return classNames(
     BUTTON_CLASSES,
@@ -115,6 +124,7 @@ export const getButtonClasses = (
     BUTTON_VARIANTS[variant],
     BUTTON_WIDTHS[width],
     BUTTON_ALIGNMENTS[alignment],
+    BUTTON_SHADOW_CLASSES[shadow] || "",
     ...rest
   );
 };
@@ -213,6 +223,7 @@ export const Button = React.forwardRef<
     variant,
     width,
     alignment,
+    shadow,
     icon,
     iconPosition,
     loading,
@@ -221,7 +232,7 @@ export const Button = React.forwardRef<
   return (
     <button
       className={getButtonClasses(
-        { disabled, size, variant, width, alignment },
+        { disabled, size, variant, width, alignment, shadow },
         className
       )}
       ref={ref}
@@ -414,23 +425,24 @@ export const ButtonDropdown = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="w-full py-1">
+        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right  rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="w-full">
             {items.map((item) => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
-                  <div className="flex w-full flex-row items-center justify-start">
+                  <div className="flex w-full flex-row items-center justify-start overflow-clip first:rounded-t-lg last:rounded-b-lg">
                     <Button
                       className={classNames(
                         active
                           ? "bg-gray-100 text-indigo-700"
                           : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 px-4 py-2 text-sm"
+                        "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-indigo-400/10"
                       )}
                       width="full"
                       size="lg"
                       alignment="left"
                       onClick={item.action}
+                      shadow="false"
                       icon={item.icon}
                     >
                       {item.name}
