@@ -76,7 +76,7 @@ export const BUTTON_SHADOW_CLASSES = {
 export const ICON_SIZE_CLASSES = {
   xs: "h-4 w-4",
   sm: "h-4 w-4",
-  base: "h-5 w-5",
+  base: "h-4 w-4",
   lg: "h-5 w-5",
   xl: "h-5 w-5",
   "2xl": "h-6 w-6",
