@@ -23,7 +23,7 @@ export type HTMLAnchorProps = React.DetailedHTMLProps<
 >;
 
 export const BUTTON_CLASSES =
-  "inline-flex items-center border font-medium border-transparent relative focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2";
+  "inline-flex items-center border font-medium border-transparent relative  focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-transparent hover:focus:ring-offset-gray-200 hover:focus:outline-none";
 
 export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 
@@ -101,9 +101,9 @@ export const ICON_END_CLASSES = {
 export const BUTTON_VARIANTS = {
   // TODO igor: ask for feedback: Should this include hover:bg-indigo-100/10?
   primary:
-    "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400",
+    "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400 hover:bg-gray-200 hover:border-transparent",
   "primary-inverted":
-    "text-pink-600 border-transparent bg-white hover:bg-pink-50",
+    "text-indigo-600 border-transparent bg-white hover:bg-indigo-50",
   text: "text-white border-transparent hover:text-gray-300",
 };
 
