@@ -318,22 +318,7 @@ export const SplitButtonDropdown = ({
                 <Menu.Item key={item.name}>
                   {({ active }) => (
                     <div className="flex w-full flex-row items-center justify-start overflow-clip first:rounded-t-lg last:rounded-b-lg">
-                      <Button
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-indigo-700"
-                            : "text-gray-700",
-                          "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm hover:bg-gray-100"
-                        )}
-                        width="full"
-                        size="lg"
-                        alignment="left"
-                        onClick={item.action}
-                        shadow="false"
-                        icon={item.icon}
-                      >
-                        {item.name}
-                      </Button>
+                      <DropdownButtonItemContent item={item} active={active} />
                     </div>
                   )}
                 </Menu.Item>
@@ -380,22 +365,7 @@ export const ButtonDropdown = ({
               <Menu.Item key={item.name}>
                 {({ active }) => (
                   <div className="flex w-full flex-row items-center justify-start overflow-clip first:rounded-t-lg last:rounded-b-lg">
-                    <Button
-                      className={classNames(
-                        active
-                          ? "bg-gray-100 text-indigo-700"
-                          : "text-gray-700",
-                        "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-gray-100"
-                      )}
-                      width="full"
-                      size="lg"
-                      alignment="left"
-                      onClick={item.action}
-                      shadow="false"
-                      icon={item.icon}
-                    >
-                      {item.name}
-                    </Button>
+                    <DropdownButtonItemContent item={item} active={active} />
                   </div>
                 )}
               </Menu.Item>
@@ -405,4 +375,42 @@ export const ButtonDropdown = ({
       </Transition>
     </Menu>
   );
+};
+
+const DropdownButtonItemContent = ({ item, active }) => {
+  if (item?.href)
+    return (
+      <ButtonLink
+        className={classNames(
+          active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+          "flex flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-gray-100"
+        )}
+        width="full"
+        size="lg"
+        alignment="left"
+        shadow="false"
+        icon={item.icon}
+        href={item.href}
+      >
+        {item.name}
+      </ButtonLink>
+    );
+
+  if (item?.action)
+    return (
+      <Button
+        className={classNames(
+          active ? "bg-gray-100 text-indigo-700" : "text-gray-700",
+          "flex w-full flex-row items-center justify-start gap-2 rounded-none px-4 py-2 text-sm  hover:bg-gray-100"
+        )}
+        width="full"
+        size="lg"
+        alignment="left"
+        onClick={item.action}
+        shadow="false"
+        icon={item.icon}
+      >
+        {item.name}
+      </Button>
+    );
 };
