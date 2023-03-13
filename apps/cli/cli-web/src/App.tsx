@@ -202,16 +202,19 @@ const NextNavMenu = () => {
           name: "Support",
           href: "https://discord.gg/4wD3CNdsf6",
           icon: <QuestionMarkCircleIcon />,
+          type: "link",
         },
         {
           name: "File an issue",
           href: "https://github.com/pingdotgg/sample_hooks/issues/new",
           icon: <ArchiveBoxIcon />,
+          type: "link",
         },
         {
           name: "Documentation",
           href: "https://docs.webhookthing.com",
           icon: <BookOpenIcon className="h-5 w-5 flex-shrink-0" />,
+          type: "link",
         },
       ]}
     />
