@@ -68,7 +68,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
   const addFolderModalState = useState(false);
 
   return (
-    <div className="flex min-h-0 flex-col first-line:w-full">
+    <div className="flex h-full min-h-0 flex-col first-line:w-full">
       {/* breadcrumbs */}
       <Nav
         path={path}
@@ -107,14 +107,14 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
       <FolderFormModal openState={addFolderModalState} path={pathArr} />
       <FileFormModal openState={addHookModalState} path={pathArr} />
       {/* folders section */}
-      <div className="">
+      <div className="mb-4">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Folders`}
         </h3>
-        <div className="flex h-28 flex-row space-x-3 overflow-x-auto px-1 py-2">
+        <div className="flex flex-row space-x-3 overflow-x-auto rounded-lg bg-gray-200/50 p-2 shadow-inner">
           {data.folders.map((folder) => (
             <div key={folder} className="w-1/5 min-w-[8rem]">
-              <Tooltip content={folder} placement="bottom">
+              <Tooltip content={folder} placement="bottom" className="-mt-16">
                 <Link href={pathArrToUrl(pathArr, folder)}>
                   <button className="flex w-full flex-col items-center justify-center space-y-1 truncate rounded-md bg-white px-6 py-4 text-sm font-medium text-gray-600 shadow-sm  hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     <FolderIcon
@@ -146,11 +146,11 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         </div>
       </div>
       {/* files section */}
-      <div className="flex min-h-0 grow flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
-        <div className="w-full overflow-y-auto px-1">
+        <div className="flex w-full flex-1 flex-col overflow-y-auto rounded-lg bg-gray-200/50 p-2 shadow-inner">
           {data.files.length === 0 ? (
             <div className="text-center">
               <DocumentDuplicateIcon className="mx-auto h-12 w-12 text-gray-400" />
