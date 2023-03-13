@@ -268,7 +268,7 @@ export const SplitButtonDropdown = ({
 }: {
   items: ListItemWithIcon[];
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactElement;
   onClick?: () => void;
 }) => {
   return (
