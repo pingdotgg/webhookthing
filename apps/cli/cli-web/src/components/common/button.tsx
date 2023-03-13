@@ -251,10 +251,20 @@ Button.displayName = "Button";
 
 export default Button;
 
-type ListItem = {
+type ListItemCommon = {
   name: string;
+};
+type ListItemButton = ListItemCommon & {
+  type: "button";
   action: () => void;
 };
+
+type ListItemLink = ListItemCommon & {
+  type: "link";
+  href: string;
+};
+
+type ListItem = ListItemButton | ListItemLink;
 
 export type ListItemWithIcon = ListItem & {
   icon?: React.ReactElement;
@@ -377,8 +387,15 @@ export const ButtonDropdown = ({
   );
 };
 
-const DropdownButtonItemContent = ({ item, active }) => {
-  if (item?.href)
+const DropdownButtonItemContent = ({
+  item,
+  active,
+}: {
+  item: ListItemWithIcon;
+  active: boolean;
+}) => {
+  // oof, I'd really like to default all items with an href to be links
+  if (item.type === "link" || item?.href)
     return (
       <ButtonLink
         className={classNames(
@@ -396,7 +413,8 @@ const DropdownButtonItemContent = ({ item, active }) => {
       </ButtonLink>
     );
 
-  if (item?.action)
+  // oof, I'd really like to default all items with an action to be buttons
+  if (item.type === "button" || item?.action)
     return (
       <Button
         className={classNames(
