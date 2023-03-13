@@ -17,6 +17,7 @@ import { classNames } from "./utils/classnames";
 import { useFileRoute } from "./utils/useRoute";
 import { FileRunner } from "./components/filerunner";
 import { cliApi } from "./utils/api";
+import { ButtonDropdown } from "./components/common/button";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -94,6 +95,7 @@ export default function AppCore() {
                     </div>
                     <div className="flex items-end justify-center px-2">
                       <NavMenu />
+                      <NextNavMenu />
                     </div>
                   </div>
                 </div>
@@ -186,5 +188,32 @@ const NavMenu = () => {
         </Menu.Items>
       </Transition>
     </Menu>
+  );
+};
+
+const NextNavMenu = () => {
+  return (
+    <ButtonDropdown
+      label={<span className="sr-only">{`Open options`}</span>}
+      variant="text"
+      icon={<EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />}
+      items={[
+        {
+          name: "Support",
+          href: "https://discord.gg/4wD3CNdsf6",
+          icon: <QuestionMarkCircleIcon />,
+        },
+        {
+          name: "File an issue",
+          href: "https://github.com/pingdotgg/sample_hooks/issues/new",
+          icon: <ArchiveBoxIcon />,
+        },
+        {
+          name: "Documentation",
+          href: "https://docs.webhookthing.com",
+          icon: <BookOpenIcon className="h-5 w-5 flex-shrink-0" />,
+        },
+      ]}
+    />
   );
 };
