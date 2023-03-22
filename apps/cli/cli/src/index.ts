@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { startServer, startSocketServer } from "./server";
+import { startServer, startExternalServer, startSocketServer } from "./server";
 import { renderTitle } from "./utils/renderTitle";
 
 const DOCS_LINK = "https://docs.webhookthing.com";
@@ -13,6 +13,7 @@ const main = async () => {
   startSocketServer();
 
   await startServer();
+  await startExternalServer();
 };
 
 main().catch((err) => {

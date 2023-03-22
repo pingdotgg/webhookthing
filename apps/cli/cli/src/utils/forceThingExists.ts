@@ -3,8 +3,8 @@ import path from "path";
 
 import logger from "@captain/logger";
 
-const THING_PATH = path.join(process.cwd(), ".thing");
-const HOOK_PATH = path.join(THING_PATH, "hooks");
+export const THING_PATH = path.join(process.cwd(), ".thing");
+export const HOOK_PATH = path.join(THING_PATH, "hooks");
 
 export default async function forceThingExists() {
   try {

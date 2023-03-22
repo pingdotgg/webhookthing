@@ -36,7 +36,8 @@
     "graceful-fs": "^4.2.10",
     "gradient-string": "^2.0.2",
     "open": "^8.4.0",
-    "ws": "^8.12.1"
+    "ws": "^8.12.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@captain/cli-web": "*",
