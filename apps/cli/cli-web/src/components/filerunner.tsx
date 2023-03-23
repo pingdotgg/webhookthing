@@ -227,7 +227,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 </p>
                 <input
                   id="url"
-                  className="block w-full rounded-md border  border-gray-300 p-1 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full rounded-md border  border-gray-300 px-3 py-1.5 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   {...register("config.url", {
                     onBlur: (e: React.FormEvent<HTMLInputElement>) => {
                       void trigger();
@@ -284,7 +284,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.headers.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...register(
@@ -303,7 +303,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.headers.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.headers.${index}.value` as const
                               )}
@@ -329,7 +329,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   </div>
                   <button
                     className={classNames(
-                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
+                      "-mt-[1px] flex w-full flex-row items-center gap-1  border border-gray-300 bg-white px-4 py-1.5 text-start text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 ",
                       headerFields.length !== 0 ? "rounded-b-md" : "rounded-md"
                     )}
                     type="button"
@@ -362,7 +362,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             <input
                               id={`config.query.${index}.key`}
                               className={classNames(
-                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
+                                "relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                                 index === 0 ? "rounded-tl-md" : ""
                               )}
                               {...(register(
@@ -390,7 +390,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                             </label>
                             <input
                               id={`config.query.${index}.value`}
-                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent p-1 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                              className="relative block w-full min-w-0 flex-1 rounded-none border border-gray-300 bg-transparent px-3 py-1.5 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               {...register(
                                 `config.query.${index}.value` as const,
                                 {
