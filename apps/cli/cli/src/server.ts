@@ -159,6 +159,7 @@ const createExternalServer = async () => {
     };
 
     logger.debug(`Received webhook request for ${name}`);
+    logger.debug(`Origin: ${req.headers.origin}`);
 
     // verify body and config
     if (!body || !name) {
