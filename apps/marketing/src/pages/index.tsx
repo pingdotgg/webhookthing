@@ -83,13 +83,13 @@ const Home: NextPage = () => {
                   >
                     <div className="w-full animate-delayed-fade-in rounded-md bg-gray-900 p-2 text-white">
                       <div className="flex items-center justify-between px-2 py-1">
-                        <pre>{`npx webhookthing`}</pre>
+                        <pre>{`npx webhookthing@latest`}</pre>
                         <div className="flex gap-1">
                           <button
                             className="group"
                             onClick={() => {
                               void navigator.clipboard.writeText(
-                                "npx webhookthing"
+                                "npx webhookthing@latest"
                               );
                               setCopied();
                             }}
