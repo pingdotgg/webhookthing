@@ -158,13 +158,15 @@ const createExternalServer = async () => {
       name: string;
     };
 
+    logger.debug(`Received webhook request for ${name}`);
+
     // verify body and config
     if (!body || !name) {
       return res.status(400).send({
         success: false,
         error: {
           kind: "user_input",
-          message: "Invalid Request",
+          message: "Invalid Request - missing body or name",
         },
       });
     }
@@ -179,7 +181,7 @@ const createExternalServer = async () => {
         success: false,
         error: {
           kind: "user_input",
-          message: "Invalid Request",
+          message: "Invalid Request - invalid body or config",
         },
       });
     }

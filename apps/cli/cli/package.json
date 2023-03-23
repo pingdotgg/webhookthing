@@ -35,6 +35,7 @@
     "fs-extra": "^11.1.0",
     "graceful-fs": "^4.2.10",
     "gradient-string": "^2.0.2",
+    "node-fetch": "^3.3.0",
     "open": "^8.4.0",
     "ws": "^8.12.1",
     "zod": "^3.21.4"

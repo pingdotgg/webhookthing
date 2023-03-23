@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import fetch from "node-fetch";
 
 import logger from "@captain/logger";
 
@@ -24,8 +25,15 @@ export const createWebhook = async ({
 
     // TODO: validate the json?
 
+    // create external folder if it doesn't exist
+    if (!(await fs.stat(HOOK_PATH).catch(() => false))) {
+      logger.info("'external' folder doesn't exist, creating one now.");
+      await fs.mkdir(path.join(HOOK_PATH, "external"), { recursive: true });
+    }
+
     logger.info("Got json, creating files...");
     // create the files
+
     const hookBodyPath = path.join(HOOK_PATH, `external/${name}.json`);
     const hookConfigPath = path.join(HOOK_PATH, `external/${name}.config.json`);
 
