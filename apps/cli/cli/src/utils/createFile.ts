@@ -6,12 +6,37 @@ import logger from "@captain/logger";
 
 import { HOOK_PATH } from "./forceThingExists";
 
+const pathExists = async (path: string) => {
+  try {
+    await fs.access(path);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const writeFile = async (filePath: string, data: string) => {
+  try {
+    const dirname = path.dirname(filePath);
+    const exist = await pathExists(dirname);
+    if (!exist) {
+      await fs.mkdir(dirname, { recursive: true });
+    }
+
+    await fs.writeFile(filePath, data, "utf8");
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const createWebhook = async ({
   name,
+  prefix,
   body,
   config,
 }: {
   name: string;
+  prefix: string;
   body: string;
   config?: string;
 }) => {
@@ -25,20 +50,17 @@ export const createWebhook = async ({
 
     // TODO: validate the json?
 
-    // create external folder if it doesn't exist
-    if (!(await fs.stat(HOOK_PATH).catch(() => false))) {
-      logger.info("'external' folder doesn't exist, creating one now.");
-      await fs.mkdir(path.join(HOOK_PATH, "external"), { recursive: true });
-    }
-
     logger.info("Got json, creating files...");
     // create the files
 
-    const hookBodyPath = path.join(HOOK_PATH, `external/${name}.json`);
-    const hookConfigPath = path.join(HOOK_PATH, `external/${name}.config.json`);
+    const hookBodyPath = path.join(HOOK_PATH, `${prefix}/${name}.json`);
+    const hookConfigPath = path.join(
+      HOOK_PATH,
+      `${prefix}/${name}.config.json`
+    );
 
-    await fs.writeFile(hookBodyPath, JSON.stringify(bodyJson));
-    await fs.writeFile(hookConfigPath, JSON.stringify(configJson));
+    await writeFile(hookBodyPath, JSON.stringify(bodyJson));
+    await writeFile(hookConfigPath, JSON.stringify(configJson));
   } catch (err) {
     logger.error(err);
   }

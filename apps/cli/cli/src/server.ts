@@ -158,8 +158,10 @@ const createExternalServer = async () => {
       name: string;
     };
 
+    const prefix = req.headers.origin?.split(".")[1] ?? "external";
+
     logger.debug(`Received webhook request for ${name}`);
-    logger.debug(`Origin: ${req.headers.origin}`);
+    logger.debug(`Origin: ${req.headers.origin ?? "unknown"}`);
 
     // verify body and config
     if (!body || !name) {
@@ -190,6 +192,7 @@ const createExternalServer = async () => {
     // create the webhook
     await createWebhook({
       name,
+      prefix,
       body,
       config,
     });
