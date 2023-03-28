@@ -135,7 +135,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     })
   );
 
-  const { mutate: openFolder } = cliApi.openFolder.useMutation({
+  const { mutate: openFile } = cliApi.openFile.useMutation({
     onError: (err) => {
       toast.error(err.message);
     },
@@ -152,19 +152,19 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
               {
                 type: "splitButton",
                 label: "Open File",
-                onClick: () => openFolder({ path: file }),
+                onClick: () => openFile({ path: file }),
                 items: [
                   {
                     name: "hookname.json",
                     type: "button",
-                    action: () => openFolder({ path: file }),
+                    action: () => openFile({ path: file }),
                   },
                   {
                     name: "hookname.config.json",
                     type: "button",
                     action: () =>
                       // this is creating a folder instead of a file on windows
-                      openFolder({
+                      openFile({
                         path: file.replace(".json", ".config.json"),
                       }),
                   },
