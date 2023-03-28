@@ -80,11 +80,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
           },
           {
             type: "dropdownButton",
-            label: (
-              <>
-                <span className="sr-only">{`Open create menu`}</span>
-              </>
-            ),
+            label: "Open Create Menu",
+            srlabel: true,
             icon: (
               <PlusIcon className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
             ),
@@ -92,11 +89,13 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
             items: [
               {
                 name: "New Folder",
+                type: "button",
                 action: () => addFolderModalState[1](true),
                 icon: <FolderPlusIcon />,
               },
               {
                 name: "New Hook",
+                type: "button",
                 action: () => addHookModalState[1](true),
                 icon: <DocumentPlusIcon />,
               },

@@ -123,7 +123,8 @@ export default function AppCore() {
 const NavMenu = () => {
   return (
     <ButtonDropdown
-      label={<span className="sr-only">{`Open options`}</span>}
+      label={`Open options`}
+      srlabel={true}
       variant="text"
       icon={<EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />}
       items={[

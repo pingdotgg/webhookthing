@@ -270,16 +270,22 @@ export type ListItemWithIcon = ListItem & {
   icon?: React.ReactElement;
 };
 
+function isLink(item: ListItem): item is ListItemLink {
+  return !!(item as ListItemLink).href;
+}
+
 export const SplitButtonDropdown = ({
   items,
   label,
+  srlabel = false,
   icon,
   onClick,
 }: {
   items: ListItemWithIcon[];
   label: string;
+  srlabel?: boolean;
   icon?: ReactElement;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
     <div className="inline-flex rounded-md shadow-sm hover:shadow-md">
@@ -290,11 +296,11 @@ export const SplitButtonDropdown = ({
           icon={icon}
           onClick={onClick}
         >
-          {label}
+          {srlabel ? <span className="sr-only">{label}</span> : label}
         </Button>
       ) : (
         <div className="relative inline-flex items-center gap-2 rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
-          {label}
+          {srlabel ? <span className="sr-only">{label}</span> : label}
           {icon}
         </div>
       )}
@@ -344,18 +350,20 @@ export const SplitButtonDropdown = ({
 export const ButtonDropdown = ({
   items,
   label,
+  srlabel = false,
   icon,
   ...rest
 }: {
   items: ListItemWithIcon[];
-  label: string | React.ReactNode;
+  label: string;
+  srlabel?: boolean;
   icon?: React.ReactNode;
 } & ButtonProps) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button as={Button} {...rest}>
-          {label}
+          {srlabel ? <span className="sr-only">{label}</span> : label}
           {icon}
         </Menu.Button>
       </div>
@@ -395,7 +403,7 @@ const DropdownButtonItemContent = ({
   active: boolean;
 }) => {
   // oof, I'd really like to default all items with an href to be links
-  if (item.type === "link" || item?.href) {
+  if (isLink(item)) {
     return (
       <ButtonLink
         className={classNames(
@@ -414,8 +422,7 @@ const DropdownButtonItemContent = ({
     );
   }
 
-  // oof, I'd really like to default all items with an action to be buttons
-  if (item.type === "button" || item?.action) {
+  if (!isLink(item)) {
     return (
       <Button
         className={classNames(

@@ -108,6 +108,7 @@ const Breadcrumbs = (input: { path: string; pathArr: string[] }) => {
 
 type ActionsItemCommon = {
   label: string;
+  srlabel?: boolean;
 };
 
 type ActionsItemButton = ActionsItemCommon &
@@ -161,12 +162,7 @@ const Actions = (input: { items: ActionItems }) => {
             </Button>
           );
         if (item.type === "splitButton")
-          return (
-            <SplitButtonDropdown
-              // TODO igor:  TS is mad because the onClick doesn't have the same type
-              {...item}
-            />
-          );
+          return <SplitButtonDropdown {...item} />;
         if (item.type === "dropdownButton") return <ButtonDropdown {...item} />;
       })}
     </div>
