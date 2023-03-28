@@ -51,7 +51,7 @@ export async function openFile(path: string) {
 
   // create file if it doesn't exist
   if (!exists) {
-    logger.warn(`Could not find ${maybeFileName ?? "file"}, creating it now!`);
+    logger.warn(`${maybeFileName ?? "file"} does not exist, creating it now!`);
     await writeFile(path, "{}");
   }
 
