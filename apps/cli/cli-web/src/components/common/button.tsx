@@ -274,6 +274,10 @@ function isLink(item: ListItem): item is ListItemLink {
   return !!(item as ListItemLink).href;
 }
 
+function isButton(item: ListItem): item is ListItemButton {
+  return !!(item as ListItemButton).action;
+}
+
 export const SplitButtonDropdown = ({
   items,
   label,
@@ -402,7 +406,6 @@ const DropdownButtonItemContent = ({
   item: ListItemWithIcon;
   active: boolean;
 }) => {
-  // oof, I'd really like to default all items with an href to be links
   if (isLink(item)) {
     return (
       <ButtonLink
@@ -421,8 +424,7 @@ const DropdownButtonItemContent = ({
       </ButtonLink>
     );
   }
-
-  if (!isLink(item)) {
+  if (isButton(item)) {
     return (
       <Button
         className={classNames(
@@ -441,5 +443,6 @@ const DropdownButtonItemContent = ({
     );
   }
 
+  // should never happen
   return null;
 };
