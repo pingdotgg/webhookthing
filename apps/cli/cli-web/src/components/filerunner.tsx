@@ -14,7 +14,6 @@ import {
   generateConfigFromState,
   generatePrefillFromConfig,
 } from "../utils/configTransforms";
-import { useFileRoute } from "../utils/useRoute";
 
 const jsonValidator = () =>
   z.string().refine(
@@ -157,10 +156,12 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                 items: [
                   {
                     name: "hookname.json",
+                    type: "button",
                     action: () => openFolder({ path: file }),
                   },
                   {
                     name: "hookname.config.json",
+                    type: "button",
                     action: () =>
                       // this is creating a folder instead of a file on windows
                       openFolder({

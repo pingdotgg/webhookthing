@@ -406,7 +406,7 @@ const DropdownButtonItemContent = ({
   item: ListItemWithIcon;
   active: boolean;
 }) => {
-  if (isLink(item)) {
+  if (item.type === "link" || isLink(item)) {
     return (
       <ButtonLink
         className={classNames(
@@ -424,7 +424,7 @@ const DropdownButtonItemContent = ({
       </ButtonLink>
     );
   }
-  if (isButton(item)) {
+  if (item.type === "button" || isButton(item)) {
     return (
       <Button
         className={classNames(
