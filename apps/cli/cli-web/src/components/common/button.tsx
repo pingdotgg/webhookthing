@@ -348,7 +348,7 @@ export const ButtonDropdown = ({
   ...rest
 }: {
   items: ListItemWithIcon[];
-  label: string;
+  label: string | React.ReactNode;
   icon?: React.ReactNode;
 } & ButtonProps) => {
   return (
@@ -395,7 +395,7 @@ const DropdownButtonItemContent = ({
   active: boolean;
 }) => {
   // oof, I'd really like to default all items with an href to be links
-  if (item.type === "link" || item?.href)
+  if (item.type === "link" || item?.href) {
     return (
       <ButtonLink
         className={classNames(
@@ -412,9 +412,10 @@ const DropdownButtonItemContent = ({
         {item.name}
       </ButtonLink>
     );
+  }
 
   // oof, I'd really like to default all items with an action to be buttons
-  if (item.type === "button" || item?.action)
+  if (item.type === "button" || item?.action) {
     return (
       <Button
         className={classNames(
@@ -431,4 +432,7 @@ const DropdownButtonItemContent = ({
         {item.name}
       </Button>
     );
+  }
+
+  return null;
 };
