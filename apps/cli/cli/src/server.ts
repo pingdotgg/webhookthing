@@ -5,12 +5,15 @@ import proxy from "@fastify/http-proxy";
 import { fastifyStatic } from "@fastify/static";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import path from "path";
+import z from "zod";
 
 import { cliApiRouter } from "@captain/cli-core";
 import logger from "@captain/logger";
 
 const PORT = 2033;
 const WS_PORT = 2034;
+const EXTERNAL_PORT = 2035;
+const ALLOWED_EXTERNAL_ORIGINS = ["https://clerk.com/"];
 
 const createServer = async () => {
   const server = fastify({
@@ -83,6 +86,7 @@ const openInBrowser = async () => {
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import ws from "ws";
 import forceThingExists from "./utils/forceThingExists";
+import { createWebhook } from "./utils/createFile";
 
 export const startSocketServer = () => {
   const wss = new ws.Server({
@@ -127,6 +131,90 @@ export const startServer = async () => {
       void openInBrowser();
     } else {
       logger.info(`Running webhookthing at address: http://localhost:${PORT}`);
+    }
+
+    process.on("SIGTERM", () => {
+      void server.close();
+    });
+  });
+};
+
+const createExternalServer = async () => {
+  const server = fastify({
+    maxParamLength: 5000,
+  });
+  const devMode = process.env.NODE_ENV === "development";
+
+  // Configure CORS
+  await server.register(cors, {
+    origin: devMode ? "*" : ALLOWED_EXTERNAL_ORIGINS,
+  });
+
+  // Configure Listener
+  server.post("/", async (req, res) => {
+    const { body, config, name } = req.body as {
+      body: string;
+      config: string;
+      name: string;
+    };
+
+    const prefix = req.headers.origin?.split(".")[1] ?? "external";
+
+    logger.debug(`Received webhook request for ${name}`);
+    logger.debug(`Origin: ${req.headers.origin ?? "unknown"}`);
+
+    // verify body and config
+    if (!body || !name) {
+      return res.status(400).send({
+        success: false,
+        error: {
+          kind: "user_input",
+          message: "Invalid Request - missing body or name",
+        },
+      });
+    }
+
+    const validUrl = z.string().url().optional();
+    // TODO: we may want to refine this to only allow certain urls
+    try {
+      validUrl.parse(body);
+      validUrl.parse(config);
+    } catch (err) {
+      return res.status(400).send({
+        success: false,
+        error: {
+          kind: "user_input",
+          message: "Invalid Request - invalid body or config",
+        },
+      });
+    }
+
+    // create the webhook
+    await createWebhook({
+      name,
+      prefix,
+      body,
+      config,
+    });
+  });
+
+  return server;
+};
+
+export const startExternalServer = async () => {
+  const server = await createExternalServer();
+  await forceThingExists();
+
+  server.listen({ port: EXTERNAL_PORT }, (err) => {
+    if (err) {
+      logger.error(err);
+      process.exit(1);
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      logger.debug(
+        `External Server listening on http://localhost:${EXTERNAL_PORT}`
+      );
     }
 
     process.on("SIGTERM", () => {
