@@ -38,7 +38,6 @@ type ButtonAlignment = keyof typeof BUTTON_ALIGNMENTS;
 type ButtonShadow = keyof typeof BUTTON_SHADOW_CLASSES;
 
 type ButtonStyle = {
-  disabled?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
   width?: ButtonWidth;
@@ -102,7 +101,7 @@ export const BUTTON_VARIANTS = {
   primary:
     "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400 hover:bg-gray-200 hover:border-transparent",
   "primary-inverted":
-    "text-indigo-600 border-transparent bg-white hover:bg-indigo-50",
+    "text-indigo-600 border-transparent bg-white hover:bg-indigo-50 aria-disabled:hover:bg-white",
   text: "text-white border-transparent hover:text-gray-300",
 };
 
@@ -111,7 +110,6 @@ export const getButtonClasses = (
   ...rest: string[]
 ) => {
   const {
-    disabled,
     size = "base",
     variant = "primary",
     width = "auto",
@@ -120,8 +118,6 @@ export const getButtonClasses = (
   } = style;
   return classNames(
     BUTTON_CLASSES,
-    // TODO igor: ask for feedback: pointer events none here prevents the cursor from being showed as not allowed
-    (disabled && "pointer-events-none") || "",
     BUTTON_SIZES[size],
     BUTTON_VARIANTS[variant],
     BUTTON_WIDTHS[width],
@@ -195,7 +191,7 @@ export const ButtonLink = React.forwardRef<
   return (
     <a
       className={getButtonClasses(
-        { disabled, size, variant, width, alignment },
+        { size, variant, width, alignment },
         className
       )}
       ref={ref}
@@ -234,7 +230,7 @@ export const Button = React.forwardRef<
   return (
     <button
       className={getButtonClasses(
-        { disabled, size, variant, width, alignment, shadow },
+        { size, variant, width, alignment, shadow },
         className
       )}
       ref={ref}
