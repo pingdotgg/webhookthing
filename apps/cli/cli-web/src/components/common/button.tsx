@@ -151,7 +151,7 @@ const ButtonContent: React.FC<{
           {icon}
         </span>
       )}
-      <span>{children}</span>
+      {children}
       {icon && iconPosition === "end" && (
         <span
           className={classNames(
