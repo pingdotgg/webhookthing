@@ -446,6 +446,7 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           </div>
         </div>
         <div className="mt-auto flex flex-row justify-end pt-4">
+          {/* TODO: use the actual button component here, probably need to add this primary variant there */}
           <button
             type="submit"
             form="form"
