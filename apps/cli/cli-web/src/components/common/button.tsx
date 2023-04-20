@@ -178,7 +178,6 @@ export const ButtonLink = React.forwardRef<
   const {
     children,
     className = "",
-    disabled,
     size,
     variant,
     width,
@@ -195,7 +194,6 @@ export const ButtonLink = React.forwardRef<
         className
       )}
       ref={ref}
-      aria-disabled={disabled}
       {...rest}
     >
       <ButtonContent {...props} />
