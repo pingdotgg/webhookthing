@@ -23,6 +23,7 @@ import { FolderFormModal } from "./folder-form-modal";
 import { cliApi } from "../utils/api";
 import { useFileRoute } from "../utils/useRoute";
 import { FileFormModal } from "./file-form-modal";
+import { ButtonLink, Button } from "./common/button";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {
   const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
@@ -115,22 +116,22 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
             <div key={folder} className="w-1/5 min-w-[8rem]">
               <Tooltip content={folder} placement="bottom" className="-mt-16">
                 <Link href={pathArrToUrl(pathArr, folder)}>
-                  <button className="flex w-full flex-col items-center justify-center space-y-1 truncate rounded-md bg-white px-6 py-4 text-sm font-medium text-gray-600 shadow-sm  hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  <ButtonLink className="flex h-full w-full flex-col items-center justify-center space-y-1 truncate px-6 py-4">
                     <FolderIcon
                       className="h-5 w-5 flex-shrink-0"
                       aria-hidden="true"
                     />
-                    <span className="w-full truncate text-center">
+                    <span className="block w-full truncate text-center">
                       {folder}
                     </span>
-                  </button>
+                  </ButtonLink>
                 </Link>
               </Tooltip>
             </div>
           ))}
           <div className="w-1/5 min-w-[8rem]">
-            <button
-              className="flex w-full flex-col items-center justify-center space-y-1 truncate rounded-md bg-white px-6 py-4 text-sm font-medium text-gray-600 shadow-sm  hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            <Button
+              className="flex h-full w-full flex-col items-center justify-center space-y-1 truncate px-6 py-4 "
               onClick={() => addFolderModalState[1](true)}
             >
               <FolderPlusOutline
@@ -140,7 +141,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
               <span className="w-full truncate text-center">
                 {`New Folder`}
               </span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
