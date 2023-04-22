@@ -101,7 +101,7 @@ export const BUTTON_VARIANTS = {
   primary:
     "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400 hover:bg-gray-200 hover:border-transparent",
   indigo:
-    "bg-indigo-600 text-white border border-transparent hover:bg-indigo-700  disabled:bg-gray-600/80 disabled:hover:bg-gray-600/80",
+    "bg-indigo-600 text-white border border-transparent hover:bg-indigo-700  aria-disabled:bg-gray-600/80 aria-disabled:hover:bg-gray-600/80",
   "primary-inverted":
     "text-indigo-600 border-transparent bg-white hover:bg-indigo-50 aria-disabled:hover:bg-white",
   text: "text-white border-transparent hover:text-gray-300",
