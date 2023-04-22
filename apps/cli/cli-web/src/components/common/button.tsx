@@ -236,6 +236,7 @@ export const Button = React.forwardRef<
       ref={ref}
       type="button"
       aria-disabled={disabled}
+      disabled={disabled}
       {...rest}
     >
       <ButtonContent {...props} />
