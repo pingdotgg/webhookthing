@@ -23,7 +23,7 @@ export type HTMLAnchorProps = React.DetailedHTMLProps<
 >;
 
 export const BUTTON_CLASSES =
-  "inline-flex items-center border font-medium border-transparent relative focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-transparent hover:focus:ring-offset-gray-200 hover:focus:outline-none aria-disabled:cursor-not-allowed";
+  "inline-flex items-center border font-medium border-transparent relative focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-transparent hover:focus:ring-offset-gray-200 hover:focus:outline-none aria-disabled:cursor-not-allowed transition";
 
 export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 
@@ -99,7 +99,7 @@ export const ICON_END_CLASSES = {
 
 export const BUTTON_VARIANTS = {
   primary:
-    "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400 hover:bg-gray-200 hover:border-transparent",
+    "bg-white border-gray-50 text-gray-600 hover:text-indigo-600 aria-disabled:bg-gray-50 aria-disabled:text-gray-400 aria-disabled:hover:text-gray-400  hover:border-transparent",
   indigo:
     "bg-indigo-600 text-white border border-transparent hover:bg-indigo-700  aria-disabled:bg-gray-600/80 aria-disabled:hover:bg-gray-600/80",
   "primary-inverted":
