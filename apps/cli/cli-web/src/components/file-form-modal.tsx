@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import { cliApi } from "../utils/api";
 import { Modal } from "./common/modal";
+import Button from "./common/button";
 
 const formValidator = z.object({
   name: z.string().max(100).min(1, { message: "Required" }),
@@ -68,14 +69,15 @@ export const FileFormModal = (input: {
     <Modal openState={openState} onClose={onClose}>
       <div className="relative m-2 flex w-full max-w-xl transform flex-col overflow-hidden rounded-lg bg-white p-6 px-4 pt-5 pb-4 text-left shadow-xl transition-all">
         <div className="absolute top-0 right-0 hidden pt-4 pr-4">
-          <button
+          <Button
+            variant="text"
             type="button"
             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => openState[1](false)}
           >
             <span className="sr-only">{`Close`}</span>
             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
         <div className="min-h-0 w-full grow overflow-y-scroll px-4">
           <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100">
@@ -118,23 +120,27 @@ export const FileFormModal = (input: {
           </div>
         </div>
         <div className="mt-5 px-4">
-          <button
+          <Button
             type="submit"
             form="form"
-            className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80"
+            variant="indigo"
+            size="lg"
+            className="inline-flex w-full justify-center"
             disabled={!isValid}
           >
             {`Create Hook`}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            variant="primary"
+            size="lg"
+            className="mt-3 inline-flex w-full justify-center"
             onClick={() => {
               openState[1](false);
             }}
           >
             {`Cancel`}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>
