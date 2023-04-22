@@ -7,6 +7,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 
 import { Nav } from "./breadcrumbs";
+import Button from "./common/button";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -446,15 +447,15 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
           </div>
         </div>
         <div className="mt-auto flex flex-row justify-end pt-4">
-          {/* TODO: use the actual button component here, probably need to add this primary variant there */}
-          <button
+          <Button
             type="submit"
             form="form"
-            className="flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:text-sm"
+            size="lg"
+            variant="indigo"
             disabled={!isValid}
           >
             {`Save Changes`}
-          </button>
+          </Button>
         </div>
       </div>
     </>
