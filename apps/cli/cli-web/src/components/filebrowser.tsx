@@ -167,17 +167,20 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                   <>
                     {`, or download some sample hooks with the button below.`}
                     <div className="mt-6">
-                      <button
+                      <Button
                         type="button"
-                        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        variant="indigo"
+                        size="lg"
+                        icon={
+                          <CloudArrowDownIcon
+                            className="h-5 w-5"
+                            aria-hidden="true"
+                          />
+                        }
                         onClick={() => downloadSampleHooks()}
                       >
-                        <CloudArrowDownIcon
-                          className="-ml-1 mr-2 h-5 w-5"
-                          aria-hidden="true"
-                        />
                         {`Download Sample Hooks`}
-                      </button>
+                      </Button>
                     </div>
                   </>
                 ) : (
@@ -190,7 +193,11 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
               {data.files.map((file) => (
                 <li key={file.name} className="flex w-full flex-row gap-2">
                   <Link href={pathArrToUrl(pathArr, file.name)}>
-                    <button className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden rounded-md bg-white px-6 py-2 font-medium text-gray-600 shadow-sm   hover:text-indigo-600  hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      className="group flex grow flex-row items-start justify-between gap-2 overflow-hidden"
+                    >
                       {file.name}
                       <div className="flex flex-row gap-2">
                         {!file.config?.url ? (
@@ -208,11 +215,12 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                           )
                         )}
                       </div>
-                    </button>
+                    </Button>
                   </Link>
-                  <button
-                    className="flex items-center justify-center rounded-md border border-transparent bg-white px-3 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                    disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="flex items-center justify-center"
                     onClick={() => {
                       runFile({
                         file: `${path}/${file.name}`,
@@ -221,7 +229,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                     disabled={!file.config?.url}
                   >
                     <PlayIcon className="h-4" />
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>
