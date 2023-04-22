@@ -23,7 +23,7 @@ export type HTMLAnchorProps = React.DetailedHTMLProps<
 >;
 
 export const BUTTON_CLASSES =
-  "inline-flex items-center border font-medium border-transparent relative  focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-transparent hover:focus:ring-offset-gray-200 hover:focus:outline-none";
+  "inline-flex items-center border font-medium border-transparent relative focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-transparent hover:focus:ring-offset-gray-200 hover:focus:outline-none aria-disabled:cursor-not-allowed";
 
 export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 
