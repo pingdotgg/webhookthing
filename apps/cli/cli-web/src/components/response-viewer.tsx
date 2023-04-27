@@ -166,7 +166,7 @@ export const History = () => {
 
   return (
     <>
-      <div>
+      <div className="h-full w-full rounded-md bg-gray-700">
         {logs.map((log) => (
           <>
             <button
