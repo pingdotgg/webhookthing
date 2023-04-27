@@ -11,7 +11,7 @@ import {
 import { Fragment } from "react";
 
 import { useConnectionStateToasts } from "./utils/useConnectionStateToasts";
-import { ResponseViewer } from "./components/response-viewer";
+import { History, ResponseViewer } from "./components/response-viewer";
 import { FileBrowser } from "./components/filebrowser";
 import { classNames } from "./utils/classnames";
 import { useFileRoute } from "./utils/useRoute";
@@ -104,11 +104,20 @@ export default function AppCore() {
 
         <main className="-mt-32 h-[calc(100vh-5rem)]">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-2 px-2 lg:h-full">
-            <div className="flex h-2/5 w-full flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow">
-              {/* File browser / Hook Editor / 404 */}
-              <PageContent />
+            <div className="flex h-3/5 w-full gap-2">
+              <div className="flex w-3/5 flex-col divide-y divide-gray-200 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow">
+                {/* File browser / Hook Editor / 404 */}
+                <PageContent />
+              </div>
+              <div className="flex w-2/5 flex-col gap-2 overflow-y-auto rounded-lg bg-gray-100 p-4 shadow">
+                {/* Logs history */}
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  {`History`}
+                </h3>
+                <History />
+              </div>
             </div>
-            <div className="flex h-3/5 w-full rounded-lg bg-gray-100 p-4 shadow">
+            <div className="flex h-2/5 w-full rounded-lg bg-gray-100 p-4 shadow">
               {/* Logs */}
               <ResponseViewer />
             </div>
