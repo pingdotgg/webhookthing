@@ -1,9 +1,10 @@
 import { LogLevels } from "@captain/logger";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
+import { useLogs, type Log } from "../utils/logs";
 
 const colorMap = {
   trace: {
@@ -38,31 +39,16 @@ const colorMap = {
   }, // red
 } as const;
 
-type Log = {
-  level: LogLevels;
-  message: string;
-  ts: number;
-};
-
 export const ResponseViewer = () => {
-  const [messages, setMessages] = useState<
-    { level: LogLevels; message: string; ts: number }[]
-  >([]);
-
-  const [currentLog, setCurrentLog] = useState<
-    { level: LogLevels; message: string; ts: number } | undefined
-  >(undefined);
-  const dirtySetCurrentLog = (log: Log) => {
-    setIsDirty(true);
-    setCurrentLog(log);
-  };
-
-  const [isDirty, setIsDirty] = useState(false);
+  const { logs, addLog, currentLog } = useLogs();
+  const currentLogWithFallback = currentLog || logs.at(-1);
 
   cliApi.onLog.useSubscription(undefined, {
     onData: (data) => {
-      setMessages((messages) => {
-        return [...messages, data];
+      addLog({
+        level: data.level,
+        message: data.message,
+        ts: data.ts,
       });
     },
   });
@@ -71,17 +57,14 @@ export const ResponseViewer = () => {
   const bottomRefOutput = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 👇️ scroll to bottom of history every time messages change
+    // 👇️ scroll to bottom of history every time logs change
     bottomRefHistory.current?.scrollIntoView({ behavior: "smooth" });
-    if (!isDirty) {
-      setCurrentLog(messages[messages.length - 1]);
-    }
-  }, [messages, isDirty]);
+  }, [logs]);
 
   useEffect(() => {
-    // 👇️ scroll to bottom of output every time current log changes
+    // 👇️ scroll to bottom of output every time current log changes (or logs change if user didn't select a log yet)
     bottomRefOutput.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentLog]);
+  }, [currentLogWithFallback]);
 
   return (
     <div className="flex w-full flex-col">
@@ -91,7 +74,7 @@ export const ResponseViewer = () => {
         </div>
 
         <div className="h-full w-full overflow-auto rounded-md !bg-gray-800 px-1 py-4 text-gray-200">
-          <History logs={messages} setCurrentLog={dirtySetCurrentLog} />
+          <History />
           <div ref={bottomRefHistory} />
         </div>
       </div>
@@ -102,6 +85,7 @@ export const ResponseViewer = () => {
         </div>
 
         <div className="relative h-full w-full overflow-auto rounded-md !bg-gray-800 text-gray-200">
+          {/* TODO IGOR big logs just overflow, need to fix */}
           <div
             className={classNames(
               "sticky top-0 bg-gray-900 py-1 px-1",
@@ -110,9 +94,10 @@ export const ResponseViewer = () => {
             )}
           >
             {`Function name`}{" "}
-            {currentLog && new Date(currentLog?.ts).toUTCString()}
+            {currentLogWithFallback &&
+              new Date(currentLogWithFallback.ts).toUTCString()}
           </div>
-          <HmmOutput currentLog={currentLog} />
+          <HmmOutput currentLog={currentLogWithFallback} />
           <div ref={bottomRefOutput} />
         </div>
       </div>
@@ -170,13 +155,8 @@ const Log = ({
   return <div>{currentLog.message}</div>;
 };
 
-const History = ({
-  logs,
-  setCurrentLog,
-}: {
-  logs: Log[];
-  setCurrentLog: (log: Log) => void;
-}) => {
+const History = () => {
+  const { logs, setCurrentLog } = useLogs();
   return (
     <div>
       {logs.map((log) => (
