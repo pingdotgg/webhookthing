@@ -135,13 +135,13 @@ const HmmOutput = () => {
     bottomRefOutput.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentLogWithFallback]);
 
-  if (!currentLog) {
+  if (!currentLogWithFallback) {
     return <div>{`No logs yet`}</div>;
   }
 
   return (
     <>
-      <Log currentLog={currentLog} />
+      <Log currentLog={currentLogWithFallback} />
       <div ref={bottomRefOutput} />
     </>
   );
