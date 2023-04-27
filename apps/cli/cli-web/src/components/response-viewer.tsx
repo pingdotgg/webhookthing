@@ -53,19 +53,6 @@ export const ResponseViewer = () => {
     },
   });
 
-  const bottomRefHistory = useRef<HTMLDivElement>(null);
-  const bottomRefOutput = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // 👇️ scroll to bottom of history every time logs change
-    bottomRefHistory.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
-
-  useEffect(() => {
-    // 👇️ scroll to bottom of output every time current log changes (or logs change if user didn't select a log yet)
-    bottomRefOutput.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentLogWithFallback]);
-
   return (
     <div className="flex w-full flex-col">
       <div className="flex h-60 max-h-fit w-full flex-col gap-2">
@@ -75,7 +62,6 @@ export const ResponseViewer = () => {
 
         <div className="h-full w-full overflow-auto rounded-md !bg-gray-800 px-1 py-4 text-gray-200">
           <History />
-          <div ref={bottomRefHistory} />
         </div>
       </div>
 
@@ -97,8 +83,7 @@ export const ResponseViewer = () => {
             {currentLogWithFallback &&
               new Date(currentLogWithFallback.ts).toUTCString()}
           </div>
-          <HmmOutput currentLog={currentLogWithFallback} />
-          <div ref={bottomRefOutput} />
+          <HmmOutput />
         </div>
       </div>
     </div>
@@ -139,12 +124,27 @@ const PreviousOutput = ({ messages }: { messages: Log[] }) => {
   );
 };
 
-const HmmOutput = ({ currentLog }: { currentLog?: Log }) => {
+const HmmOutput = () => {
+  const { logs, currentLog } = useLogs();
+
+  const currentLogWithFallback = currentLog || logs.at(-1);
+  const bottomRefOutput = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // 👇️ scroll to bottom of output every time current log changes (or logs change if user didn't select a log yet)
+    bottomRefOutput.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentLogWithFallback]);
+
   if (!currentLog) {
     return <div>{`No logs yet`}</div>;
   }
 
-  return <Log currentLog={currentLog} />;
+  return (
+    <>
+      <Log currentLog={currentLog} />
+      <div ref={bottomRefOutput} />
+    </>
+  );
 };
 
 const Log = ({
@@ -155,28 +155,38 @@ const Log = ({
   return <div>{currentLog.message}</div>;
 };
 
-const History = () => {
+export const History = () => {
   const { logs, setCurrentLog } = useLogs();
+
+  const bottomRefHistory = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // 👇️ scroll to bottom of history every time logs change
+    bottomRefHistory.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
   return (
-    <div>
-      {logs.map((log) => (
-        <>
-          <button
-            className={classNames(
-              "w-full px-1 py-1 text-left font-mono text-sm font-semibold",
-              colorMap[log.level].label,
-              colorMap[log.level].bg,
-              colorMap[log.level].bgHover
-            )}
-            onClick={() => {
-              setCurrentLog(log);
-            }}
-          >
-            {/* I Kinda want this to be relative time, then on a tooltip show the UTC or ISO time */}
-            {new Date(log.ts).toUTCString()} {`function name`}
-          </button>
-        </>
-      ))}
-    </div>
+    <>
+      <div>
+        {logs.map((log) => (
+          <>
+            <button
+              className={classNames(
+                "w-full px-1 py-1 text-left font-mono text-sm font-semibold",
+                colorMap[log.level].label,
+                colorMap[log.level].bg,
+                colorMap[log.level].bgHover
+              )}
+              onClick={() => {
+                setCurrentLog(log);
+              }}
+            >
+              {/* I Kinda want this to be relative time, then on a tooltip show the UTC or ISO time */}
+              {new Date(log.ts).toUTCString()} {`function name`}
+            </button>
+          </>
+        ))}
+      </div>
+      <div ref={bottomRefHistory} />
+    </>
   );
 };
