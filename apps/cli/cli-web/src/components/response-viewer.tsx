@@ -55,7 +55,7 @@ export const ResponseViewer = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <div className="flex h-60 max-h-fit w-full flex-col gap-2">
+      {/* <div className="flex h-60 max-h-fit w-full flex-col gap-2">
         <div className="flex flex-row items-center justify-between gap-2">
           <h3 className="text-lg font-medium leading-6 text-gray-900">{`History`}</h3>
         </div>
@@ -63,7 +63,7 @@ export const ResponseViewer = () => {
         <div className="h-full w-full overflow-auto rounded-md !bg-gray-800 px-1 py-4 text-gray-200">
           <History />
         </div>
-      </div>
+      </div> */}
 
       <div className="flex max-h-fit w-full flex-grow flex-col gap-2">
         <div className="flex flex-row items-center justify-between gap-2">
