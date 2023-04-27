@@ -138,6 +138,7 @@ importers:
       vite-plugin-rewrite-all: ^1.0.1
       wouter: ^2.10.0
       zod: ^3.19.1
+      zustand: ^4.3.7
     dependencies:
       '@captain/logger': link:../../../packages/logger
       '@headlessui/react': 1.7.8_biqbaboplfbrettd7655fr4n2y
@@ -157,6 +158,7 @@ importers:
       superjson: 1.12.2
       wouter: 2.10.0_react@18.2.0
       zod: 3.20.2
+      zustand: 4.3.7_react@18.2.0
     devDependencies:
       '@captain/cli-core': link:../cli-core
       '@captain/tailwind-config': link:../../../packages/tailwind-config
@@ -7866,6 +7868,22 @@ packages:
 
   /zod/3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
+
+  /zustand/4.3.7_react@18.2.0:
+    resolution: {integrity: sha512-dY8ERwB9Nd21ellgkBZFhudER8KVlelZm8388B5nDAXhO/+FZDhYMuRnqDgu5SYyRgz/iaf8RKnbUs/cHfOGlQ==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
   /zwitch/2.0.4:
