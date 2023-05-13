@@ -150,14 +150,14 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
-        <div className="flex w-full flex-1 flex-col overflow-y-auto rounded-lg bg-gray-200/50 p-2 shadow-inner">
+        <div className="flex w-full flex-1 flex-col justify-center overflow-y-auto rounded-lg bg-gray-200/50 p-2 shadow-inner">
           {data.files.length === 0 ? (
             <div className="text-center">
               <DocumentDuplicateIcon className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-semibold text-gray-900">
                 {`No hook files found!`}
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mx-auto mt-1 max-w-sm text-sm text-gray-500">
                 {`Get started by `}
                 <button
                   className="text-indigo-600 hover:underline"
