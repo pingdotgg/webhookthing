@@ -24,6 +24,7 @@ import { cliApi } from "../utils/api";
 import { useFileRoute } from "../utils/useRoute";
 import { FileFormModal } from "./file-form-modal";
 import { ButtonLink, Button } from "./common/button";
+import { classNames } from "../utils/classnames";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {
   const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
@@ -150,7 +151,12 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           {`Files`}
         </h3>
-        <div className="flex w-full flex-1 flex-col justify-center overflow-y-auto rounded-lg bg-gray-200/50 p-2 shadow-inner">
+        <div
+          className={classNames(
+            "flex w-full flex-1 flex-col overflow-y-auto rounded-lg bg-gray-200/50 p-2 shadow-inner",
+            data.files.length === 0 ? "justify-center" : ""
+          )}
+        >
           {data.files.length === 0 ? (
             <div className="text-center">
               <DocumentDuplicateIcon className="mx-auto h-12 w-12 text-gray-400" />
