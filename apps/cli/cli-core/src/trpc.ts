@@ -1,4 +1,3 @@
-import { ConfigValidatorType } from "./update-config";
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { z } from "zod";
@@ -6,12 +5,15 @@ import fetch from "node-fetch";
 import fsPromises from "fs/promises";
 import fs from "fs";
 import path from "path";
+import { observable } from "@trpc/server/observable";
 
 import { openInExplorer } from "./open-folder";
+import { openFile } from "./open-file";
 import { getSampleHooks } from "./get-sample-hooks";
 import { HOOK_PATH } from "./constants";
 import { configValidator, updateConfig } from "./update-config";
 import { substituteTemplate } from "./templateSubstitution";
+import { getFullPath, getRoute } from "./utils/get-full-path";
 
 export type { ConfigValidatorType } from "./update-config";
 type ExtendedConfigValidatorType = ConfigValidatorType & {
@@ -19,10 +21,9 @@ type ExtendedConfigValidatorType = ConfigValidatorType & {
 };
 
 import logger from "@captain/logger";
-import { observable } from "@trpc/server/observable";
 
 import type { LogLevels } from "@captain/logger";
-import { getFullPath, getRoute } from "./utils/get-full-path";
+import type { ConfigValidatorType } from "./update-config";
 
 export const t = initTRPC.create({
   transformer: superjson,
@@ -159,6 +160,40 @@ export const cliApiRouter = t.router({
       } catch (e) {
         logger.error(
           "Failed to open folder (unless you're on Windows, then this just happens)",
+          e
+        );
+      }
+    }),
+
+  openFile: t.procedure
+    .input(z.object({ path: z.string() }))
+    .mutation(async ({ input }) => {
+      // if running in codespace, early return
+      // eslint-disable-next-line turbo/no-undeclared-env-vars
+      if (process.env.CODESPACES) {
+        throw new Error(
+          "Sorry, opening files in codespaces is not supported yet."
+        );
+      }
+      // if running over ssh, early return
+      if (
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CONNECTION ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_CLIENT ||
+        // eslint-disable-next-line turbo/no-undeclared-env-vars
+        process.env.SSH_TTY
+      ) {
+        throw new Error(
+          "Sorry, opening files on remote connections is not supported yet."
+        );
+      }
+
+      try {
+        await openFile(path.join(HOOK_PATH, input.path));
+      } catch (e) {
+        logger.error(
+          "Failed to open file (unless you're on Windows, then this just happens)",
           e
         );
       }

@@ -1,9 +1,13 @@
 import { CliApiRouter } from "@captain/cli-core";
 import { PlayIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inferRouterOutputs } from "@trpc/server";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
+
+import { Nav } from "./breadcrumbs";
+import Button from "./common/button";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
@@ -46,7 +50,7 @@ const formValidator = z.object({
 });
 
 type DataResponse = inferRouterOutputs<CliApiRouter>["parseUrl"];
-type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
+export type FileDataType = Extract<DataResponse, { type: "file" }>["data"];
 
 export const FileRunner = (input: { path: string; data: FileDataType }) => {
   const { path: file, data } = input;
@@ -132,26 +136,47 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
     })
   );
 
+  const { mutate: openFile } = cliApi.openFile.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   return (
     <>
       <div className="flex h-full w-full flex-col">
-        <div className="flex min-h-0 w-full grow flex-col overflow-y-scroll px-4">
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-col">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                {`Settings: ${prefill.name}`}
-              </h3>
-              <div className="mt-2 flex flex-col gap-2">
-                <p className="text-sm text-gray-500">
-                  {`Configure your webhook below.`}
-                </p>
-              </div>
-            </div>
-            <div className="flex h-full flex-col items-start justify-start p-1">
-              <button
-                className="flex items-center justify-center gap-1 rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:hover:shadow-sm"
-                onClick={() => {
+        <div className="flex w-full flex-col">
+          {/* breadcrumbs */}
+          <Nav
+            path={file}
+            actions={[
+              {
+                type: "splitButton",
+                label: "Open File",
+                onClick: () => openFile({ path: file }),
+                items: [
+                  {
+                    name: "hookname.json",
+                    type: "button",
+                    action: () => openFile({ path: file }),
+                  },
+                  {
+                    name: "hookname.config.json",
+                    type: "button",
+                    action: () =>
+                      // this is creating a folder instead of a file on windows
+                      openFile({
+                        path: file.replace(".json", ".config.json"),
+                      }),
+                  },
+                ],
+              },
+              {
+                type: "button",
+                label: `Run`,
+                iconPosition: "end",
+                icon: <PlayIcon />,
+                onClick: () => {
                   void trigger();
                   if (JSON.stringify(prefill) !== JSON.stringify(getValues())) {
                     updateHook(
@@ -168,11 +193,22 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
                   } else {
                     runFile({ file: decodeURI(file) });
                   }
-                }}
-              >
-                {`Run`}
-                <PlayIcon className="h-4" />
-              </button>
+                },
+              },
+            ]}
+          />
+          <div className="flex min-h-0 w-full grow flex-col items-start overflow-y-scroll ">
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  {`Settings: ${prefill.name}`}
+                </h3>
+                <div className="mt-2 flex min-h-0 flex-col gap-2">
+                  <p className="text-sm text-gray-500">
+                    {`Configure your webhook below.`}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="mt-5">
@@ -410,15 +446,16 @@ export const FileRunner = (input: { path: string; data: FileDataType }) => {
             </form>
           </div>
         </div>
-        <div className="flex flex-row justify-end pt-4">
-          <button
+        <div className="mt-auto flex flex-row justify-end pt-4">
+          <Button
             type="submit"
             form="form"
-            className="flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-600/80 sm:text-sm"
+            size="lg"
+            variant="indigo"
             disabled={!isValid}
           >
             {`Save Changes`}
-          </button>
+          </Button>
         </div>
       </div>
     </>
