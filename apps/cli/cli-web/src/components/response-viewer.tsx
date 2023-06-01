@@ -16,6 +16,10 @@ const colorMap = {
 
 export const ResponseViewer = () => {
   const { logs, addLog, currentLog } = useLogs();
+  /** 
+   * If currentLog is not set, fallbacks to the last log
+   * 
+   * !!! this lays the groundwork to allow user to select a "currentLog" in preparation to a "history" tab or something like that, does nothing for now 🤷 */
   const currentLogWithFallback = currentLog || logs.at(-1);
 
   cliApi.onLog.useSubscription(undefined, {
