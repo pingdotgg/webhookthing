@@ -1,9 +1,10 @@
-import { LogLevels } from "@captain/logger";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
+import { useLogs } from "../utils/logsStore";
+
 
 const colorMap = {
   trace: { label: "text-gray-500", body: "text-gray-500" }, // gray
@@ -14,14 +15,15 @@ const colorMap = {
 } as const;
 
 export const ResponseViewer = () => {
-  const [messages, setMessages] = useState<
-    { level: LogLevels; message: string; ts: number }[]
-  >([]);
+  const { logs, addLog, currentLog } = useLogs();
+  const currentLogWithFallback = currentLog || logs.at(-1);
 
   cliApi.onLog.useSubscription(undefined, {
     onData: (data) => {
-      setMessages((messages) => {
-        return [...messages, data];
+      addLog({
+        level: data.level,
+        message: data.message,
+        ts: data.ts,
       });
     },
   });
@@ -31,7 +33,7 @@ export const ResponseViewer = () => {
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [currentLogWithFallback]);
 
   return (
     <div className="flex max-h-fit w-full flex-col gap-2">
@@ -42,28 +44,28 @@ export const ResponseViewer = () => {
       <div className="h-full w-full overflow-auto rounded-md !bg-gray-800 px-1 py-4">
         <table>
           <tbody>
-            {messages.map((message, index) => (
+            {logs.map((log, index) => (
               <tr key={index}>
                 <Tooltip
-                  content={new Date(message.ts).toLocaleString()}
+                  content={new Date(log.ts).toLocaleString()}
                   placement="top"
                 >
                   <td
                     className={classNames(
                       "min-w-[70px] px-1 text-right align-top font-mono text-sm font-semibold",
-                      colorMap[message.level].label
+                      colorMap[log.level].label
                     )}
                   >
-                    {`[${message.level.toUpperCase()}]`}
+                    {`[${log.level.toUpperCase()}]`}
                   </td>
                 </Tooltip>
                 <td
                   className={classNames(
                     "px-1 font-mono text-sm font-medium text-gray-300",
-                    colorMap[message.level].body
+                    colorMap[log.level].body
                   )}
                 >
-                  {message.message}
+                  {log.message}
                 </td>
               </tr>
             ))}
