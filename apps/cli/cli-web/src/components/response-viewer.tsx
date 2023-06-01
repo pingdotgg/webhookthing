@@ -5,7 +5,6 @@ import { classNames } from "../utils/classnames";
 import { Tooltip } from "./common/tooltip";
 import { useLogs } from "../utils/logsStore";
 
-
 const colorMap = {
   trace: { label: "text-gray-500", body: "text-gray-500" }, // gray
   debug: { label: "text-cyan-500", body: "text-cyan-500" }, // cyan
