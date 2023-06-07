@@ -5,6 +5,124 @@ import {
   AccordionTrigger,
 } from "./common/accordion";
 
+// type GHResponse = {
+//   sha: string;
+//   url: string;
+//   tree: {
+//     path: string;
+//     mode: string;
+//     type: "tree" | "blob"; // don't know if this is true tho, could be a string
+//     sha: string;
+//     size?: number;
+//     url: string;
+//     tree: GHResponse["tree"];
+//   }[];
+// };
+
+/**
+ * get /hooks sha from gh api then https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/{sha}?recursive=1
+ *
+ * eg: https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/main?recursive=1 to get sha, then https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/5ca62d06afaa21f4dd705bacea021b02f64d61bd?recursive=1 to get data
+ */
+const MOCK_SAMPLE_HOOKS_FROM_GH_API = {
+  sha: "5ca62d06afaa21f4dd705bacea021b02f64d61bd",
+  url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/5ca62d06afaa21f4dd705bacea021b02f64d61bd",
+  tree: [
+    {
+      path: "discord",
+      mode: "040000",
+      type: "tree",
+      sha: "15d4cff6a75d887b27a6813475df418079b3d448",
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/15d4cff6a75d887b27a6813475df418079b3d448",
+    },
+    {
+      path: "discord/discord_webhook.json",
+      mode: "100644",
+      type: "blob",
+      sha: "55c966e2c2ab1643a47af5faed674601a19481d3",
+      size: 960,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/55c966e2c2ab1643a47af5faed674601a19481d3",
+    },
+    {
+      path: "github",
+      mode: "040000",
+      type: "tree",
+      sha: "adf9360cd7dd204b4e84e9b51bdc4e8051014a7e",
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/adf9360cd7dd204b4e84e9b51bdc4e8051014a7e",
+    },
+    {
+      path: "github/github_pr_opened.json",
+      mode: "100644",
+      type: "blob",
+      sha: "7a6a23c347c30474364908ccee90305bc2054a27",
+      size: 28507,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/7a6a23c347c30474364908ccee90305bc2054a27",
+    },
+    {
+      path: "slack",
+      mode: "040000",
+      type: "tree",
+      sha: "614b41b234de58e2becc5e1b5f9ce6788829c2a2",
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/614b41b234de58e2becc5e1b5f9ce6788829c2a2",
+    },
+    {
+      path: "slack/slack_channel_message.json",
+      mode: "100644",
+      type: "blob",
+      sha: "fae6b38ba189d08e7a7daf477e5da78033961ca0",
+      size: 450,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/fae6b38ba189d08e7a7daf477e5da78033961ca0",
+    },
+    {
+      path: "stripe",
+      mode: "040000",
+      type: "tree",
+      sha: "5adc1936c3c3404a0461b7d81280e5c17b2d70e1",
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/5adc1936c3c3404a0461b7d81280e5c17b2d70e1",
+    },
+    {
+      path: "stripe/payment",
+      mode: "040000",
+      type: "tree",
+      sha: "f89c34deab0cd7c5b2d5458889af497f9363c7d0",
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/f89c34deab0cd7c5b2d5458889af497f9363c7d0",
+    },
+    {
+      path: "stripe/payment/stripe_payment_failed_nested.json",
+      mode: "100644",
+      type: "blob",
+      sha: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      size: 0,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    },
+    {
+      path: "stripe/payment/stripe_payment_succeeded_nested.json",
+      mode: "100644",
+      type: "blob",
+      sha: "ba0fd7c948bb0482728323084c20dc232bef7349",
+      size: 6445,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/ba0fd7c948bb0482728323084c20dc232bef7349",
+    },
+    {
+      path: "stripe/stripe_payment_failed.json",
+      mode: "100644",
+      type: "blob",
+      sha: "ddfff0a8767bcc92ffa96197721afce0f9402b9d",
+      size: 12892,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/ddfff0a8767bcc92ffa96197721afce0f9402b9d",
+    },
+    {
+      path: "stripe/stripe_payment_succeeded.json",
+      mode: "100644",
+      type: "blob",
+      sha: "ba0fd7c948bb0482728323084c20dc232bef7349",
+      size: 6445,
+      url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/blobs/ba0fd7c948bb0482728323084c20dc232bef7349",
+    },
+  ],
+  truncated: false,
+};
+
 const MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES = [
   {
     name: "stripe",
