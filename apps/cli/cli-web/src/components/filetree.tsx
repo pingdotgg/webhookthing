@@ -199,8 +199,52 @@ type HookTree = (Dir | Hook)[];
 const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
   const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
 
+  const checkIfAllRecursiveChildrenSelected = (entry: Dir): any => {
+    return entry.children.every((child) => {
+      if ("children" in child) {
+        return checkIfAllRecursiveChildrenSelected(child);
+      }
+
+      return selectedHooks.includes(child.name);
+    });
+  };
+
+  const checkIfSomeRecursiveChildrenSelected = (entry: Dir): any => {
+    return entry.children.some((child) => {
+      if ("children" in child) {
+        return checkIfSomeRecursiveChildrenSelected(child);
+      }
+
+      return selectedHooks.includes(child.name);
+    });
+  };
+
+  const recursivellySelectAllChildren = (entry: Dir) => {
+    entry.children.forEach((child) => {
+      if ("children" in child) {
+        recursivellySelectAllChildren(child);
+      } else {
+        selectHook(child.name);
+      }
+    });
+  };
+
+  const recursivellyUnselectAllChildren = (entry: Dir) => {
+    entry.children.forEach((child) => {
+      if ("children" in child) {
+        recursivellyUnselectAllChildren(child);
+      } else {
+        unselectHook(child.name);
+      }
+    });
+  };
+
   return hookTree.map((entry) => {
     if ("children" in entry) {
+      const areAllChildrenSelected = checkIfAllRecursiveChildrenSelected(entry);
+      const areSomeChildrenSelected =
+        checkIfSomeRecursiveChildrenSelected(entry);
+
       return (
         <AccordionItem
           style={{
@@ -210,11 +254,20 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
           value={entry.name}
         >
           <div className="flex items-center">
-            <span
+            <button
+              onClick={() => {
+                if (areAllChildrenSelected) {
+                  recursivellyUnselectAllChildren(entry);
+                } else {
+                  recursivellySelectAllChildren(entry);
+                }
+              }}
               className={classNames(
                 "mr-2 inline-block h-4 w-4",
-                selectedHooks.some((value) => value.name === entry.name)
+                areAllChildrenSelected
                   ? "bg-green-500"
+                  : areSomeChildrenSelected
+                  ? "bg-orange-500"
                   : "bg-gray-500"
               )}
             />
@@ -226,18 +279,25 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
         </AccordionItem>
       );
     } else {
+      const isSelected = selectedHooks.includes(entry.name);
       return (
         <div
           className="flex items-center"
           style={{ marginLeft: `${nestedness}rem` }}
           key={entry.name}
         >
-          <span
+          <button
+            onClick={() => {
+              console.log("clicked");
+              if (isSelected) {
+                unselectHook(entry.name);
+              } else {
+                selectHook(entry.name);
+              }
+            }}
             className={classNames(
               "mr-2 inline-block h-4 w-4",
-              selectedHooks.some((value) => value.name === entry.name)
-                ? "bg-green-500"
-                : "bg-gray-500"
+              isSelected ? "bg-green-500" : "bg-gray-500"
             )}
           />
           {entry.name}
@@ -258,9 +318,9 @@ import { create } from "zustand";
 export const useSampleHooksStore = create<{
   initialSampleHooks: Hook[] | undefined;
   setInitialSampleHooks: (hooks: Hook[]) => void;
-  selectedHooks: Hook[];
-  selectHook: (hook: Hook) => void;
-  unselectHook: (hook: Hook) => void;
+  selectedHooks: string[];
+  selectHook: (hookName: string) => void;
+  unselectHook: (hookName: string) => void;
   clearSelectedHooks: () => void;
 }>((set) => ({
   initialSampleHooks: undefined,
@@ -268,8 +328,9 @@ export const useSampleHooksStore = create<{
   selectedHooks: [],
   selectHook: (hook) =>
     set((state) => {
-      if (!state.selectedHooks.includes(hook))
+      if (state.selectedHooks.includes(hook))
         return { selectedHooks: state.selectedHooks };
+
       return {
         selectedHooks: [...state.selectedHooks, hook],
       };
@@ -286,7 +347,8 @@ export const useSampleHooksStore = create<{
 }));
 
 export const TestingFileTree = () => {
-  const { initialSampleHooks, setInitialSampleHooks } = useSampleHooksStore();
+  const { initialSampleHooks, setInitialSampleHooks, selectedHooks } =
+    useSampleHooksStore();
 
   // pretend this is a TRPC query that fetches from gh;
   useEffect(() => {
@@ -294,5 +356,11 @@ export const TestingFileTree = () => {
   }, [setInitialSampleHooks]);
 
   if (!initialSampleHooks) return <div>{`loading...`}</div>;
-  return <FileTree hookTree={initialSampleHooks} />;
+  return (
+    <>
+      <FileTree hookTree={initialSampleHooks} />
+
+      <pre>{JSON.stringify(selectedHooks, null, 2)}</pre>
+    </>
+  );
 };
