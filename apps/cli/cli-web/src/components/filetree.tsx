@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./common/accordion";
+import { classNames } from "../utils/classnames";
 
 // type GHResponse = {
 //   sha: string;
@@ -196,6 +197,8 @@ type Dir = {
 type HookTree = (Dir | Hook)[];
 
 const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
+  const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
+
   return hookTree.map((entry) => {
     if ("children" in entry) {
       return (
@@ -206,7 +209,17 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
           key={entry.name}
           value={entry.name}
         >
-          <AccordionTrigger>{entry.name}</AccordionTrigger>
+          <div className="flex items-center">
+            <span
+              className={classNames(
+                "mr-2 inline-block h-4 w-4",
+                selectedHooks.some((value) => value.name === entry.name)
+                  ? "bg-green-500"
+                  : "bg-gray-500"
+              )}
+            />
+            <AccordionTrigger>{entry.name}</AccordionTrigger>
+          </div>
           <AccordionContent>
             {recurseIntoAccordions(entry.children, nestedness + 1)}
           </AccordionContent>
@@ -214,7 +227,19 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
       );
     } else {
       return (
-        <div style={{ marginLeft: `${nestedness}rem` }} key={entry.name}>
+        <div
+          className="flex items-center"
+          style={{ marginLeft: `${nestedness}rem` }}
+          key={entry.name}
+        >
+          <span
+            className={classNames(
+              "mr-2 inline-block h-4 w-4",
+              selectedHooks.some((value) => value.name === entry.name)
+                ? "bg-green-500"
+                : "bg-gray-500"
+            )}
+          />
           {entry.name}
         </div>
       );
