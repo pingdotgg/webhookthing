@@ -17,7 +17,7 @@ import { classNames } from "./utils/classnames";
 import { useFileRoute } from "./utils/useRoute";
 import { FileRunner } from "./components/filerunner";
 import { cliApi } from "./utils/api";
-import { FileTree } from "./components/filetree";
+import { TestingFileTree } from "./components/filetree";
 
 const SubscriptionsHelper = () => {
   useConnectionStateToasts();
@@ -42,11 +42,8 @@ const PageContent = () => {
   if (data.type === "folder")
     return <FileBrowser path={data.path} data={data.data} />;
 
-    // TODO igor: Remove this before merge, this is just for not making a mess with diffs on this file
-    if(data.path === "/play") return (
-      <FileTree />
-    )
-
+  // TODO igor: Remove this before merge, this is just for not making a mess with diffs on this file
+  if (data.path === "/play") return <TestingFileTree />;
 
   if (data.type === "notFound")
     return (

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -183,16 +184,16 @@ const MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES = [
   },
 ];
 
-type File = {
+type Hook = {
   name: string;
 };
 
 type Dir = {
   name: string;
-  children: (Dir | File)[];
+  children: (Dir | Hook)[];
 };
 
-type HookTree = (Dir | File)[];
+type HookTree = (Dir | Hook)[];
 
 const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
   return hookTree.map((entry) => {
@@ -221,10 +222,52 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
   });
 };
 
-export const FileTree = () => {
+export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
   return (
-    <Accordion type="multiple">
-      {recurseIntoAccordions(MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES)}
-    </Accordion>
+    <Accordion type="multiple">{recurseIntoAccordions(hookTree)}</Accordion>
   );
+};
+
+import { create } from "zustand";
+
+export const useSampleHooksStore = create<{
+  initialSampleHooks: Hook[] | undefined;
+  setInitialSampleHooks: (hooks: Hook[]) => void;
+  selectedHooks: Hook[];
+  selectHook: (hook: Hook) => void;
+  unselectHook: (hook: Hook) => void;
+  clearSelectedHooks: () => void;
+}>((set) => ({
+  initialSampleHooks: undefined,
+  setInitialSampleHooks: (hooks) => set({ initialSampleHooks: hooks }),
+  selectedHooks: [],
+  selectHook: (hook) =>
+    set((state) => {
+      if (!state.selectedHooks.includes(hook))
+        return { selectedHooks: state.selectedHooks };
+      return {
+        selectedHooks: [...state.selectedHooks, hook],
+      };
+    }),
+  unselectHook: (hook) =>
+    set((state) => {
+      if (!state.selectedHooks.includes(hook))
+        return { selectedHooks: state.selectedHooks };
+      return {
+        selectedHooks: state.selectedHooks.filter((h) => h !== hook),
+      };
+    }),
+  clearSelectedHooks: () => set({ selectedHooks: [] }),
+}));
+
+export const TestingFileTree = () => {
+  const { initialSampleHooks, setInitialSampleHooks } = useSampleHooksStore();
+
+  // pretend this is a TRPC query that fetches from gh;
+  useEffect(() => {
+    setInitialSampleHooks(MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES);
+  }, [setInitialSampleHooks]);
+
+  if (!initialSampleHooks) return <div>{`loading...`}</div>;
+  return <FileTree hookTree={initialSampleHooks} />;
 };
