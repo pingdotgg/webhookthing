@@ -185,12 +185,10 @@ const MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES = [
 
 type File = {
   name: string;
-  prettyName: string;
 };
 
 type Dir = {
   name: string;
-  prettyName: string;
   children: (Dir | File)[];
 };
 
@@ -205,9 +203,9 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
             marginLeft: `${nestedness}rem`,
           }}
           key={entry.name}
-          value={entry.prettyName}
+          value={entry.name}
         >
-          <AccordionTrigger>{entry.prettyName}</AccordionTrigger>
+          <AccordionTrigger>{entry.name}</AccordionTrigger>
           <AccordionContent>
             {recurseIntoAccordions(entry.children, nestedness + 1)}
           </AccordionContent>
@@ -216,7 +214,7 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
     } else {
       return (
         <div style={{ marginLeft: `${nestedness}rem` }} key={entry.name}>
-          {entry.prettyName}
+          {entry.name}
         </div>
       );
     }
