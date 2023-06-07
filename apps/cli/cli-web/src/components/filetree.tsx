@@ -288,7 +288,6 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
         >
           <button
             onClick={() => {
-              console.log("clicked");
               if (isSelected) {
                 unselectHook(entry.name);
               } else {
