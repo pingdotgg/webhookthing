@@ -7,26 +7,35 @@ import {
 } from "./common/accordion";
 import { classNames } from "../utils/classnames";
 
-// type GHResponse = {
-//   sha: string;
-//   url: string;
-//   tree: {
-//     path: string;
-//     mode: string;
-//     type: "tree" | "blob"; // don't know if this is true tho, could be a string
-//     sha: string;
-//     size?: number;
-//     url: string;
-//     tree: GHResponse["tree"];
-//   }[];
-// };
+type GHResponse = {
+  sha: string;
+  url: string;
+  tree: (
+    | {
+        path: string;
+        mode: string;
+        type: "tree";
+        sha: string;
+        url: string;
+      }
+    | {
+        path: string;
+        mode: string;
+        type: "blob";
+        sha: string;
+        url: string;
+        size: number;
+      }
+  )[];
+  truncated: boolean;
+};
 
 /**
  * get /hooks sha from gh api then https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/{sha}?recursive=1
  *
  * eg: https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/main?recursive=1 to get sha, then https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/5ca62d06afaa21f4dd705bacea021b02f64d61bd?recursive=1 to get data
  */
-const MOCK_SAMPLE_HOOKS_FROM_GH_API = {
+const MOCK_SAMPLE_HOOKS_FROM_GH_API: GHResponse = {
   sha: "5ca62d06afaa21f4dd705bacea021b02f64d61bd",
   url: "https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/5ca62d06afaa21f4dd705bacea021b02f64d61bd",
   tree: [
@@ -123,6 +132,40 @@ const MOCK_SAMPLE_HOOKS_FROM_GH_API = {
     },
   ],
   truncated: false,
+};
+
+const convertToTree = (response: GHResponse) => {
+  const tree = response.tree.reduce<HookTree>((acc, entry) => {
+    const { path, type } = entry;
+    const parts = path.split("/");
+    const fileName = parts[parts.length - 1];
+
+    let currentLevel = acc;
+    for (const part of parts) {
+      const existingDir = currentLevel.find((item) => item.name === part);
+      if (existingDir && "children" in existingDir) {
+        currentLevel = existingDir.children;
+      } else {
+        const newDir: Dir = {
+          name: part,
+          children: [],
+        };
+        currentLevel.push(newDir);
+        currentLevel = newDir.children;
+      }
+    }
+
+    if (type === "blob") {
+      const hook: Hook = {
+        name: fileName,
+      };
+      currentLevel.push(hook);
+    }
+
+    return acc;
+  }, []);
+
+  return tree;
 };
 
 const MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES = [
@@ -365,7 +408,7 @@ export const TestingFileTree = () => {
 
   // pretend this is a TRPC query that fetches from gh;
   useEffect(() => {
-    setInitialSampleHooks(MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES);
+    setInitialSampleHooks(convertToTree(MOCK_SAMPLE_HOOKS_FROM_GH_API));
   }, [setInitialSampleHooks]);
 
   if (!initialSampleHooks) return <div>{`loading...`}</div>;
