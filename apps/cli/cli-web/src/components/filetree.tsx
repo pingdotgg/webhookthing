@@ -199,40 +199,54 @@ type HookTree = (Dir | Hook)[];
 const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
   const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
 
-  const checkIfAllRecursiveChildrenSelected = (entry: Dir): any => {
+  const checkIfAllRecursiveChildrenSelected = (
+    entry: Dir,
+    safetyCounter = 0
+  ): boolean => {
+    if (safetyCounter > 100) {
+      throw new Error("got way too deep in a recursion");
+    }
+
     return entry.children.every((child) => {
       if ("children" in child) {
-        return checkIfAllRecursiveChildrenSelected(child);
+        return checkIfAllRecursiveChildrenSelected(child, safetyCounter + 1);
       }
 
       return selectedHooks.includes(child.name);
     });
   };
 
-  const checkIfSomeRecursiveChildrenSelected = (entry: Dir): any => {
+  const checkIfSomeRecursiveChildrenSelected = (
+    entry: Dir,
+    safetyCounter = 0
+  ): boolean => {
     return entry.children.some((child) => {
+      if (safetyCounter > 100) {
+        throw new Error("got way too deep in a recursion");
+      }
+
       if ("children" in child) {
-        return checkIfSomeRecursiveChildrenSelected(child);
+        return checkIfSomeRecursiveChildrenSelected(child, safetyCounter + 1);
       }
 
       return selectedHooks.includes(child.name);
     });
   };
 
-  const recursivellySelectAllChildren = (entry: Dir) => {
+  const recursivelySelectAllChildren = (entry: Dir) => {
     entry.children.forEach((child) => {
       if ("children" in child) {
-        recursivellySelectAllChildren(child);
+        recursivelySelectAllChildren(child);
       } else {
         selectHook(child.name);
       }
     });
   };
 
-  const recursivellyUnselectAllChildren = (entry: Dir) => {
+  const recursivelyUnselectAllChildren = (entry: Dir) => {
     entry.children.forEach((child) => {
       if ("children" in child) {
-        recursivellyUnselectAllChildren(child);
+        recursivelyUnselectAllChildren(child);
       } else {
         unselectHook(child.name);
       }
@@ -257,9 +271,9 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
             <button
               onClick={() => {
                 if (areAllChildrenSelected) {
-                  recursivellyUnselectAllChildren(entry);
+                  recursivelyUnselectAllChildren(entry);
                 } else {
-                  recursivellySelectAllChildren(entry);
+                  recursivelySelectAllChildren(entry);
                 }
               }}
               className={classNames(
