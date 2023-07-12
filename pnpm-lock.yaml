@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -206,6 +206,9 @@ importers:
       zod:
         specifier: ^3.19.1
         version: 3.20.2
+      zod-fetch:
+        specifier: ^0.1.1
+        version: 0.1.1
       zustand:
         specifier: ^4.3.8
         version: 4.3.8(react@18.2.0)
@@ -8021,6 +8024,10 @@ packages:
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod-fetch@0.1.1:
+    resolution: {integrity: sha512-1YqEhqjIQuatiHGCiKceAEzLrd2PZAN/Y8lWSlhkec2nDuImePieFWX33WSB+c1E4P/kEiai7rb8upBMdjFo1w==}
+    dev: false
 
   /zod@3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
