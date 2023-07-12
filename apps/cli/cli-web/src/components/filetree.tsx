@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -6,29 +5,38 @@ import {
   AccordionTrigger,
 } from './common/accordion';
 import { classNames } from '../utils/classnames';
+import { useQuery } from '@tanstack/react-query';
+import { z } from 'zod';
+import { createZodFetcher } from 'zod-fetch';
 
-type GHResponse = {
-  sha: string;
-  url: string;
-  tree: (
-    | {
-        path: string;
-        mode: string;
-        type: 'tree';
-        sha: string;
-        url: string;
-      }
-    | {
-        path: string;
-        mode: string;
-        type: 'blob';
-        sha: string;
-        url: string;
-        size: number;
-      }
-  )[];
-  truncated: boolean;
-};
+const fetchWithZod = createZodFetcher();
+
+const GHResponseSchema = z.object({
+  sha: z.string(),
+  url: z.string(),
+  tree: z.array(
+    z.union([
+      z.object({
+        path: z.string(),
+        mode: z.string(),
+        type: z.literal('tree'),
+        sha: z.string(),
+        url: z.string(),
+      }),
+      z.object({
+        path: z.string(),
+        mode: z.string(),
+        type: z.literal('blob'),
+        sha: z.string(),
+        url: z.string(),
+        size: z.number(),
+      }),
+    ])
+  ),
+  truncated: z.boolean(),
+});
+
+type GHResponse = z.infer<typeof GHResponseSchema>;
 
 /**
  * get /hooks sha from gh api then https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/{sha}?recursive=1
@@ -372,15 +380,11 @@ export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
 import { create } from 'zustand';
 
 export const useSampleHooksStore = create<{
-  initialSampleHooks: Hook[] | undefined;
-  setInitialSampleHooks: (hooks: Hook[]) => void;
   selectedHooks: string[];
   selectHook: (hookName: string) => void;
   unselectHook: (hookName: string) => void;
   clearSelectedHooks: () => void;
 }>((set) => ({
-  initialSampleHooks: undefined,
-  setInitialSampleHooks: (hooks) => set({ initialSampleHooks: hooks }),
   selectedHooks: [],
   selectHook: (hook) =>
     set((state) => {
@@ -402,19 +406,40 @@ export const useSampleHooksStore = create<{
   clearSelectedHooks: () => set({ selectedHooks: [] }),
 }));
 
+const getHooksFromGH = async () => {
+  const repo = await fetchWithZod(
+    GHResponseSchema,
+    'https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/main'
+  );
+
+  const hooksFolderSha = repo.tree.find((entry) => entry.path === 'hooks')?.sha;
+
+  if (!hooksFolderSha) {
+    throw new Error('no hooks folder found');
+  }
+
+  const hooksFolder = await fetchWithZod(
+    GHResponseSchema,
+    `https://api.github.com/repos/bdsqqq/sample_hooks/git/trees/${hooksFolderSha}?recursive=1`
+  );
+
+  return convertToTree(hooksFolder);
+};
+
 export const TestingFileTree = () => {
-  const { initialSampleHooks, setInitialSampleHooks, selectedHooks } =
-    useSampleHooksStore();
+  const { selectedHooks } = useSampleHooksStore();
 
-  // pretend this is a TRPC query that fetches from gh;
-  useEffect(() => {
-    setInitialSampleHooks(convertToTree(MOCK_SAMPLE_HOOKS_FROM_GH_API));
-  }, [setInitialSampleHooks]);
+  const { data, isLoading } = useQuery({
+    queryKey: ['hooks'],
+    queryFn: () => getHooksFromGH(),
+  });
 
-  if (!initialSampleHooks) return <div>{`loading...`}</div>;
+  if (isLoading) return <div>{`loading...`}</div>;
+  if (!data) return <div>{`no hooks found?? something went very wrong`}</div>;
+
   return (
     <>
-      <FileTree hookTree={initialSampleHooks} />
+      <FileTree hookTree={data} />
 
       <pre>{JSON.stringify(selectedHooks, null, 2)}</pre>
     </>
