@@ -247,9 +247,19 @@ type Dir = {
 
 type HookTree = (Dir | Hook)[];
 
-const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
-  const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
-
+const recurseIntoAccordions = (
+  hookTree: HookTree,
+  nestedness = 0,
+  {
+    selectedHooks,
+    selectHook,
+    unselectHook,
+  }: {
+    selectedHooks: SampleHookStore['selectedHooks'];
+    selectHook: SampleHookStore['selectHook'];
+    unselectHook: SampleHookStore['unselectHook'];
+  }
+) => {
   const checkIfAllRecursiveChildrenSelected = (
     entry: Dir,
     safetyCounter = 0
@@ -339,7 +349,11 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
             <AccordionTrigger>{entry.name}</AccordionTrigger>
           </div>
           <AccordionContent>
-            {recurseIntoAccordions(entry.children, nestedness + 1)}
+            {recurseIntoAccordions(entry.children, nestedness + 1, {
+              selectedHooks,
+              selectHook,
+              unselectHook,
+            })}
           </AccordionContent>
         </AccordionItem>
       );
@@ -372,19 +386,29 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
 };
 
 export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
+  const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
+
   return (
-    <Accordion type="multiple">{recurseIntoAccordions(hookTree)}</Accordion>
+    <Accordion type="multiple">
+      {recurseIntoAccordions(hookTree, undefined, {
+        selectedHooks,
+        selectHook,
+        unselectHook,
+      })}
+    </Accordion>
   );
 };
 
 import { create } from 'zustand';
 
-export const useSampleHooksStore = create<{
+type SampleHookStore = {
   selectedHooks: string[];
   selectHook: (hookName: string) => void;
   unselectHook: (hookName: string) => void;
   clearSelectedHooks: () => void;
-}>((set) => ({
+};
+
+export const useSampleHooksStore = create<SampleHookStore>((set) => ({
   selectedHooks: [],
   selectHook: (hook) =>
     set((state) => {
