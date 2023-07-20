@@ -324,13 +324,14 @@ const recurseIntoAccordions = (
 
       return (
         <AccordionItem
+          className="relative border-b-0"
           style={{
-            marginLeft: `${nestedness}rem`,
+            marginLeft: nestedness && '1rem',
           }}
           key={entry.name}
           value={entry.name}
         >
-          <div className="flex items-center">
+          <div className="flex items-center gap-1">
             <Checkbox
               checked={
                 areAllChildrenSelected
@@ -347,7 +348,9 @@ const recurseIntoAccordions = (
                 }
               }}
             />
-            <AccordionTrigger>{entry.name}</AccordionTrigger>
+            <AccordionTrigger className="m-0 p-0">
+              {entry.name}
+            </AccordionTrigger>
           </div>
           <AccordionContent>
             {recurseIntoAccordions(entry.children, nestedness + 1, {
@@ -362,8 +365,10 @@ const recurseIntoAccordions = (
       const isSelected = selectedHooks.includes(entry.name);
       return (
         <div
-          className="flex items-center"
-          style={{ marginLeft: `${nestedness}rem` }}
+          className="flex items-center gap-1 py-1"
+          style={{
+            marginLeft: nestedness && '1rem',
+          }}
           key={entry.name}
         >
           <Checkbox
