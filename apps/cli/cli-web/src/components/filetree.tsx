@@ -369,14 +369,18 @@ const recurseIntoAccordions = (
             <AccordionTrigger className="m-0 p-0 text-sm">
               <div className="flex gap-1">
                 {entry.name}
-                <div
-                  className={classNames(
-                    'items-center rounded bg-gray-200 px-2 text-xs text-gray-600',
-                    howManyChildrenSelected < 1 ? 'hidden' : 'flex'
-                  )}
+                <Tooltip
+                  content={`${howManyChildrenSelected} children selected`}
                 >
-                  {howManyChildrenSelected}
-                </div>
+                  <div
+                    className={classNames(
+                      'items-center rounded bg-gray-200 px-2 text-xs text-gray-600',
+                      howManyChildrenSelected < 1 ? 'hidden' : 'flex'
+                    )}
+                  >
+                    {howManyChildrenSelected}
+                  </div>
+                </Tooltip>
               </div>
             </AccordionTrigger>
           </div>
@@ -432,6 +436,7 @@ export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
 
 import { create } from 'zustand';
 import { Checkbox } from './common/checkbox';
+import { Tooltip } from './common/tooltip';
 
 type SampleHookStore = {
   selectedHooks: string[];
