@@ -331,22 +331,21 @@ const recurseIntoAccordions = (
           value={entry.name}
         >
           <div className="flex items-center">
-            <button
-              onClick={() => {
+            <Checkbox
+              checked={
+                areAllChildrenSelected
+                  ? true
+                  : areSomeChildrenSelected
+                  ? 'indeterminate'
+                  : false
+              }
+              onCheckedChange={() => {
                 if (areAllChildrenSelected) {
                   recursivelyUnselectAllChildren(entry);
                 } else {
                   recursivelySelectAllChildren(entry);
                 }
               }}
-              className={classNames(
-                'mr-2 inline-block h-4 w-4',
-                areAllChildrenSelected
-                  ? 'bg-green-500'
-                  : areSomeChildrenSelected
-                  ? 'bg-orange-500'
-                  : 'bg-gray-500'
-              )}
             />
             <AccordionTrigger>{entry.name}</AccordionTrigger>
           </div>
@@ -367,18 +366,15 @@ const recurseIntoAccordions = (
           style={{ marginLeft: `${nestedness}rem` }}
           key={entry.name}
         >
-          <button
-            onClick={() => {
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => {
               if (isSelected) {
                 unselectHook(entry.name);
               } else {
                 selectHook(entry.name);
               }
             }}
-            className={classNames(
-              'mr-2 inline-block h-4 w-4',
-              isSelected ? 'bg-green-500' : 'bg-gray-500'
-            )}
           />
           {entry.name}
         </div>
@@ -402,6 +398,7 @@ export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
 };
 
 import { create } from 'zustand';
+import { Checkbox } from './common/checkbox';
 
 type SampleHookStore = {
   selectedHooks: string[];
