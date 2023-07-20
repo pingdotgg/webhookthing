@@ -170,12 +170,6 @@ const convertToTree = (response: GHResponse) => {
           currentLevel = newDir.children;
         }
       }
-
-    if (type === 'blob') {
-      const hook: Hook = {
-        name: fileName,
-      };
-      currentLevel.push(hook);
     }
 
     return acc;
