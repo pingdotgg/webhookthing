@@ -154,14 +154,22 @@ const convertToTree = (response: GHResponse) => {
       if (existingDir && 'children' in existingDir) {
         currentLevel = existingDir.children;
       } else {
-        const newDir: Dir = {
-          name: part,
-          children: [],
-        };
-        currentLevel.push(newDir);
-        currentLevel = newDir.children;
+        if (type === 'blob') {
+          const hook: Hook = {
+            name: fileName,
+          };
+          currentLevel.push(hook);
+        }
+
+        if (type === 'tree') {
+          const newDir: Dir = {
+            name: part,
+            children: [],
+          };
+          currentLevel.push(newDir);
+          currentLevel = newDir.children;
+        }
       }
-    }
 
     if (type === 'blob') {
       const hook: Hook = {
