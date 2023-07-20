@@ -296,6 +296,23 @@ const recurseIntoAccordions = (
     });
   };
 
+  const howManyRecursiveChildrenSelected = (
+    entry: Dir,
+    safetyCounter = 0
+  ): number => {
+    if (safetyCounter > 100) {
+      throw new Error('got way too deep in a recursion');
+    }
+
+    return entry.children.reduce((acc, child) => {
+      if ('children' in child) {
+        return acc + howManyRecursiveChildrenSelected(child, safetyCounter + 1);
+      }
+
+      return acc + (selectedHooks.includes(child.name) ? 1 : 0);
+    }, 0);
+  };
+
   const recursivelySelectAllChildren = (entry: Dir) => {
     entry.children.forEach((child) => {
       if ('children' in child) {
@@ -318,6 +335,7 @@ const recurseIntoAccordions = (
 
   return hookTree.map((entry) => {
     if ('children' in entry) {
+      const howManyChildrenSelected = howManyRecursiveChildrenSelected(entry);
       const areAllChildrenSelected = checkIfAllRecursiveChildrenSelected(entry);
       const areSomeChildrenSelected =
         checkIfSomeRecursiveChildrenSelected(entry);
@@ -348,8 +366,18 @@ const recurseIntoAccordions = (
                 }
               }}
             />
-            <AccordionTrigger className="m-0 p-0">
-              {entry.name}
+            <AccordionTrigger className="m-0 p-0 text-sm">
+              <div className="flex gap-1">
+                {entry.name}
+                <div
+                  className={classNames(
+                    'items-center rounded bg-gray-200 px-2 text-xs text-gray-600',
+                    howManyChildrenSelected < 1 ? 'hidden' : 'flex'
+                  )}
+                >
+                  {howManyChildrenSelected}
+                </div>
+              </div>
             </AccordionTrigger>
           </div>
           <AccordionContent>
@@ -365,7 +393,7 @@ const recurseIntoAccordions = (
       const isSelected = selectedHooks.includes(entry.name);
       return (
         <div
-          className="flex items-center gap-1 py-1"
+          className="flex items-center gap-1 py-1 text-sm"
           style={{
             marginLeft: nestedness && '1rem',
           }}
