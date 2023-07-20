@@ -336,9 +336,10 @@ const recurseIntoAccordions = (
   return hookTree.map((entry) => {
     if ('children' in entry) {
       const howManyChildrenSelected = howManyRecursiveChildrenSelected(entry);
-      const areAllChildrenSelected = checkIfAllRecursiveChildrenSelected(entry);
-      const areSomeChildrenSelected =
-        checkIfSomeRecursiveChildrenSelected(entry);
+      const areSomeChildrenSelected = howManyChildrenSelected > 0;
+      const areAllChildrenSelected = areSomeChildrenSelected
+        ? checkIfAllRecursiveChildrenSelected(entry)
+        : false; // no need to check if all are selected if we know none is.
 
       return (
         <AccordionItem
