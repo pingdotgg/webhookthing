@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import * as React from 'react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-import { classNames } from "../../utils/classnames";
+import { classNames } from '../../utils/classnames';
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -14,22 +14,22 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={classNames("border-b", className || "")}
+    className={classNames('border-b', className || '')}
     {...props}
   />
 ));
-AccordionItem.displayName = "AccordionItem";
+AccordionItem.displayName = 'AccordionItem';
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex">
+  <AccordionPrimitive.Header className="flex w-full">
     <AccordionPrimitive.Trigger
       ref={ref}
       className={classNames(
-        "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
-        className || ""
+        'flex flex-1 items-center justify-between py-1 font-medium [&[data-state=open]>svg]:rotate-180',
+        className || ''
       )}
       {...props}
     >
@@ -47,12 +47,13 @@ const AccordionContent = React.forwardRef<
   <AccordionPrimitive.Content
     ref={ref}
     className={classNames(
-      "data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm transition-all",
-      className || ""
+      'relative overflow-hidden transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+      className || ''
     )}
     {...props}
   >
-    <div className="pb-4 pt-0">{children}</div>
+    <div className="absolute left-1.5 top-1 bottom-1 w-0.5 rounded bg-neutral-200" />
+    {children}
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;

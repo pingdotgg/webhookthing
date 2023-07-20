@@ -154,20 +154,22 @@ const convertToTree = (response: GHResponse) => {
       if (existingDir && 'children' in existingDir) {
         currentLevel = existingDir.children;
       } else {
-        const newDir: Dir = {
-          name: part,
-          children: [],
-        };
-        currentLevel.push(newDir);
-        currentLevel = newDir.children;
-      }
-    }
+        if (type === 'blob') {
+          const hook: Hook = {
+            name: fileName,
+          };
+          currentLevel.push(hook);
+        }
 
-    if (type === 'blob') {
-      const hook: Hook = {
-        name: fileName,
-      };
-      currentLevel.push(hook);
+        if (type === 'tree') {
+          const newDir: Dir = {
+            name: part,
+            children: [],
+          };
+          currentLevel.push(newDir);
+          currentLevel = newDir.children;
+        }
+      }
     }
 
     return acc;
@@ -247,9 +249,19 @@ type Dir = {
 
 type HookTree = (Dir | Hook)[];
 
-const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
-  const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
-
+const recurseIntoAccordions = (
+  hookTree: HookTree,
+  nestedness = 0,
+  {
+    selectedHooks,
+    selectHook,
+    unselectHook,
+  }: {
+    selectedHooks: SampleHookStore['selectedHooks'];
+    selectHook: SampleHookStore['selectHook'];
+    unselectHook: SampleHookStore['unselectHook'];
+  }
+) => {
   const checkIfAllRecursiveChildrenSelected = (
     entry: Dir,
     safetyCounter = 0
@@ -284,6 +296,23 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
     });
   };
 
+  const howManyRecursiveChildrenSelected = (
+    entry: Dir,
+    safetyCounter = 0
+  ): number => {
+    if (safetyCounter > 100) {
+      throw new Error('got way too deep in a recursion');
+    }
+
+    return entry.children.reduce((acc, child) => {
+      if ('children' in child) {
+        return acc + howManyRecursiveChildrenSelected(child, safetyCounter + 1);
+      }
+
+      return acc + (selectedHooks.includes(child.name) ? 1 : 0);
+    }, 0);
+  };
+
   const recursivelySelectAllChildren = (entry: Dir) => {
     entry.children.forEach((child) => {
       if ('children' in child) {
@@ -306,40 +335,62 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
 
   return hookTree.map((entry) => {
     if ('children' in entry) {
-      const areAllChildrenSelected = checkIfAllRecursiveChildrenSelected(entry);
-      const areSomeChildrenSelected =
-        checkIfSomeRecursiveChildrenSelected(entry);
+      const howManyChildrenSelected = howManyRecursiveChildrenSelected(entry);
+      const areSomeChildrenSelected = howManyChildrenSelected > 0;
+      const areAllChildrenSelected = areSomeChildrenSelected
+        ? checkIfAllRecursiveChildrenSelected(entry)
+        : false; // no need to check if all are selected if we know none is.
 
       return (
         <AccordionItem
+          className="relative border-b-0"
           style={{
-            marginLeft: `${nestedness}rem`,
+            marginLeft: nestedness && '1rem',
           }}
           key={entry.name}
           value={entry.name}
         >
-          <div className="flex items-center">
-            <button
-              onClick={() => {
+          <div className="flex items-center gap-1">
+            <Checkbox
+              checked={
+                areAllChildrenSelected
+                  ? true
+                  : areSomeChildrenSelected
+                  ? 'indeterminate'
+                  : false
+              }
+              onCheckedChange={() => {
                 if (areAllChildrenSelected) {
                   recursivelyUnselectAllChildren(entry);
                 } else {
                   recursivelySelectAllChildren(entry);
                 }
               }}
-              className={classNames(
-                'mr-2 inline-block h-4 w-4',
-                areAllChildrenSelected
-                  ? 'bg-green-500'
-                  : areSomeChildrenSelected
-                  ? 'bg-orange-500'
-                  : 'bg-gray-500'
-              )}
             />
-            <AccordionTrigger>{entry.name}</AccordionTrigger>
+            <AccordionTrigger className="m-0 p-0 text-sm">
+              <div className="flex gap-1">
+                {entry.name}
+                <Tooltip
+                  content={`${howManyChildrenSelected} children selected`}
+                >
+                  <div
+                    className={classNames(
+                      'items-center rounded bg-gray-200 px-2 text-xs text-gray-600',
+                      howManyChildrenSelected < 1 ? 'hidden' : 'flex'
+                    )}
+                  >
+                    {howManyChildrenSelected}
+                  </div>
+                </Tooltip>
+              </div>
+            </AccordionTrigger>
           </div>
           <AccordionContent>
-            {recurseIntoAccordions(entry.children, nestedness + 1)}
+            {recurseIntoAccordions(entry.children, nestedness + 1, {
+              selectedHooks,
+              selectHook,
+              unselectHook,
+            })}
           </AccordionContent>
         </AccordionItem>
       );
@@ -347,22 +398,21 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
       const isSelected = selectedHooks.includes(entry.name);
       return (
         <div
-          className="flex items-center"
-          style={{ marginLeft: `${nestedness}rem` }}
+          className="flex items-center gap-1 py-1 text-sm"
+          style={{
+            marginLeft: nestedness && '1rem',
+          }}
           key={entry.name}
         >
-          <button
-            onClick={() => {
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => {
               if (isSelected) {
                 unselectHook(entry.name);
               } else {
                 selectHook(entry.name);
               }
             }}
-            className={classNames(
-              'mr-2 inline-block h-4 w-4',
-              isSelected ? 'bg-green-500' : 'bg-gray-500'
-            )}
           />
           {entry.name}
         </div>
@@ -372,19 +422,31 @@ const recurseIntoAccordions = (hookTree: HookTree, nestedness = 0) => {
 };
 
 export const FileTree = ({ hookTree }: { hookTree: HookTree }) => {
+  const { selectedHooks, selectHook, unselectHook } = useSampleHooksStore();
+
   return (
-    <Accordion type="multiple">{recurseIntoAccordions(hookTree)}</Accordion>
+    <Accordion type="multiple">
+      {recurseIntoAccordions(hookTree, undefined, {
+        selectedHooks,
+        selectHook,
+        unselectHook,
+      })}
+    </Accordion>
   );
 };
 
 import { create } from 'zustand';
+import { Checkbox } from './common/checkbox';
+import { Tooltip } from './common/tooltip';
 
-export const useSampleHooksStore = create<{
+type SampleHookStore = {
   selectedHooks: string[];
   selectHook: (hookName: string) => void;
   unselectHook: (hookName: string) => void;
   clearSelectedHooks: () => void;
-}>((set) => ({
+};
+
+export const useSampleHooksStore = create<SampleHookStore>((set) => ({
   selectedHooks: [],
   selectHook: (hook) =>
     set((state) => {
