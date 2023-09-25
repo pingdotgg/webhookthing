@@ -157,6 +157,8 @@ const convertToTree = (response: GHResponse) => {
         if (type === "blob") {
           const hook: Hook = {
             name: fileName,
+            path: entry.path,
+            sha: entry.sha,
           };
           currentLevel.push(hook);
         }
@@ -164,6 +166,8 @@ const convertToTree = (response: GHResponse) => {
         if (type === "tree") {
           const newDir: Dir = {
             name: part,
+            path: entry.path,
+            sha: entry.sha,
             children: [],
           };
           currentLevel.push(newDir);
@@ -240,14 +244,27 @@ const MOCK_SAMPLE_HOOKS_WiTH_JUST_NAMES = [
 
 type Hook = {
   name: string;
+  path: string;
+  sha: string;
 };
 
 type Dir = {
   name: string;
+  sha: string;
+  path: string;
   children: (Dir | Hook)[];
 };
 
 type HookTree = (Dir | Hook)[];
+
+// UTILS
+const hookExistsInArray = (arr: Hook[], item: Hook) => {
+  return arr.some((i) => hookIsEqual(i, item));
+};
+const hookIsEqual = (a: Hook, b: Hook) =>
+  a.sha === b.sha && a.path === b.path && a.name === b.name;
+const hookUniqueKey = (hook: Hook) => hook.sha + hook.path;
+// END UTILS
 
 const recurseIntoAccordions = (
   hookTree: HookTree,
@@ -275,7 +292,7 @@ const recurseIntoAccordions = (
         return checkIfAllRecursiveChildrenSelected(child, safetyCounter + 1);
       }
 
-      return selectedHooks.includes(child.name);
+      return hookExistsInArray(selectedHooks, child);
     });
   };
 
@@ -292,7 +309,7 @@ const recurseIntoAccordions = (
         return checkIfSomeRecursiveChildrenSelected(child, safetyCounter + 1);
       }
 
-      return selectedHooks.includes(child.name);
+      return hookExistsInArray(selectedHooks, child);
     });
   };
 
@@ -309,7 +326,7 @@ const recurseIntoAccordions = (
         return acc + howManyRecursiveChildrenSelected(child, safetyCounter + 1);
       }
 
-      return acc + (selectedHooks.includes(child.name) ? 1 : 0);
+      return acc + (hookExistsInArray(selectedHooks, child) ? 1 : 0);
     }, 0);
   };
 
@@ -318,7 +335,7 @@ const recurseIntoAccordions = (
       if ("children" in child) {
         recursivelySelectAllChildren(child);
       } else {
-        selectHook(child.name);
+        selectHook(child);
       }
     });
   };
@@ -328,7 +345,7 @@ const recurseIntoAccordions = (
       if ("children" in child) {
         recursivelyUnselectAllChildren(child);
       } else {
-        unselectHook(child.name);
+        unselectHook(child);
       }
     });
   };
@@ -347,8 +364,8 @@ const recurseIntoAccordions = (
           style={{
             marginLeft: nestedness && "1rem",
           }}
-          key={entry.name}
-          value={entry.name}
+          key={hookUniqueKey(entry)}
+          value={hookUniqueKey(entry)}
         >
           <div className="flex items-center gap-1">
             <Checkbox
@@ -395,29 +412,32 @@ const recurseIntoAccordions = (
         </AccordionItem>
       );
     } else {
-      const isSelected = selectedHooks.includes(entry.name);
+      const isSelected = hookExistsInArray(selectedHooks, entry);
       return (
         <div
           className="flex items-center gap-1 py-1 text-sm"
           style={{
             marginLeft: nestedness && "1rem",
           }}
-          key={entry.name}
+          key={entry.sha + entry.path}
         >
           <Checkbox
-            name={entry.name}
-            id={entry.name}
+            name={`checkbox-${hookUniqueKey(entry)}`}
+            id={`checkbox-${hookUniqueKey(entry)}`}
             checked={isSelected}
             onCheckedChange={() => {
               if (isSelected) {
-                unselectHook(entry.name);
+                unselectHook(entry);
               } else {
-                selectHook(entry.name);
+                selectHook(entry);
               }
             }}
           />
           {/* Not handling the case where the checkbox is disabled, not sure why it would be 🤷 */}
-          <label className="cursor-pointer" htmlFor={entry.name}>
+          <label
+            className="cursor-pointer"
+            htmlFor={`checkbox-${hookUniqueKey(entry)}`}
+          >
             {entry.name}
           </label>
         </div>
@@ -445,9 +465,9 @@ import { Checkbox } from "./common/checkbox";
 import { Tooltip } from "./common/tooltip";
 
 type SampleHookStore = {
-  selectedHooks: string[];
-  selectHook: (hookName: string) => void;
-  unselectHook: (hookName: string) => void;
+  selectedHooks: Hook[];
+  selectHook: (hook: Hook) => void;
+  unselectHook: (hook: Hook) => void;
   clearSelectedHooks: () => void;
 };
 
@@ -455,7 +475,7 @@ export const useSampleHooksStore = create<SampleHookStore>((set) => ({
   selectedHooks: [],
   selectHook: (hook) =>
     set((state) => {
-      if (state.selectedHooks.includes(hook))
+      if (hookExistsInArray(state.selectedHooks, hook))
         return { selectedHooks: state.selectedHooks };
 
       return {
@@ -464,10 +484,12 @@ export const useSampleHooksStore = create<SampleHookStore>((set) => ({
     }),
   unselectHook: (hook) =>
     set((state) => {
-      if (!state.selectedHooks.includes(hook))
+      if (!hookExistsInArray(state.selectedHooks, hook))
         return { selectedHooks: state.selectedHooks };
       return {
-        selectedHooks: state.selectedHooks.filter((h) => h !== hook),
+        selectedHooks: state.selectedHooks.filter(
+          (item) => !hookIsEqual(item, hook)
+        ),
       };
     }),
   clearSelectedHooks: () => set({ selectedHooks: [] }),
