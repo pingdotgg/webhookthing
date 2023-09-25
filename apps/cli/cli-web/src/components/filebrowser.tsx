@@ -25,6 +25,7 @@ import { cliApi } from "../utils/api";
 import { classNames } from "../utils/classnames";
 import { useFileRoute } from "../utils/useRoute";
 import { FileFormModal } from "./file-form-modal";
+import { SampleHooksModal } from "./sample-hooks-modal";
 
 const pathArrToUrl = (pathArr: string[], nav?: string) => {
   const url = nav ? `${pathArr.concat(nav).join("/")}` : `${pathArr.join("/")}`;
@@ -68,6 +69,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
 
   const addHookModalState = useState(false);
   const addFolderModalState = useState(false);
+  const sampleHooksModalState = useState(false);
 
   return (
     <div className="flex min-h-0 flex-col divide-y divide-gray-200 first-line:w-full">
@@ -152,6 +154,7 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
 
           <FolderFormModal openState={addFolderModalState} path={pathArr} />
           <FileFormModal openState={addHookModalState} path={pathArr} />
+          <SampleHooksModal openState={sampleHooksModalState} path={pathArr} />
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="flex items-center justify-center rounded-md bg-white px-2 py-1 text-sm font-medium leading-4 text-gray-600 shadow-sm hover:text-indigo-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -287,7 +290,8 @@ export const FileBrowser = (input: { path: string; data: FolderDataType }) => {
                       <button
                         type="button"
                         className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        onClick={() => downloadSampleHooks()}
+                        // onClick={() => downloadSampleHooks()}
+                        onClick={() => sampleHooksModalState[1](true)}
                       >
                         <CloudArrowDownIcon
                           className="-ml-1 mr-2 h-5 w-5"
