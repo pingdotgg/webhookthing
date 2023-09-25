@@ -405,6 +405,8 @@ const recurseIntoAccordions = (
           key={entry.name}
         >
           <Checkbox
+            name={entry.name}
+            id={entry.name}
             checked={isSelected}
             onCheckedChange={() => {
               if (isSelected) {
@@ -414,7 +416,10 @@ const recurseIntoAccordions = (
               }
             }}
           />
-          {entry.name}
+          {/* Not handling the case where the checkbox is disabled, not sure why it would be 🤷 */}
+          <label className="cursor-pointer" htmlFor={entry.name}>
+            {entry.name}
+          </label>
         </div>
       );
     }
