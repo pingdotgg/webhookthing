@@ -1,4 +1,4 @@
-# Captain
+# webhookthing
 
 Monorepo for [webhookthing](https://webhookthing.com)
 
