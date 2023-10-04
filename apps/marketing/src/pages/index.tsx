@@ -89,9 +89,24 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 w-full animate-fade-in p-4 text-center text-xl text-white">
+        <div className="absolute bottom-0 flex w-full animate-fade-in justify-center gap-4 p-4 text-center text-xl text-white">
           <a className="hover:underline" href="https://docs.webhookthing.com">
             {"Docs"}
+          </a>
+          {"|"}
+          <a
+            className="gh-link group relative hover:underline"
+            target="_blank"
+            href="https://github.com/pingdotgg/webhookthing"
+            rel="noreferrer"
+          >
+            <span className="invisible absolute -top-8 left-1/2 -translate-x-1/2 scale-[0.2] whitespace-nowrap rounded bg-indigo-500/10 px-4 py-2 text-sm font-bold delay-150 duration-150 ease-[cubic-bezier(0.95,0.05,0.795,0.035)] hover:transition-all group-hover:visible group-hover:-top-16 group-hover:scale-100 motion-reduce:transition-none">
+              {"Now Open Source!"}
+              <br />
+              {"Leave a ⭐️ or contribute!"}
+            </span>
+            {"GitHub"}
+            <span className="absolute top-2 -right-1.5 inline-block h-2 w-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500 group-visited:bg-slate-800"></span>
           </a>
         </div>
       </main>
