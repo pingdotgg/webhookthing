@@ -49,7 +49,7 @@ const Home: NextPage = () => {
               <span className="font-extrabold text-indigo-600 ">{`thing`}</span>
             </h1>
             <div className="flex w-96 max-w-sm flex-col items-center text-center text-white">
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-center gap-4">
                 <div className="flex items-center gap-2 text-xl">
                   {`Run webhooks locally with 1 click.`}
                 </div>
